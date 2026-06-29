@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi & Rapports de Chantier</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; color: #333; }
+        .app-container { max-width: 900px; margin: 20px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        h1, h2, h3 { color: #1a73e8; margin-top: 0; }
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* Navigation */
+        .nav-bar { display: block; margin-bottom: 20px; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; }
+        .nav-bar::after { content: ""; display: table; clear: both; }
+        .btn-back { float: left; background: #5f6368; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        
+        /* Formulaires */
+        label { display: block; margin: 14px 0 6px; font-weight: 600; font-size: 14px; color: #4a4a4a; }
+        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-size: 16px; background: #f8f9fa; transition: border 0.2s; }
+        input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
+        
+        /* Boutons */
+        .btn { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 15px; text-align: center; }
+        .btn:hover { background: #1557b0; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .btn-danger { background: #d93025; }
+        .btn-danger:hover { background: #b3241b; }
+        .btn-small { width: auto; display: inline-block; padding: 8px 15px; font-size: 14px; margin: 0; }
+        
+        /* Cartes Accueil */
+        .chantier-card { background: #fff; border: 1px solid #dadce0; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
+        .chantier-card:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,0,0,0.08); border-color: #1a73e8; }
+        .enterprise-badge { display: inline-block; background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; margin: 4px 4px 0 0; font-size: 13px; font-weight: 500; }
+        
+        /* Plan interactif avec puces */
+        .plan-wrapper { position: relative; width: 100%; overflow: auto; background: #eaeaea; border: 2px dashed #ccc; border-radius: 8px; margin-top: 10px; text-align: center; }
+        .plan-container { position: relative; display: inline-block; max-width: 100%; }
+        .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+        
+        .pin { position: absolute; width: 26px; height: 26px; background: #d93025; color: white; border-radius: 51%; text-align: center; font-size: 13px; font-weight: bold; line-height: 26px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
+        .pin.selected { background: #1a73e8; z-index: 10; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 0 4px rgba(26,115,232,0.4); }
+        
+        /* Tableaux et remarques */
+        .table-remarques { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table-remarques th, .table-remarques td { border: 1px solid #dadce0; padding: 10px; text-align: left; font-size: 14px; }
+        .table-remarques th { background: #f1f3f4; }
+        .thumb-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+        
+        /* Zone capture photo */
+        .photo-preview-box { width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 8px; margin-top: 8px; display: block; background: #f8f9fa; text-align: center; line-height: 180px; color: #666; font-size: 14px; background-size: cover; background-position: center; }
+
+        /* Styles d'impression PDF */
+        @media print {
+            body { background: white; color: black; font-size: 11pt; }
+            .app-container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; border: none; }
+            .section, .nav-bar, .no-print, form, button, input, textarea { display: none !important; }
+            #printTemplate { display: block !important; }
+            .page-break { page-break-before: always; }
+            
+            h1, h2, h3 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; }
+            .pdf-table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: avoid; }
+            .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; font-size: 11pt; text-align: left; }
+            .pdf-table th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            
+            .photo-grid-table { width: 100%; border-collapse: separate; border-spacing: 15px; page-break-inside: avoid; }
+            .photo-grid-table td { width: 50%; vertical-align: top; border: 1px solid #ddd; padding: 10px; text-align: center; background: #fff; page-break-inside: avoid; }
+            .photo-grid-img { width: 100%; height: 280px; object-fit: contain; background: #fafafa; display: block; margin-bottom: 8px; border: 1px solid #eee; }
+            .photo-grid-caption { font-size: 11pt; font-weight: bold; color: #1a73e8; }
+
+            /* FORCE TOUTES LES PUCES EN ROUGE SANS HALO DE SÉLECTION SUR LE PDF */
+            .pin, .pin.selected {
+                background-color: #d93025 !important;
+                background: #d93025 !important;
+                color: white !important;
+                border: 2px solid white !important;
+                transform: translate(-50%, -50%) scale(1) !important;
+                box-shadow: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        #printTemplate { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <div id="pageAccueil" class="section active">
+        <h1 style="margin-bottom:5px;">Conducteur de Chantier</h1>
+        <p style="color:#666; margin-top:0; margin-bottom:25px;">Gerez vos chantiers via des fichiers d'affaires securises.</p>
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-success" style="flex:1;" onclick="changerPage('pageCreer')">+ Creer un nouveau chantier</button>
+            
+            <button class="btn" style="flex:1; background: #5f6368;" onclick="document.getElementById('fileImporter').click()">📁 Ouvrir un fichier de chantier</button>
+            <input type="file" id="fileImporter" accept=".visite" style="display:none;" onchange="importerFichierChantier(event)">
+        </div>
+        
+        <h2 style="margin-top: 35px; border-bottom: 2px solid #1a73e8; padding-bottom: 5px;">Chantier en cours de session</h2>
+        <div id="listeChantiers"></div>
+    </div>
+
+    <div id="pageCreer" class="section">
+        <div class="nav-bar">
+            <button class="btn-back" onclick="changerPage('pageAccueil')">← Retour</button>
+        </div>
+        <h2>Nouveau Chantier</h2>
+        <form id="formChantier" onsubmit="sauvegarderChantier(event)">
+            <label for="nom">Nom du chantier :</label>
+            <input type="text" id="nom" required placeholder="Ex: Residence Les Alizes">
+
+            <label for="reference">Reference de l'affaire :</label>
+            <input type="text" id="reference" required placeholder="Ex: BC-2026-98">
+
+            <label for="localisation">Localisation / Adresse :</label>
+            <input type="text" id="localisation" required placeholder="Ex: 45 Avenue de la Republique, Lyon">
+
+            <label>Ajouter les plans par niveau :</label>
+            <div style="background:#f8f9fa; border:1px solid #dadce0; padding:15px; border-radius:8px; margin-bottom:15px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="nomNiveauInput" style="flex:1;" placeholder="Nom du niveau (Ex: RDC, R+1...)">
+                    <input type="file" id="planInput" accept="image/*" style="flex:1;" onchange="chargerImagePlanNiveau(event)">
+                </div>
+                <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="enregistrerNiveauDansListe()">+ Ajouter ce niveau</button>
+                <div id="listeNiveauxTemporaire" style="margin-top:10px;"></div>
+            </div>
+
+            <label>Entreprises sous-traitantes / Intervenantes :</label>
+            <div style="display: table; width: 100%; margin-bottom: 8px;">
+                <div style="display: table-cell; width: 80%; padding-right: 10px;">
+                    <input type="text" id="nomEntreprise" placeholder="Ex: Entreprise Generale Maconnerie...">
+                </div>
+                <div style="display: table-cell; width: 20%; vertical-align: top;">
+                    <button type="button" class="btn btn-small" style="width:100%; padding:12px 0;" onclick="ajouterEntreprise()">Ajouter</button>
+                </div>
+            </div>
+            <div id="listeEntreprisesTemporaire" style="min-height: 40px; border:1px solid #dadce0; padding:8px; border-radius:8px; background:#f8f9fa;"></div>
+
+            <button type="submit" class="btn">Generer et Telecharger le fichier Chantier</button>
+        </form>
+    </div>
+
+    <div id="pageChantierDetails" class="section">
+        <div class="nav-bar">
+            <button class="btn-back" onclick="changerPage('pageAccueil')">← Retour Accueil</button>
+            <button class="btn btn-success btn-small no-print" style="float:right; margin:0;" onclick="declencherImpression()">Exporter le Rapport (PDF)</button>
+            
+            <button class="btn btn-small no-print" style="float:right; margin:0 10px 0 0; background:#0b57d0;" onclick="telechargerFichierChantier()">💾 Enregistrer les modifications</button>
+        </div>
+        
+        <h1 id="viewNom" style="margin-bottom: 5px;">---</h1>
+        <div style="margin-bottom: 15px; font-size: 14px; color: #5f6368;">
+            <span style="margin-right:15px;"><strong>Ref :</strong> <span id="viewRef">---</span></span>
+            <span><strong>📍 Localisation :</strong> <span id="viewLoc">---</span></span>
+        </div>
+        
+        <div id="viewEntreprises" style="margin-bottom:20px;"></div>
+
+        <div style="background: #edf2fa; border: 1px solid #b4cff7; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+            <label for="selectNiveauVisite" style="margin-top:0; color:#1a73e8;">Niveau a afficher :</label>
+            <select id="selectNiveauVisite" onchange="changerDeNiveauSurTerrain()"></select>
+        </div>
+
+        <h2 style="border-top: 1px solid #e0e0e0; padding-top: 15px;">Plan du chantier</h2>
+        <p style="color:#666; font-size:14px; margin-top:0;">
+            <strong>Sur le terrain :</strong> Touchez ou cliquez n'importe ou sur le plan ci-dessous pour poser une puce numerotee, puis completez les informations ci-dessous.
+        </p>
+        
+        <div class="plan-wrapper">
+            <div id="planContainer" class="plan-container">
+                <img id="viewPlanImg" class="plan-img" alt="Plan du chantier" onclick="placerPuce(event)">
+            </div>
+        </div>
+
+        <div id="zoneSaisiePuce" style="display:none; background:#edf2fa; border:1px solid #b4cff7; padding:15px; border-radius:8px; margin-top:20px;">
+            <h3 style="margin-bottom:10px; color:#0b57d0;">Saisie de la Puce N° <span id="labelNumeroPuce">X</span></h3>
+            
+            <label for="photoPuce">Prendre une photo sur site :</label>
+            <input type="file" id="photoPuce" accept="image/*" onchange="chargerPhotoPuce(event)">
+            <div id="photoPreview" class="photo-preview-box">Aucune photo selectionnee</div>
+
+            <label for="commentairePuce">Observations / Commentaires :</label>
+            <textarea id="commentairePuce" rows="3" placeholder="Saisissez vos remarques concernant ce point precis..."></textarea>
+
+            <div style="margin-top:15px; text-align:right;">
+                <button type="button" class="btn btn-danger btn-small" onclick="supprimerPuceActuelle()">Supprimer la puce</button>
+                <button type="button" class="btn btn-success btn-small" onclick="sauvegarderDonniesPuce()">Enregistrer ce point</button>
+            </div>
+        </div>
+
+        <h2 style="margin-top:35px;">Liste des Observations du jour</h2>
+        <table class="table-remarques">
+            <thead>
+                <tr>
+                    <th style="width:70px; text-align:center;">N° Puce</th>
+                    <th style="width:100px; text-align:center;">Niveau</th>
+                    <th style="width:90px; text-align:center;">Photo</th>
+                    <th>Commentaires & Constats</th>
+                </tr>
+            </thead>
+            <tbody id="corpsTableauRemarques"></tbody>
+        </table>
+        
+        <button class="btn btn-danger" style="margin-top:40px; opacity:0.7;" onclick="fermerChantierActuel()">Fermer ce chantier</button>
+    </div>
+
+</div>
+
+<div id="printTemplate">
+    <div style="border-bottom: 3px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="margin: 0 0 5px 0; font-size: 24pt;">RAPPORT DE VISITE DE CHANTIER</h1>
+        <table style="width: 100%; border:none; margin-top:10px;">
+            <tr>
+                <td style="width:50%; padding:0; border:none;">
+                    <strong>Chantier :</strong> <span id="pdfNomChantier"></span><br>
+                    <strong>Affaire Ref :</strong> <span id="pdfRefChantier"></span>
+                </td>
+                <td style="width:50%; padding:0; border:none; text-align:right; vertical-align:top;">
+                    <strong>Date de visite :</strong> <span id="pdfDateVisite"></span><br>
+                    <strong>Localisation :</strong> <span id="pdfLocChantier"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Entreprises intervenantes</h3>
+    <div id="pdfEntreprises" style="margin-bottom: 20px; font-style: italic;"></div>
+
+    <div class="page-break"></div>
+
+    <h2>1. Plans de situation & Implantation des puces</h2>
+    <div id="pdfPlansMultiples"></div>
+
+    <div class="page-break"></div>
+
+    <h2>2. Tableau des constatations et remarques</h2>
+    <table class="pdf-table">
+        <thead>
+            <tr>
+                <th style="width: 12%; text-align:center;">N° Puce</th>
+                <th style="width: 15%; text-align:center;">Niveau</th>
+                <th>Observations & Commentaires detailles</th>
+            </tr>
+        </thead>
+        <tbody id="pdfCorpsTableau"></tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>3. Reportage photographique</h2>
+    <div id="pdfPhotoPagesContainer"></div>
+</div>
+
+<script>
+    let entreprisesTemporaires = [];
+    let niveauxTemporaires = []; 
+    let planEnCoursDeChargementBase64 = ""; 
+    let photoTemporaireBase64 = "";
+    
+    let chantierActuel = null; 
+    let indexNiveauActuel = 0; 
+    let puceSelectionneeId = null;
+
+    function changerPage(pageId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        
+        if (pageId === 'pageAccueil') {
+            reinitialiserFormulaireChantier();
+            rafraichirVueAccueil();
+        }
+    }
+
+    function chargerImagePlanNiveau(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                planEnCoursDeChargementBase64 = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function enregistrerNiveauDansListe() {
+        const inputNom = document.getElementById('nomNiveauInput');
+        const nom = inputNom.value.trim();
+        const inputFichier = document.getElementById('planInput');
+
+        if (nom && planEnCoursDeChargementBase64) {
+            niveauxTemporaires.push({ nom: nom, plan: planEnCoursDeChargementBase64 });
+            document.getElementById('listeNiveauxTemporaire').innerHTML = niveauxTemporaires.map(n => `
+                <span class="enterprise-badge" style="background:#e6fffa; color:#00875a; border:1px solid #00875a;">📍 ${n.nom}</span>
+            `).join('');
+            
+            inputNom.value = "";
+            inputFichier.value = "";
+            planEnCoursDeChargementBase64 = "";
+        } else {
+            alert("Renseignez un nom de niveau (ex: RDC) et chargez son image de plan avant de valider.");
+        }
+    }
+
+    function ajouterEntreprise() {
+        const input = document.getElementById('nomEntreprise');
+        const nom = input.value.trim();
+        if (nom && !entreprisesTemporaires.includes(nom)) {
+            entreprisesTemporaires.push(nom);
+            document.getElementById('listeEntreprisesTemporaire').innerHTML = entreprisesTemporaires.map(e => `<span class="enterprise-badge">${e}</span>`).join('');
+            input.value = "";
+        }
+    }
+
+    function sauvegarderChantier(e) {
+        e.preventDefault();
+        if(niveauxTemporaires.length === 0) {
+            alert("Veuillez configurer au moins un niveau avec son plan.");
+            return;
+        }
+
+        chantierActuel = {
+            id: Date.now(),
+            nom: document.getElementById('nom').value,
+            reference: document.getElementById('reference').value,
+            localisation: document.getElementById('localisation').value,
+            niveaux: niveauxTemporaires, 
+            entreprises: entreprisesTemporaires,
+            puces: [] 
+        };
+
+        telechargerFichierChantier();
+        changerPage('pageAccueil');
+    }
+
+    function telechargerFichierChantier() {
+        if(!chantierActuel) return;
+        const stringData = JSON.stringify(chantierActuel);
+        const blob = new Blob([stringData], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${chantierActuel.nom.replace(/\s+/g, '_')}_Affaire.visite`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importerFichierChantier(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                chantierActuel = JSON.parse(e.target.result);
+                ouvrirLeChantierCharge();
+            } catch (err) {
+                alert("Erreur lors de la lecture du fichier de chantier (.visite). Le fichier semble corrompu.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function rafraichirVueAccueil() {
+        const container = document.getElementById('listeChantiers');
+        if (!chantierActuel) {
+            container.innerHTML = "<p style='color: #666; font-style: italic;'>Aucun chantier charge en session active. Veuillez creer un chantier ou ouvrir un fichier de configuration (.visite).</p>";
+            return;
+        }
+        container.innerHTML = `
+            <div class="chantier-card" onclick="ouvrirLeChantierCharge()">
+                <h3 style="margin:0 0 5px 0;">${chantierActuel.nom} <span style="color: #28a745; font-size:12px;">(Session Active)</span></h3>
+                <div style="font-size:13px; color:#5f6368; margin-bottom:8px;">
+                    <strong>Ref :</strong> ${chantierActuel.reference} | 📍 ${chantierActuel.localisation}
+                </div>
+                <div>
+                    ${chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('')}
+                </div>
+                <div style="margin-top: 10px; font-size:12px; color:#1a73e8; font-weight:bold;">
+                    📊 ${chantierActuel.puces ? chantierActuel.puces.length : 0} puce(s) reparties sur ${(chantierActuel.niveaux || []).length} plan(s)
+                </div>
+            </div>
+        `;
+    }
+
+    function ouvrirLeChantierCharge() {
+        if(!chantierActuel) return;
+        
+        document.getElementById('viewNom').innerText = chantierActuel.nom;
+        document.getElementById('viewRef').innerText = chantierActuel.reference;
+        document.getElementById('viewLoc').innerText = chantierActuel.localisation;
+        document.getElementById('viewEntreprises').innerHTML = chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('') || "Aucune entreprise configuree.";
+        
+        const selectNiveau = document.getElementById('selectNiveauVisite');
+        selectNiveau.innerHTML = chantierActuel.niveaux.map((n, index) => `<option value="${index}">${n.nom}</option>`).join('');
+        indexNiveauActuel = 0;
+
+        chargerPlanEtPucesDuNiveauActuel();
+        changerPage('pageChantierDetails');
+    }
+
+    function fermerChantierActuel() {
+        if(confirm("Fermer la session ? Pensez a enregistrer vos modifications dans le fichier avant.")) {
+            chantierActuel = null;
+            changerPage('pageAccueil');
+        }
+    }
+
+    function reinitialiserFormulaireChantier() {
+        document.getElementById('formChantier').reset();
+        entreprisesTemporaires = [];
+        niveauxTemporaires = [];
+        planEnCoursDeChargementBase64 = "";
+        document.getElementById('listeEntreprisesTemporaire').innerHTML = "";
+        document.getElementById('listeNiveauxTemporaire').innerHTML = "";
+    }
+
+    function chargerPlanEtPucesDuNiveauActuel() {
+        const imgElement = document.getElementById('viewPlanImg');
+        imgElement.src = chantierActuel.niveaux[indexNiveauActuel].plan;
+
+        imgElement.onload = function() {
+            rafraichirPucesGraphiques();
+            rafraichirTableauRemarques();
+        };
+        rafraichirPucesGraphiques();
+        rafraichirTableauRemarques();
+        document.getElementById('zoneSaisiePuce').style.display = 'none';
+    }
+
+    function changerDeNiveauSurTerrain() {
+        indexNiveauActuel = parseInt(document.getElementById('selectNiveauVisite').value);
+        chargerPlanEtPucesDuNiveauActuel();
+    }
+
+    function placerPuce(event) {
+        const img = document.getElementById('viewPlanImg');
+        const rect = img.getBoundingClientRect();
+        
+        const xPct = ((event.clientX - rect.left) / rect.width) * 100;
+        const yPct = ((event.clientY - rect.top) / rect.height) * 100;
+
+        const prochainNumero = chantierActuel.puces.length > 0 ? Math.max(...chantierActuel.puces.map(p => p.numero)) + 1 : 1;
+
+        const nouvellePuce = {
+            id: Date.now(),
+            numero: prochainNumero,
+            niveauNom: chantierActuel.niveaux[indexNiveauActuel].nom, 
+            x: xPct,
+            y: yPct,
+            commentaire: "",
+            photo: ""
+        };
+
+        chantierActuel.puces.push(nouvellePuce);
+        rafraichirPucesGraphiques();
+        rafraichirTableauRemarques();
+        selectionnerPuce(nouvellePuce.id);
+    }
+
+    function rafraichirPucesGraphiques() {
+        const container = document.getElementById('planContainer');
+        container.querySelectorAll('.pin').forEach(p => p.remove());
+
+        const nomDuNiveauActuel = chantierActuel.niveaux[indexNiveauActuel].nom;
+
+        chantierActuel.puces.forEach(p => {
+            if (p.niveauNom === nomDuNiveauActuel) {
+                const div = document.createElement('div');
+                div.className = 'pin';
+                if (puceSelectionneeId === p.id) div.className += ' selected';
+                div.style.left = p.x + '%';
+                div.style.top = p.y + '%';
+                div.innerText = p.numero;
+                div.onclick = function(e) {
+                    e.stopPropagation();
+                    selectionnerPuce(p.id);
+                };
+                container.appendChild(div);
+            }
+        });
+    }
+
+    function selectionnerPuce(id) {
+        puceSelectionneeId = id;
+        const puce = chantierActuel.puces.find(p => p.id === id);
+        if (!puce) return;
+
+        const indexTrouve = chantierActuel.niveaux.findIndex(n => n.nom === puce.niveauNom);
+        if(indexTrouve !== -1 && indexTrouve !== indexNiveauActuel) {
+            indexNiveauActuel = indexTrouve;
+            document.getElementById('selectNiveauVisite').value = indexNiveauActuel;
+            chargerPlanEtPucesDuNiveauActuel();
+        }
+
+        rafraichirPucesGraphiques();
+
+        document.getElementById('zoneSaisiePuce').style.display = 'block';
+        document.getElementById('labelNumeroPuce').innerText = puce.numero;
+        document.getElementById('commentairePuce').value = puce.commentaire;
+        document.getElementById('photoPuce').value = "";
+        
+        const preview = document.getElementById('photoPreview');
+        if (puce.photo) {
+            preview.style.backgroundImage = `url(${puce.photo})`;
+            preview.innerText = "";
+            photoTemporaireBase64 = puce.photo;
+        } else {
+            preview.style.backgroundImage = "none";
+            preview.innerText = "Aucune photo selectionnee";
+            photoTemporaireBase64 = "";
+        }
+        
+        document.getElementById('zoneSaisiePuce').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function chargerPhotoPuce(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photoTemporaireBase64 = e.target.result;
+                const preview = document.getElementById('photoPreview');
+                preview.style.backgroundImage = `url(${photoTemporaireBase64})`;
+                preview.innerText = "";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function sauvegarderDonniesPuce() {
+        const puce = chantierActuel.puces.find(p => p.id === puceSelectionneeId);
+        if (puce) {
+            puce.commentaire = document.getElementById('commentairePuce').value;
+            puce.photo = photoTemporaireBase64;
+            rafraichirTableauRemarques();
+            document.getElementById('zoneSaisiePuce').style.display = 'none';
+            puceSelectionneeId = null;
+            rafraichirPucesGraphiques();
+            alert("Point mis a jour en memoire active ! N'oubliez pas de cliquer sur le bouton bleu en haut pour enregistrer definitivement dans le fichier d'affaire.");
+        }
+    }
+
+    function supprimerPuceActuelle() {
+        if (confirm("Supprimer definitivement cette puce et ses donnees associees ?")) {
+            chantierActuel.puces = chantierActuel.puces.filter(p => p.id !== puceSelectionneeId);
+            chantierActuel.puces.forEach((p, index) => { p.numero = index + 1; });
+            rafraichirPucesGraphiques();
+            rafraichirTableauRemarques();
+            document.getElementById('zoneSaisiePuce').style.display = 'none';
+            puceSelectionneeId = null;
+        }
+    }
+
+    function rafraichirTableauRemarques() {
+        const tbody = document.getElementById('corpsTableauRemarques');
+        if (chantierActuel.puces.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; font-style:italic;">Aucune puce placee sur le plan pour le moment.</td></tr>`;
+            return;
+        }
+        const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
+        tbody.innerHTML = pucesTriees.map(p => `
+            <tr style="cursor:pointer;" onclick="selectionnerPuce(${p.id})">
+                <td style="text-align:center;"><b style="background:#d93025; color:white; padding:3px 8px; border-radius:10px; font-size:12px;">${p.numero}</b></td>
+                <td style="text-align:center;"><span class="enterprise-badge" style="background:#f1f3f4; color:#333; margin:0;">${p.niveauNom}</span></td>
+                <td style="text-align:center;">
+                    ${p.photo ? `<img src="${p.photo}" class="thumb-preview">` : `<span style="color:#999;font-size:12px;">Pas de photo</span>`}
+                </td>
+                <td>
+                    <div style="font-weight:500; font-size:15px; color:#222;">${p.commentaire ? p.commentaire : `<span style="color:#999; font-style:italic;">Aucun commentaire redige</span>`}</div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function declencherImpression() {
+        if (!chantierActuel) return;
+
+        document.getElementById('pdfNomChantier').innerText = chantierActuel.nom;
+        document.getElementById('pdfRefChantier').innerText = chantierActuel.reference;
+        document.getElementById('pdfLocChantier').innerText = chantierActuel.localisation;
+        document.getElementById('pdfDateVisite').innerText = new Date().toLocaleDateString('fr-FR');
+        document.getElementById('pdfEntreprises').innerText = chantierActuel.entreprises.join(', ') || "Aucune entreprise specifiee";
+
+        const pdfPlansMultiples = document.getElementById('pdfPlansMultiples');
+        pdfPlansMultiples.innerHTML = "";
+
+        // Gestion asynchrone du chargement des plans pour le PDF
+        let totalImages = chantierActuel.niveaux.length;
+        let imagesChargees = 0;
+
+        function verifierFinChargement() {
+            imagesChargees++;
+            if (imagesChargees >= totalImages) {
+                setTimeout(() => {
+                    window.print();
+                }, 600);
+            }
+        }
+
+        if (totalImages === 0) {
+            window.print();
+            return;
+        }
+
+        chantierActuel.niveaux.forEach(niv => {
+            const blockNiveau = document.createElement('div');
+            blockNiveau.style.marginBottom = "30px";
+            blockNiveau.style.pageBreakInside = "avoid";
+            blockNiveau.innerHTML = `<h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-top:20px;">Niveau : ${niv.nom}</h3>`;
+
+            const ctn = document.createElement('div');
+            ctn.className = "plan-container";
+            ctn.style.border = "1px solid #ccc";
+            ctn.style.padding = "5px";
+
+            const img = document.createElement('img');
+            img.className = "plan-img";
+            
+            img.onload = verifierFinChargement;
+            img.onerror = verifierFinChargement; 
+            img.src = niv.plan;
+
+            ctn.appendChild(img);
+
+            chantierActuel.puces.forEach(p => {
+                if (p.niveauNom === niv.nom) {
+                    const pin = document.createElement('div');
+                    pin.className = 'pin';
+                    pin.style.left = p.x + '%';
+                    pin.style.top = p.y + '%';
+                    pin.innerText = p.numero;
+                    ctn.appendChild(pin);
+                }
+            });
+
+            blockNiveau.appendChild(ctn);
+            pdfPlansMultiples.appendChild(blockNiveau);
+        });
+
+        const pdfCorpsTableau = document.getElementById('pdfCorpsTableau');
+        pdfCorpsTableau.innerHTML = "";
+        const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
+        
+        if(pucesTriees.length === 0) {
+            pdfCorpsTableau.innerHTML = `<tr><td colspan="3" style="text-align:center;">Aucune constatation enregistree.</td></tr>`;
+        } else {
+            pucesTriees.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td>
+                    <td style="text-align:center;">${p.niveauNom}</td>
+                    <td>${p.commentaire ? p.commentaire : 'Aucun commentaire.'}</td>
+                `;
+                pdfCorpsTableau.appendChild(tr);
+            });
+        }
+
+        const photoPagesContainer = document.getElementById('pdfPhotoPagesContainer');
+        photoPagesContainer.innerHTML = "";
+
+        const pucesAvecPhoto = pucesTriees.filter(p => p.photo);
+        
+        if (pucesAvecPhoto.length === 0) {
+            photoPagesContainer.innerHTML = "<p style='font-style:italic;'>Aucune photographie n'a ete prise durant cette visite.</p>";
+        } else {
+            const PHOTOS_PAR_PAGE = 4;
+            const nbPagesNecessaires = Math.ceil(pucesAvecPhoto.length / PHOTOS_PAR_PAGE);
+
+            for (let pageIdx = 0; pageIdx < nbPagesNecessaires; pageIdx++) {
+                if (pageIdx > 0) {
+                    const pageBreakDiv = document.createElement('div');
+                    pageBreakDiv.className = "page-break";
+                    photoPagesContainer.appendChild(pageBreakDiv);
+                }
+
+                const pageTitle = document.createElement('h3');
+                pageTitle.innerText = `Planche Photos — Page ${pageIdx + 1} / ${nbPagesNecessaires}`;
+                photoPagesContainer.appendChild(pageTitle);
+
+                const table = document.createElement('table');
+                table.className = "photo-grid-table";
+                let currentTr = null;
+
+                for (let i = 0; i < PHOTOS_PAR_PAGE; i++) {
+                    const photoIndex = (pageIdx * PHOTOS_PAR_PAGE) + i;
+                    
+                    if (i % 2 === 0) {
+                        currentTr = document.createElement('tr');
+                        table.appendChild(currentTr);
+                    }
+
+                    const td = document.createElement('td');
+                    if (photoIndex < pucesAvecPhoto.length) {
+                        const puceData = pucesAvecPhoto[photoIndex];
+                        td.innerHTML = `
+                            <img src="${puceData.photo}" class="photo-grid-img">
+                            <div class="photo-grid-caption">PUCE N° ${puceData.numero} (${puceData.niveauNom})</div>
+                        `;
+                    } else {
+                        td.style.border = "none";
+                        td.style.background = "transparent";
+                    }
+                    currentTr.appendChild(td);
+                }
+                photoPagesContainer.appendChild(table);
+            }
+        }
+    }
+
+    rafraichirVueAccueil();
+</script>
+</body>
+</html>
