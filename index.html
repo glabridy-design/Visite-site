@@ -109,14 +109,14 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1 style="margin-bottom:5px;">Conducteur de Chantier</h1>
-        <p style="color:#666; margin-top:0; margin-bottom:25px;">Gérez vos chantiers via des fichiers d'affaires sécurisés.</p>
+        <h1 style="margin-bottom:5px;">Rapport de Visite</h1>
+        <p style="color:#666; margin-top:0; margin-bottom:25px;">Créé Un rapport de visite de site</p>
         
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn btn-success" style="flex:1; min-width:180px;" onclick="changerPage('pageCreer')">+ Créer un nouveau chantier</button>
             <button class="btn" style="flex:1; background: #5f6368; min-width:180px;" onclick="document.getElementById('fileImporter').click()">📁 Ouvrir un fichier de chantier</button>
             
-            <button class="btn" style="flex:1; background: #00875a; min-width:180px;" onclick="document.getElementById('charteImporter').click()">🏢 Maj Charte (Manuel)</button>
+            <button class="btn" style="flex:1; background: #00875a; min-width:180px;" onclick="document.getElementById('charteImporter').click()">🏢 Modifier 1er page</button>
             
             <input type="file" id="fileImporter" accept=".visite" style="display:none;" onchange="importerFichierChantier(event)">
             <input type="file" id="charteImporter" accept=".json" style="display:none;" onchange="importerCharteEntreprise(event)">
