@@ -1,12 +1,10 @@
 {
   "entreprise": {
     "nom": "Déelles Ingénierie",
-    "statut": "SAS au capital de 20 000 €",
     "adresse_ligne1": "12 Rue Denis Papin",
     "adresse_ligne2": "14120 Mondeville",
     "telephone": "02 31 72 99 43",
-    "email": "contact@alizes-batiment.fr",
-    "siret": "53376431200039",
+    "email": "info@deelles.fr",
     "site_internet": "https://www.deelles.com/",
     "couleur_primaire": "#1a73e8"
   },
