@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi & Rapports de Chantier</title>
+    <title>Rapport de Visite de Chantier</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; color: #333; }
@@ -23,6 +23,10 @@
         input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-size: 16px; background: #f8f9fa; transition: border 0.2s; }
         input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
         
+        /* Flexbox pour l'alignement des inputs */
+        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .flex-row input { flex: 1; }
+        
         /* Boutons */
         .btn { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 15px; text-align: center; }
         .btn:hover { background: #1557b0; }
@@ -36,13 +40,14 @@
         .chantier-card { background: #fff; border: 1px solid #dadce0; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
         .chantier-card:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,0,0,0.08); border-color: #1a73e8; }
         .enterprise-badge { display: inline-block; background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; margin: 4px 4px 0 0; font-size: 13px; font-weight: 500; }
+        .enterprise-badge.danger { background: #fce8e6; color: #d93025; }
         
         /* Plan interactif avec puces */
         .plan-wrapper { position: relative; width: 100%; overflow: auto; background: #eaeaea; border: 2px dashed #ccc; border-radius: 8px; margin-top: 10px; text-align: center; }
         .plan-container { position: relative; display: inline-block; max-width: 100%; }
         .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
         
-        .pin { position: absolute; width: 26px; height: 26px; background: #d93025; color: white; border-radius: 51%; text-align: center; font-size: 13px; font-weight: bold; line-height: 26px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
+        .pin { position: absolute; width: 26px; height: 26px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 13px; font-weight: bold; line-height: 22px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
         .pin.selected { background: #1a73e8; z-index: 10; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 0 4px rgba(26,115,232,0.4); }
         
         /* Tableaux et remarques */
@@ -54,15 +59,24 @@
         /* Zone capture photo */
         .photo-preview-box { width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 8px; margin-top: 8px; display: block; background: #f8f9fa; text-align: center; line-height: 180px; color: #666; font-size: 14px; background-size: cover; background-position: center; }
 
+        /* Sélection entreprises */
+        .entreprises-selection-list { max-height: 120px; overflow-y: auto; background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 10px; margin-top: 5px; }
+        .entreprise-checkbox-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; cursor: pointer; }
+        .entreprise-checkbox-item input { width: 16px; height: 16px; cursor: pointer; }
+
         /* Styles d'impression PDF */
         @media print {
-            body { background: white; color: black; font-size: 11pt; }
+            @page {
+                size: auto;
+                margin: 0mm;
+            }
+            body { background: white; color: black; font-size: 12pt; padding: 15mm; }
             .app-container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; border: none; }
-            .section, .nav-bar, .no-print, form, button, input, textarea { display: none !important; }
+            .section, .nav-bar, .no-print, form, button, input, textarea, select { display: none !important; }
             #printTemplate { display: block !important; }
             .page-break { page-break-before: always; }
             
-            h1, h2, h3 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; }
+            h1, h2, h3 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; margin-top: 20px; }
             .pdf-table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: avoid; }
             .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; font-size: 11pt; text-align: left; }
             .pdf-table th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -72,7 +86,6 @@
             .photo-grid-img { width: 100%; height: 280px; object-fit: contain; background: #fafafa; display: block; margin-bottom: 8px; border: 1px solid #eee; }
             .photo-grid-caption { font-size: 11pt; font-weight: bold; color: #1a73e8; }
 
-            /* FORCE TOUTES LES PUCES EN ROUGE SANS HALO DE SÉLECTION SUR LE PDF */
             .pin, .pin.selected {
                 background-color: #d93025 !important;
                 background: #d93025 !important;
@@ -82,6 +95,10 @@
                 box-shadow: none !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+            }
+
+            .first-page-only {
+                page-break-inside: avoid;
             }
         }
         #printTemplate { display: none; }
@@ -93,13 +110,16 @@
 
     <div id="pageAccueil" class="section active">
         <h1 style="margin-bottom:5px;">Conducteur de Chantier</h1>
-        <p style="color:#666; margin-top:0; margin-bottom:25px;">Gerez vos chantiers via des fichiers d'affaires securises.</p>
+        <p style="color:#666; margin-top:0; margin-bottom:25px;">Gérez vos chantiers via des fichiers d'affaires sécurisés.</p>
         
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-success" style="flex:1;" onclick="changerPage('pageCreer')">+ Creer un nouveau chantier</button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-success" style="flex:1; min-width:180px;" onclick="changerPage('pageCreer')">+ Créer un nouveau chantier</button>
+            <button class="btn" style="flex:1; background: #5f6368; min-width:180px;" onclick="document.getElementById('fileImporter').click()">📁 Ouvrir un fichier de chantier</button>
             
-            <button class="btn" style="flex:1; background: #5f6368;" onclick="document.getElementById('fileImporter').click()">📁 Ouvrir un fichier de chantier</button>
+            <button class="btn" style="flex:1; background: #00875a; min-width:180px;" onclick="document.getElementById('charteImporter').click()">🏢 Maj Charte (Manuel)</button>
+            
             <input type="file" id="fileImporter" accept=".visite" style="display:none;" onchange="importerFichierChantier(event)">
+            <input type="file" id="charteImporter" accept=".json" style="display:none;" onchange="importerCharteEntreprise(event)">
         </div>
         
         <h2 style="margin-top: 35px; border-bottom: 2px solid #1a73e8; padding-bottom: 5px;">Chantier en cours de session</h2>
@@ -113,36 +133,32 @@
         <h2>Nouveau Chantier</h2>
         <form id="formChantier" onsubmit="sauvegarderChantier(event)">
             <label for="nom">Nom du chantier :</label>
-            <input type="text" id="nom" required placeholder="Ex: Residence Les Alizes">
+            <input type="text" id="nom" required placeholder="Ex:Casino Trouville">
 
-            <label for="reference">Reference de l'affaire :</label>
-            <input type="text" id="reference" required placeholder="Ex: BC-2026-98">
+            <label for="reference">Référence de l'affaire :</label>
+            <input type="text" id="reference" required placeholder="Ex: DL398_OPC">
 
             <label for="localisation">Localisation / Adresse :</label>
-            <input type="text" id="localisation" required placeholder="Ex: 45 Avenue de la Republique, Lyon">
+            <input type="text" id="localisation" required placeholder="Ex:Pl. Foch, 14360 Trouville-sur-Mer">
 
             <label>Ajouter les plans par niveau :</label>
             <div style="background:#f8f9fa; border:1px solid #dadce0; padding:15px; border-radius:8px; margin-bottom:15px;">
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="nomNiveauInput" style="flex:1;" placeholder="Nom du niveau (Ex: RDC, R+1...)">
-                    <input type="file" id="planInput" accept="image/*" style="flex:1;" onchange="chargerImagePlanNiveau(event)">
+                <div class="flex-row">
+                    <input type="text" id="nomNiveauInput" placeholder="Nom du niveau (Ex: RDC, R+1...)">
+                    <input type="file" id="planInput" accept="image/*" onchange="chargerImagePlanNiveau(event)">
                 </div>
                 <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="enregistrerNiveauDansListe()">+ Ajouter ce niveau</button>
                 <div id="listeNiveauxTemporaire" style="margin-top:10px;"></div>
             </div>
 
             <label>Entreprises sous-traitantes / Intervenantes :</label>
-            <div style="display: table; width: 100%; margin-bottom: 8px;">
-                <div style="display: table-cell; width: 80%; padding-right: 10px;">
-                    <input type="text" id="nomEntreprise" placeholder="Ex: Entreprise Generale Maconnerie...">
-                </div>
-                <div style="display: table-cell; width: 20%; vertical-align: top;">
-                    <button type="button" class="btn btn-small" style="width:100%; padding:12px 0;" onclick="ajouterEntreprise()">Ajouter</button>
-                </div>
+            <div class="flex-row">
+                <input type="text" id="nomEntreprise" placeholder="Ex: Entreprise Générale Maçonnerie...">
+                <button type="button" class="btn btn-small" style="padding:12px 20px;" onclick="ajouterEntreprise()">Ajouter</button>
             </div>
-            <div id="listeEntreprisesTemporaire" style="min-height: 40px; border:1px solid #dadce0; padding:8px; border-radius:8px; background:#f8f9fa;"></div>
+            <div id="listeEntreprisesTemporaire" style="min-height: 40px; border:1px solid #dadce0; padding:8px; border-radius:8px; background:#f8f9fa; margin-bottom: 15px;"></div>
 
-            <button type="submit" class="btn">Generer et Telecharger le fichier Chantier</button>
+            <button type="submit" class="btn">Générer et Télécharger le fichier Chantier</button>
         </form>
     </div>
 
@@ -150,7 +166,6 @@
         <div class="nav-bar">
             <button class="btn-back" onclick="changerPage('pageAccueil')">← Retour Accueil</button>
             <button class="btn btn-success btn-small no-print" style="float:right; margin:0;" onclick="declencherImpression()">Exporter le Rapport (PDF)</button>
-            
             <button class="btn btn-small no-print" style="float:right; margin:0 10px 0 0; background:#0b57d0;" onclick="telechargerFichierChantier()">💾 Enregistrer les modifications</button>
         </div>
         
@@ -163,13 +178,13 @@
         <div id="viewEntreprises" style="margin-bottom:20px;"></div>
 
         <div style="background: #edf2fa; border: 1px solid #b4cff7; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-            <label for="selectNiveauVisite" style="margin-top:0; color:#1a73e8;">Niveau a afficher :</label>
+            <label for="selectNiveauVisite" style="margin-top:0; color:#1a73e8;">Niveau à afficher :</label>
             <select id="selectNiveauVisite" onchange="changerDeNiveauSurTerrain()"></select>
         </div>
 
         <h2 style="border-top: 1px solid #e0e0e0; padding-top: 15px;">Plan du chantier</h2>
         <p style="color:#666; font-size:14px; margin-top:0;">
-            <strong>Sur le terrain :</strong> Touchez ou cliquez n'importe ou sur le plan ci-dessous pour poser une puce numerotee, puis completez les informations ci-dessous.
+            <strong>Sur le terrain :</strong> Touchez ou cliquez n'importe où sur le plan ci-dessous pour poser une puce numérotée, puis complétez les informations ci-dessous.
         </p>
         
         <div class="plan-wrapper">
@@ -183,10 +198,13 @@
             
             <label for="photoPuce">Prendre une photo sur site :</label>
             <input type="file" id="photoPuce" accept="image/*" onchange="chargerPhotoPuce(event)">
-            <div id="photoPreview" class="photo-preview-box">Aucune photo selectionnee</div>
+            <div id="photoPreview" class="photo-preview-box">Aucune photo sélectionnée</div>
+
+            <label>Entreprises concernées par cette remarque :</label>
+            <div id="zoneEntreprisesPuceCheckboxes" class="entreprises-selection-list"></div>
 
             <label for="commentairePuce">Observations / Commentaires :</label>
-            <textarea id="commentairePuce" rows="3" placeholder="Saisissez vos remarques concernant ce point precis..."></textarea>
+            <textarea id="commentairePuce" rows="3" placeholder="Saisissez vos remarques concernant ce point précis..."></textarea>
 
             <div style="margin-top:15px; text-align:right;">
                 <button type="button" class="btn btn-danger btn-small" onclick="supprimerPuceActuelle()">Supprimer la puce</button>
@@ -194,14 +212,18 @@
             </div>
         </div>
 
-        <h2 style="margin-top:35px;">Liste des Observations du jour</h2>
+        <div style="margin-top:35px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap:10px;">
+            <h2 style="margin: 0;">Liste des Observations du jour</h2>
+            <button class="btn btn-small" style="background: #202124;" onclick="exporterRemarquesCSV()">📥 Exporter les remarques (CSV)</button>
+        </div>
+        
         <table class="table-remarques">
             <thead>
                 <tr>
                     <th style="width:70px; text-align:center;">N° Puce</th>
                     <th style="width:100px; text-align:center;">Niveau</th>
                     <th style="width:90px; text-align:center;">Photo</th>
-                    <th>Commentaires & Constats</th>
+                    <th>Entreprises &amp; Constats</th>
                 </tr>
             </thead>
             <tbody id="corpsTableauRemarques"></tbody>
@@ -213,28 +235,50 @@
 </div>
 
 <div id="printTemplate">
-    <div style="border-bottom: 3px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
-        <h1 style="margin: 0 0 5px 0; font-size: 24pt;">RAPPORT DE VISITE DE CHANTIER</h1>
-        <table style="width: 100%; border:none; margin-top:10px;">
+    
+    <div class="first-page-only" style="margin-bottom: 25px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px;">
+            <div>
+                <img id="pdfLogoEntreprise" src="" alt="Logo" style="max-height: 75px; max-width: 200px; object-fit: contain; display: none;">
+                <div id="pdfLogoPlaceholder" style="font-weight: bold; color: #999; border: 1px dashed #ccc; padding: 10px;">[Logo]</div>
+            </div>
+            <div style="text-align: right; font-size: 9pt; color: #555; line-height: 1.4;">
+                <h2 id="pdfNomEntreprise" style="margin: 0 0 5px 0; color: #1a73e8; font-size: 14pt; font-weight: bold;">---</h2>
+                <span id="pdfStatutEntreprise"></span><br>
+                <span id="pdfAdresseEntreprise"></span><br>
+                Tél : <span id="pdfTelEntreprise"></span> | Email : <span id="pdfEmailEntreprise"></span><br>
+                SIRET : <span id="pdfSiretEntreprise"></span><br>
+                Site : <a id="pdfSiteEntreprise" href="#" style="color: #1a73e8; text-decoration: none;" target="_blank">---</a>
+            </div>
+        </div>
+        <div id="pdfLigneSeparation" style="border-bottom: 2px solid #1a73e8; margin-top: 5px;"></div>
+    </div>
+
+    <div style="margin-bottom: 25px; padding-top: 10px;">
+        <h1 style="margin: 0 0 20px 0; font-size: 22pt; text-align: center; font-weight: bold; letter-spacing: 0.5px;">RAPPORT DE VISITE</h1>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: #fafafa; border: 1px solid #ddd;">
             <tr>
-                <td style="width:50%; padding:0; border:none;">
-                    <strong>Chantier :</strong> <span id="pdfNomChantier"></span><br>
-                    <strong>Affaire Ref :</strong> <span id="pdfRefChantier"></span>
+                <td style="width: 50%; padding: 12px; border: none; font-size: 11pt; line-height: 1.5; vertical-align: top;">
+                    <strong>Chantier :</strong> <span id="pdfNomChantier" style="color: #1a73e8; font-weight: bold;">---</span><br>
+                    <strong>Affaire Ref :</strong> <span id="pdfRefChantier">---</span>
                 </td>
-                <td style="width:50%; padding:0; border:none; text-align:right; vertical-align:top;">
-                    <strong>Date de visite :</strong> <span id="pdfDateVisite"></span><br>
-                    <strong>Localisation :</strong> <span id="pdfLocChantier"></span>
+                <td style="width: 50%; padding: 12px; border: none; font-size: 11pt; line-height: 1.5; text-align: right; vertical-align: top;">
+                    <strong>Date de visite :</strong> <span id="pdfDateVisite">---</span><br>
+                    <strong>Localisation :</strong> <span id="pdfLocChantier">---</span>
                 </td>
             </tr>
         </table>
     </div>
 
-    <h3>Entreprises intervenantes</h3>
-    <div id="pdfEntreprises" style="margin-bottom: 20px; font-style: italic;"></div>
+    <div style="margin-bottom: 25px;">
+        <h3 style="font-size: 12pt; font-weight: bold; margin-bottom: 8px;">Entreprises intervenantes</h3>
+        <div id="pdfEntreprises" style="font-style: italic; font-size: 11pt; color: #444; padding-left: 5px;">---</div>
+    </div>
 
     <div class="page-break"></div>
 
-    <h2>1. Plans de situation & Implantation des puces</h2>
+    <h2>1. Plans de situation &amp; Implantation des puces</h2>
     <div id="pdfPlansMultiples"></div>
 
     <div class="page-break"></div>
@@ -245,7 +289,7 @@
             <tr>
                 <th style="width: 12%; text-align:center;">N° Puce</th>
                 <th style="width: 15%; text-align:center;">Niveau</th>
-                <th>Observations & Commentaires detailles</th>
+                <th>Observations &amp; Commentaires détaillés</th>
             </tr>
         </thead>
         <tbody id="pdfCorpsTableau"></tbody>
@@ -266,6 +310,58 @@
     let chantierActuel = null; 
     let indexNiveauActuel = 0; 
     let puceSelectionneeId = null;
+
+    // URL DE TON FICHIER DE CONFIGURATION INTERNET
+    const URL_CHARTE_DISTANTE = "Charte.json"; 
+
+    // NOUVEAU : FONCTION DE CHARGEMENT AUTOMATIQUE AU DÉMARRAGE
+    window.addEventListener('DOMContentLoaded', () => {
+        chargerCharteDepuisInternet();
+    });
+
+    function chargerCharteDepuisInternet() {
+        fetch(URL_CHARTE_DISTANTE, { method: 'GET', mode: 'cors' })
+            .then(response => {
+                if (!response.ok) throw new Error("Erreur HTTP: " + response.status);
+                return response.json();
+            })
+            .then(config => {
+                appliquerConfigurationCharte(config);
+                console.log("Charte Déelles Ingénierie synchronisée depuis internet.");
+            })
+            .catch(err => {
+                console.warn("Impossible de joindre le serveur pour charger la charte automatiquement (CORS ou Hors-ligne). Secours local activé.", err);
+            });
+    }
+
+    function appliquerConfigurationCharte(config) {
+        const ent = config.entreprise;
+        document.getElementById('pdfNomEntreprise').innerText = ent.nom;
+        document.getElementById('pdfStatutEntreprise').innerText = ent.statut;
+        document.getElementById('pdfAdresseEntreprise').innerText = ent.adresse_ligne1 + ", " + ent.adresse_ligne2;
+        document.getElementById('pdfTelEntreprise').innerText = ent.telephone;
+        document.getElementById('pdfEmailEntreprise').innerText = ent.email;
+        document.getElementById('pdfSiretEntreprise').innerText = ent.siret;
+        
+        const linkSite = document.getElementById('pdfSiteEntreprise');
+        if (ent.site_internet) {
+            linkSite.innerText = ent.site_internet.replace("https://", "").replace("www.", "");
+            linkSite.href = ent.site_internet;
+        }
+
+        if (config.logo_base64 && config.logo_base64.trim() !== "") {
+            const imgLogo = document.getElementById('pdfLogoEntreprise');
+            imgLogo.src = config.logo_base64;
+            imgLogo.style.display = 'block';
+            document.getElementById('pdfLogoPlaceholder').style.display = 'none';
+        }
+
+        if (ent.couleur_primaire) {
+            document.getElementById('pdfNomEntreprise').style.color = ent.couleur_primaire;
+            document.getElementById('pdfLigneSeparation').style.borderColor = ent.couleur_primaire;
+            linkSite.style.color = ent.couleur_primaire;
+        }
+    }
 
     function changerPage(pageId) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -372,7 +468,7 @@
     function rafraichirVueAccueil() {
         const container = document.getElementById('listeChantiers');
         if (!chantierActuel) {
-            container.innerHTML = "<p style='color: #666; font-style: italic;'>Aucun chantier charge en session active. Veuillez creer un chantier ou ouvrir un fichier de configuration (.visite).</p>";
+            container.innerHTML = "<p style='color: #666; font-style: italic;'>Aucun chantier chargé en session active. Veuillez créer un chantier ou ouvrir un fichier de configuration (.visite).</p>";
             return;
         }
         container.innerHTML = `
@@ -385,11 +481,13 @@
                     ${chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('')}
                 </div>
                 <div style="margin-top: 10px; font-size:12px; color:#1a73e8; font-weight:bold;">
-                    📊 ${chantierActuel.puces ? chantierActuel.puces.length : 0} puce(s) reparties sur ${(chantierActuel.niveaux || []).length} plan(s)
+                    📊 ${chantierActuel.puces ? chantierActuel.puces.length : 0} puce(s) réparties sur ${(chantierActuel.niveaux || []).length} plan(s)
                 </div>
             </div>
         `;
     }
+
+    function abrirLeChantierCharge() { ouvrirLeChantierCharge(); }
 
     function ouvrirLeChantierCharge() {
         if(!chantierActuel) return;
@@ -397,7 +495,7 @@
         document.getElementById('viewNom').innerText = chantierActuel.nom;
         document.getElementById('viewRef').innerText = chantierActuel.reference;
         document.getElementById('viewLoc').innerText = chantierActuel.localisation;
-        document.getElementById('viewEntreprises').innerHTML = chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('') || "Aucune entreprise configuree.";
+        document.getElementById('viewEntreprises').innerHTML = chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('') || "Aucune entreprise configurée.";
         
         const selectNiveau = document.getElementById('selectNiveauVisite');
         selectNiveau.innerHTML = chantierActuel.niveaux.map((n, index) => `<option value="${index}">${n.nom}</option>`).join('');
@@ -408,7 +506,7 @@
     }
 
     function fermerChantierActuel() {
-        if(confirm("Fermer la session ? Pensez a enregistrer vos modifications dans le fichier avant.")) {
+        if(confirm("Fermer la session ? Pensez à enregistrer vos modifications dans le fichier avant.")) {
             chantierActuel = null;
             changerPage('pageAccueil');
         }
@@ -457,7 +555,8 @@
             x: xPct,
             y: yPct,
             commentaire: "",
-            photo: ""
+            photo: "",
+            entreprises: []
         };
 
         chantierActuel.puces.push(nouvellePuce);
@@ -508,6 +607,19 @@
         document.getElementById('commentairePuce').value = puce.commentaire;
         document.getElementById('photoPuce').value = "";
         
+        const zoneCheckboxes = document.getElementById('zoneEntreprisesPuceCheckboxes');
+        if (!chantierActuel.entreprises || chantierActuel.entreprises.length === 0) {
+            zoneCheckboxes.innerHTML = "<p style='color:#999; font-style:italic; margin:0; font-size:13px;'>Aucune entreprise configurée sur ce chantier.</p>";
+        } else {
+            const pEnt = puce.entreprises || [];
+            zoneCheckboxes.innerHTML = chantierActuel.entreprises.map(e => `
+                <label class="entreprise-checkbox-item">
+                    <input type="checkbox" value="${e}" ${pEnt.includes(e) ? 'checked' : ''}>
+                    <span>${e}</span>
+                </label>
+            `).join('');
+        }
+
         const preview = document.getElementById('photoPreview');
         if (puce.photo) {
             preview.style.backgroundImage = `url(${puce.photo})`;
@@ -515,7 +627,7 @@
             photoTemporaireBase64 = puce.photo;
         } else {
             preview.style.backgroundImage = "none";
-            preview.innerText = "Aucune photo selectionnee";
+            preview.innerText = "Aucune photo sélectionnée";
             photoTemporaireBase64 = "";
         }
         
@@ -541,16 +653,23 @@
         if (puce) {
             puce.commentaire = document.getElementById('commentairePuce').value;
             puce.photo = photoTemporaireBase64;
+            
+            const cochees = [];
+            document.querySelectorAll('#zoneEntreprisesPuceCheckboxes input[type="checkbox"]').forEach(chk => {
+                if(chk.checked) cochees.push(chk.value);
+            });
+            puce.entreprises = cochees;
+
             rafraichirTableauRemarques();
             document.getElementById('zoneSaisiePuce').style.display = 'none';
             puceSelectionneeId = null;
             rafraichirPucesGraphiques();
-            alert("Point mis a jour en memoire active ! N'oubliez pas de cliquer sur le bouton bleu en haut pour enregistrer definitivement dans le fichier d'affaire.");
+            alert("Point mis à jour !");
         }
     }
 
     function supprimerPuceActuelle() {
-        if (confirm("Supprimer definitivement cette puce et ses donnees associees ?")) {
+        if (confirm("Supprimer définitivement cette puce et ses données associées ?")) {
             chantierActuel.puces = chantierActuel.puces.filter(p => p.id !== puceSelectionneeId);
             chantierActuel.puces.forEach((p, index) => { p.numero = index + 1; });
             rafraichirPucesGraphiques();
@@ -562,54 +681,88 @@
 
     function rafraichirTableauRemarques() {
         const tbody = document.getElementById('corpsTableauRemarques');
-        if (chantierActuel.puces.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; font-style:italic;">Aucune puce placee sur le plan pour le moment.</td></tr>`;
+        if (!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; font-style:italic;">Aucune puce placée sur le plan pour le moment.</td></tr>`;
             return;
         }
         const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
-        tbody.innerHTML = pucesTriees.map(p => `
-            <tr style="cursor:pointer;" onclick="selectionnerPuce(${p.id})">
-                <td style="text-align:center;"><b style="background:#d93025; color:white; padding:3px 8px; border-radius:10px; font-size:12px;">${p.numero}</b></td>
-                <td style="text-align:center;"><span class="enterprise-badge" style="background:#f1f3f4; color:#333; margin:0;">${p.niveauNom}</span></td>
-                <td style="text-align:center;">
-                    ${p.photo ? `<img src="${p.photo}" class="thumb-preview">` : `<span style="color:#999;font-size:12px;">Pas de photo</span>`}
-                </td>
-                <td>
-                    <div style="font-weight:500; font-size:15px; color:#222;">${p.commentaire ? p.commentaire : `<span style="color:#999; font-style:italic;">Aucun commentaire redige</span>`}</div>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = pucesTriees.map(p => {
+            const listEnt = p.entreprises && p.entreprises.length > 0 
+                ? p.entreprises.map(e => `<span class="enterprise-badge danger">${e}</span>`).join('') 
+                : `<span style="color:#999; font-size:12px; font-style:italic; display:block; margin-bottom:4px;">Aucune entreprise ciblée</span>`;
+
+            return `
+                <tr style="cursor:pointer;" onclick="selectionnerPuce(${p.id})">
+                    <td style="text-align:center;"><b style="background:#d93025; color:white; padding:3px 8px; border-radius:10px; font-size:12px;">${p.numero}</b></td>
+                    <td style="text-align:center;"><span class="enterprise-badge" style="background:#f1f3f4; color:#333; margin:0;">${p.niveauNom}</span></td>
+                    <td style="text-align:center;">
+                        ${p.photo ? `<img src="${p.photo}" class="thumb-preview">` : `<span style="color:#999;font-size:12px;">Pas de photo</span>`}
+                    </td>
+                    <td>
+                        <div style="margin-bottom: 6px;">${listEnt}</div>
+                        <div style="font-weight:500; font-size:15px; color:#222;">${p.commentaire ? p.commentaire : `<span style="color:#999; font-style:italic;">Aucun commentaire rédigé</span>`}</div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function exporterRemarquesCSV() {
+        if (!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) {
+            alert("Aucune remarque à exporter.");
+            return;
+        }
+
+        let csvContent = "Numéro Puce;Niveau;Entreprises concernées;Observations & Commentaires\n";
+        const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
+        
+        pucesTriees.forEach(p => {
+            const numero = p.numero;
+            const niveau = p.niveauNom.replace(/"/g, '""');
+            const entreprises = (p.entreprises || []).join(', ').replace(/"/g, '""');
+            const commentaire = (p.commentaire || "Aucun commentaire").replace(/\n/g, ' ').replace(/"/g, '""');
+            csvContent += `"${numero}";"${niveau}";"${entreprises}";"${commentaire}"\n`;
+        });
+
+        const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `Remarques_${chantierActuel.nom.replace(/\s+/g, '_')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function importerCharteEntreprise(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const config = JSON.parse(e.target.result);
+                appliquerConfigurationCharte(config);
+                alert("Charte de l'entreprise importée manuellement avec succès !");
+            } catch (err) {
+                alert("Erreur lors de la lecture du fichier JSON. Vérifiez sa syntaxe.");
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
     }
 
     function declencherImpression() {
         if (!chantierActuel) return;
 
-        document.getElementById('pdfNomChantier').innerText = chantierActuel.nom;
-        document.getElementById('pdfRefChantier').innerText = chantierActuel.reference;
-        document.getElementById('pdfLocChantier').innerText = chantierActuel.localisation;
-        document.getElementById('pdfDateVisite').innerText = new Date().toLocaleDateString('fr-FR');
-        document.getElementById('pdfEntreprises').innerText = chantierActuel.entreprises.join(', ') || "Aucune entreprise specifiee";
+        document.querySelectorAll('#printTemplate #pdfNomChantier').forEach(el => el.innerText = chantierActuel.nom);
+        document.querySelectorAll('#printTemplate #pdfRefChantier').forEach(el => el.innerText = chantierActuel.reference);
+        document.querySelectorAll('#printTemplate #pdfLocChantier').forEach(el => el.innerText = chantierActuel.localisation);
+        document.querySelectorAll('#printTemplate #pdfDateVisite').forEach(el => el.innerText = new Date().toLocaleDateString('fr-FR'));
+        document.getElementById('pdfEntreprises').innerText = chantierActuel.entreprises.join(', ') || "Aucune entreprise spécifiée";
 
         const pdfPlansMultiples = document.getElementById('pdfPlansMultiples');
         pdfPlansMultiples.innerHTML = "";
-
-        // Gestion asynchrone du chargement des plans pour le PDF
-        let totalImages = chantierActuel.niveaux.length;
-        let imagesChargees = 0;
-
-        function verifierFinChargement() {
-            imagesChargees++;
-            if (imagesChargees >= totalImages) {
-                setTimeout(() => {
-                    window.print();
-                }, 600);
-            }
-        }
-
-        if (totalImages === 0) {
-            window.print();
-            return;
-        }
 
         chantierActuel.niveaux.forEach(niv => {
             const blockNiveau = document.createElement('div');
@@ -624,9 +777,6 @@
 
             const img = document.createElement('img');
             img.className = "plan-img";
-            
-            img.onload = verifierFinChargement;
-            img.onerror = verifierFinChargement; 
             img.src = niv.plan;
 
             ctn.appendChild(img);
@@ -651,14 +801,15 @@
         const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
         
         if(pucesTriees.length === 0) {
-            pdfCorpsTableau.innerHTML = `<tr><td colspan="3" style="text-align:center;">Aucune constatation enregistree.</td></tr>`;
+            pdfCorpsTableau.innerHTML = `<tr><td colspan="3" style="text-align:center;">Aucune constatation enregistrée.</td></tr>`;
         } else {
             pucesTriees.forEach(p => {
                 const tr = document.createElement('tr');
+                const entStr = p.entreprises && p.entreprises.length > 0 ? `[${p.entreprises.join(', ')}] ` : '';
                 tr.innerHTML = `
                     <td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td>
                     <td style="text-align:center;">${p.niveauNom}</td>
-                    <td>${p.commentaire ? p.commentaire : 'Aucun commentaire.'}</td>
+                    <td><strong>${entStr}</strong>${p.commentaire ? p.commentaire : 'Aucun commentaire.'}</td>
                 `;
                 pdfCorpsTableau.appendChild(tr);
             });
@@ -666,11 +817,10 @@
 
         const photoPagesContainer = document.getElementById('pdfPhotoPagesContainer');
         photoPagesContainer.innerHTML = "";
-
         const pucesAvecPhoto = pucesTriees.filter(p => p.photo);
         
         if (pucesAvecPhoto.length === 0) {
-            photoPagesContainer.innerHTML = "<p style='font-style:italic;'>Aucune photographie n'a ete prise durant cette visite.</p>";
+            photoPagesContainer.innerHTML = "<p style='font-style:italic;'>Aucune photographie n'a été prise durant cette visite.</p>";
         } else {
             const PHOTOS_PAR_PAGE = 4;
             const nbPagesNecessaires = Math.ceil(pucesAvecPhoto.length / PHOTOS_PAR_PAGE);
@@ -692,7 +842,6 @@
 
                 for (let i = 0; i < PHOTOS_PAR_PAGE; i++) {
                     const photoIndex = (pageIdx * PHOTOS_PAR_PAGE) + i;
-                    
                     if (i % 2 === 0) {
                         currentTr = document.createElement('tr');
                         table.appendChild(currentTr);
@@ -714,6 +863,8 @@
                 photoPagesContainer.appendChild(table);
             }
         }
+
+        setTimeout(() => { window.print(); }, 300);
     }
 
     rafraichirVueAccueil();
