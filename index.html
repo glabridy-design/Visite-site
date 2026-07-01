@@ -24,7 +24,7 @@
         input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
         
         /* Flexbox pour l'alignement des inputs */
-        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
         .flex-row input { flex: 1; }
         
         /* Boutons */
@@ -39,16 +39,17 @@
         /* Cartes Accueil */
         .chantier-card { background: #fff; border: 1px solid #dadce0; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
         .chantier-card:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,0,0,0.08); border-color: #1a73e8; }
-        .enterprise-badge { display: inline-block; background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; margin: 4px 4px 0 0; font-size: 13px; font-weight: 500; }
+        .enterprise-badge { display: inline-flex; align-items: center; gap: 5px; background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; margin: 4px 4px 0 0; font-size: 13px; font-weight: 500; }
         .enterprise-badge.danger { background: #fce8e6; color: #d93025; }
+        .enterprise-badge b { color: #d93025; cursor: pointer; margin-left: 3px; }
         
-        /* Plan interactif avec puces */
+        /* Plan interactif avec puces à taille ajustée */
         .plan-wrapper { position: relative; width: 100%; overflow: auto; background: #eaeaea; border: 2px dashed #ccc; border-radius: 8px; margin-top: 10px; text-align: center; }
         .plan-container { position: relative; display: inline-block; max-width: 100%; }
         .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
         
-        .pin { position: absolute; width: 26px; height: 26px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 13px; font-weight: bold; line-height: 22px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
-        .pin.selected { background: #1a73e8; z-index: 10; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 0 4px rgba(26,115,232,0.4); }
+        .pin { position: absolute; width: 18px; height: 18px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 10px; font-weight: bold; line-height: 14px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
+        .pin.selected { background: #1a73e8; z-index: 10; transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 3px rgba(26,115,232,0.4); }
         
         /* Tableaux et remarques */
         .table-remarques { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -78,7 +79,7 @@
             
             h1, h2, h3 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; margin-top: 20px; }
             .pdf-table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: avoid; }
-            .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; font-size: 11pt; text-align: left; }
+            .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; font-size: 8pt; text-align: left; }
             .pdf-table th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
             .photo-grid-table { width: 100%; border-collapse: separate; border-spacing: 15px; page-break-inside: avoid; }
@@ -86,16 +87,7 @@
             .photo-grid-img { width: 100%; height: 280px; object-fit: contain; background: #fafafa; display: block; margin-bottom: 8px; border: 1px solid #eee; }
             .photo-grid-caption { font-size: 11pt; font-weight: bold; color: #1a73e8; }
 
-            .pin, .pin.selected {
-                background-color: #d93025 !important;
-                background: #d93025 !important;
-                color: white !important;
-                border: 2px solid white !important;
-                transform: translate(-50%, -50%) scale(1) !important;
-                box-shadow: none !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+            .pin { width: 18px !important; height: 18px !important; font-size: 10px !important; line-height: 14px !important; background-color: #d93025 !important; background: #d93025 !important; color: white !important; border: 2px solid white !important; transform: translate(-50%, -50%) scale(1) !important; box-shadow: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
             .first-page-only {
                 page-break-inside: avoid;
@@ -109,14 +101,13 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1 style="margin-bottom:5px;">Rapport de Visite</h1>
-        <p style="color:#666; margin-top:0; margin-bottom:25px;">Créé Un rapport de visite de site</p>
+        <h1 style="margin-bottom:5px;">Conducteur de Chantier</h1>
+        <p style="color:#666; margin-top:0; margin-bottom:25px;">Gérez vos chantiers via des fichiers d'affaires sécurisés.</p>
         
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn btn-success" style="flex:1; min-width:180px;" onclick="changerPage('pageCreer')">+ Créer un nouveau chantier</button>
             <button class="btn" style="flex:1; background: #5f6368; min-width:180px;" onclick="document.getElementById('fileImporter').click()">📁 Ouvrir un fichier de chantier</button>
-            
-            <button class="btn" style="flex:1; background: #00875a; min-width:180px;" onclick="document.getElementById('charteImporter').click()">🏢 Modifier 1er page</button>
+            <button class="btn" style="flex:1; background: #00875a; min-width:180px;" onclick="document.getElementById('charteImporter').click()">🏢 Maj Charte (Manuel)</button>
             
             <input type="file" id="fileImporter" accept=".visite" style="display:none;" onchange="importerFichierChantier(event)">
             <input type="file" id="charteImporter" accept=".json" style="display:none;" onchange="importerCharteEntreprise(event)">
@@ -148,7 +139,7 @@
                     <input type="file" id="planInput" accept="image/*" onchange="chargerImagePlanNiveau(event)">
                 </div>
                 <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="enregistrerNiveauDansListe()">+ Ajouter ce niveau</button>
-                <div id="listeNiveauxTemporaire" style="margin-top:10px;"></div>
+                <div id="listeNiveauxTemporaire" style="margin-top:10px; display: flex; flex-wrap: wrap; gap: 5px;"></div>
             </div>
 
             <label>Entreprises sous-traitantes / Intervenantes :</label>
@@ -156,7 +147,7 @@
                 <input type="text" id="nomEntreprise" placeholder="Ex: Entreprise Générale Maçonnerie...">
                 <button type="button" class="btn btn-small" style="padding:12px 20px;" onclick="ajouterEntreprise()">Ajouter</button>
             </div>
-            <div id="listeEntreprisesTemporaire" style="min-height: 40px; border:1px solid #dadce0; padding:8px; border-radius:8px; background:#f8f9fa; margin-bottom: 15px;"></div>
+            <div id="listeEntreprisesTemporaire" style="min-height: 40px; border:1px solid #dadce0; padding:8px; border-radius:8px; background:#f8f9fa; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 5px;"></div>
 
             <button type="submit" class="btn">Générer et Télécharger le fichier Chantier</button>
         </form>
@@ -175,11 +166,30 @@
             <span><strong>📍 Localisation :</strong> <span id="viewLoc">---</span></span>
         </div>
         
-        <div id="viewEntreprises" style="margin-bottom:20px;"></div>
+        <label style="margin-bottom: 2px;">Entreprises associées à l'affaire :</label>
+        <div style="background:#f8f9fa; border:1px solid #dadce0; padding:10px; border-radius:8px; margin-bottom:20px;">
+            <div id="viewEntreprises" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px;"></div>
+            <div class="flex-row" style="margin-bottom:0;">
+                <input type="text" id="nomEntrepriseTerrainInput" placeholder="Ajouter une entreprise à la volée..." style="padding:8px; font-size:14px;">
+                <button type="button" class="btn btn-small btn-success" style="padding:8px 15px;" onclick="ajouterEntrepriseDirectTerrain()">+ Inclure</button>
+            </div>
+        </div>
 
         <div style="background: #edf2fa; border: 1px solid #b4cff7; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
             <label for="selectNiveauVisite" style="margin-top:0; color:#1a73e8;">Niveau à afficher :</label>
-            <select id="selectNiveauVisite" onchange="changerDeNiveauSurTerrain()"></select>
+            <div class="flex-row">
+                <select id="selectNiveauVisite" onchange="changerDeNiveauSurTerrain()"></select>
+                <button class="btn btn-danger btn-small" style="padding:10px;" onclick="supprimerNiveauActuelDirectTerrain()">Supprimer ce plan</button>
+            </div>
+            
+            <div style="margin-top:10px; border-top:1px dashed #b4cff7; padding-top:10px;">
+                <span style="font-size:13px; font-weight:bold; color:#4a4a4a; display:block; margin-bottom:5px;">📥 Injecter un plan supplémentaire sur ce chantier :</span>
+                <div class="flex-row">
+                    <input type="text" id="nomNiveauTerrainInput" placeholder="Nom (Ex: R+2)" style="padding:6px; font-size:13px;">
+                    <input type="file" id="planTerrainInput" accept="image/*" onchange="chargerImagePlanNiveauTerrain(event)" style="font-size:12px;">
+                    <button type="button" class="btn btn-small" style="padding:7px 12px; background:#0b57d0;" onclick="ajouterNiveauDirectTerrain()">+ Injecter</button>
+                </div>
+            </div>
         </div>
 
         <h2 style="border-top: 1px solid #e0e0e0; padding-top: 15px;">Plan du chantier</h2>
@@ -224,6 +234,7 @@
                     <th style="width:100px; text-align:center;">Niveau</th>
                     <th style="width:90px; text-align:center;">Photo</th>
                     <th>Entreprises &amp; Constats</th>
+                    <th style="width:90px; text-align:center;">Date</th>
                 </tr>
             </thead>
             <tbody id="corpsTableauRemarques"></tbody>
@@ -247,23 +258,22 @@
                 <span id="pdfStatutEntreprise"></span><br>
                 <span id="pdfAdresseEntreprise"></span><br>
                 Tél : <span id="pdfTelEntreprise"></span> | Email : <span id="pdfEmailEntreprise"></span><br>
-                SIRET : <span id="pdfSiretEntreprise"></span><br>
                 Site : <a id="pdfSiteEntreprise" href="#" style="color: #1a73e8; text-decoration: none;" target="_blank">---</a>
             </div>
         </div>
-        <div id="pdfLigneSeparation" style="border-bottom: 2px solid #1a73e8; margin-top: 5px;"></div>
+        <div id="pdfLigneSeparation" style="border-bottom: 1px solid #1a73e8; margin-top: 2px;"></div>
     </div>
 
     <div style="margin-bottom: 25px; padding-top: 10px;">
-        <h1 style="margin: 0 0 20px 0; font-size: 22pt; text-align: center; font-weight: bold; letter-spacing: 0.5px;">RAPPORT DE VISITE</h1>
+        <h1 style="margin: 0 0 20px 0; font-size: 12pt; text-align: center; font-weight: bold; letter-spacing: 0.5px;">RAPPORT DE VISITE</h1>
         
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: #fafafa; border: 1px solid #ddd;">
             <tr>
-                <td style="width: 50%; padding: 12px; border: none; font-size: 11pt; line-height: 1.5; vertical-align: top;">
+                <td style="width: 50%; padding: 12px; border: none; font-size: 18pt; line-height: 1.5; vertical-align: top;">
                     <strong>Chantier :</strong> <span id="pdfNomChantier" style="color: #1a73e8; font-weight: bold;">---</span><br>
                     <strong>Affaire Ref :</strong> <span id="pdfRefChantier">---</span>
                 </td>
-                <td style="width: 50%; padding: 12px; border: none; font-size: 11pt; line-height: 1.5; text-align: right; vertical-align: top;">
+                <td style="width: 50%; padding: 12px; border: none; font-size: 18pt; line-height: 1.5; text-align: right; vertical-align: top;">
                     <strong>Date de visite :</strong> <span id="pdfDateVisite">---</span><br>
                     <strong>Localisation :</strong> <span id="pdfLocChantier">---</span>
                 </td>
@@ -272,17 +282,15 @@
     </div>
 
     <div style="margin-bottom: 25px;">
-        <h3 style="font-size: 12pt; font-weight: bold; margin-bottom: 8px;">Entreprises intervenantes</h3>
+        <h3 style="font-size: 12pt; font-weight: bold; margin-bottom: 8px;">Entreprises Attributaires</h3>
         <div id="pdfEntreprises" style="font-style: italic; font-size: 11pt; color: #444; padding-left: 5px;">---</div>
     </div>
 
     <div class="page-break"></div>
-
     <h2>1. Plans de situation &amp; Implantation des puces</h2>
     <div id="pdfPlansMultiples"></div>
 
     <div class="page-break"></div>
-
     <h2>2. Tableau des constatations et remarques</h2>
     <table class="pdf-table">
         <thead>
@@ -296,7 +304,6 @@
     </table>
 
     <div class="page-break"></div>
-
     <h2>3. Reportage photographique</h2>
     <div id="pdfPhotoPagesContainer"></div>
 </div>
@@ -305,57 +312,53 @@
     let entreprisesTemporaires = [];
     let niveauxTemporaires = []; 
     let planEnCoursDeChargementBase64 = ""; 
+    let planTerrainEnCoursDeChargementBase64 = "";
     let photoTemporaireBase64 = "";
     
     let chantierActuel = null; 
     let indexNiveauActuel = 0; 
     let puceSelectionneeId = null;
 
-    // URL DE TON FICHIER DE CONFIGURATION INTERNET
+    // S'aligne automatiquement avec ton dossier GitHub en relatif
     const URL_CHARTE_DISTANTE = "Charte.json"; 
 
-    // NOUVEAU : FONCTION DE CHARGEMENT AUTOMATIQUE AU DÉMARRAGE
     window.addEventListener('DOMContentLoaded', () => {
         chargerCharteDepuisInternet();
     });
 
     function chargerCharteDepuisInternet() {
-        fetch(URL_CHARTE_DISTANTE, { method: 'GET', mode: 'cors' })
+        fetch(URL_CHARTE_DISTANTE, { method: 'GET' })
             .then(response => {
                 if (!response.ok) throw new Error("Erreur HTTP: " + response.status);
                 return response.json();
             })
             .then(config => {
                 appliquerConfigurationCharte(config);
-                console.log("Charte Déelles Ingénierie synchronisée depuis internet.");
+                console.log("Charte Déelles Ingénierie synchronisée.");
             })
             .catch(err => {
-                console.warn("Impossible de joindre le serveur pour charger la charte automatiquement (CORS ou Hors-ligne). Secours local activé.", err);
+                console.warn("Secours local actif pour la charte.", err);
             });
     }
 
     function appliquerConfigurationCharte(config) {
         const ent = config.entreprise;
         document.getElementById('pdfNomEntreprise').innerText = ent.nom;
-        document.getElementById('pdfStatutEntreprise').innerText = ent.statut;
         document.getElementById('pdfAdresseEntreprise').innerText = ent.adresse_ligne1 + ", " + ent.adresse_ligne2;
         document.getElementById('pdfTelEntreprise').innerText = ent.telephone;
         document.getElementById('pdfEmailEntreprise').innerText = ent.email;
-        document.getElementById('pdfSiretEntreprise').innerText = ent.siret;
         
         const linkSite = document.getElementById('pdfSiteEntreprise');
         if (ent.site_internet) {
             linkSite.innerText = ent.site_internet.replace("https://", "").replace("www.", "");
             linkSite.href = ent.site_internet;
         }
-
         if (config.logo_base64 && config.logo_base64.trim() !== "") {
             const imgLogo = document.getElementById('pdfLogoEntreprise');
             imgLogo.src = config.logo_base64;
             imgLogo.style.display = 'block';
             document.getElementById('pdfLogoPlaceholder').style.display = 'none';
         }
-
         if (ent.couleur_primaire) {
             document.getElementById('pdfNomEntreprise').style.color = ent.couleur_primaire;
             document.getElementById('pdfLigneSeparation').style.borderColor = ent.couleur_primaire;
@@ -363,10 +366,111 @@
         }
     }
 
+    function rafraichirListeNiveauxTemporaire() {
+        document.getElementById('listeNiveauxTemporaire').innerHTML = niveauxTemporaires.map((n, idx) => `
+            <span class="enterprise-badge" style="background:#e6fffa; color:#00875a; border:1px solid #00875a;">
+                📍 ${n.nom} <b onclick="supprimerNiveauTemporaire(${idx})">×</b>
+            </span>
+        `).join('');
+    }
+    function supprimerNiveauTemporaire(index) { niveauxTemporaires.splice(index, 1); rafraichirListeNiveauxTemporaire(); }
+
+    function rafraichirListeEntreprisesTemporaire() {
+        document.getElementById('listeEntreprisesTemporaire').innerHTML = entreprisesTemporaires.map((e, idx) => `
+            <span class="enterprise-badge">${e} <b onclick="supprimerEntrepriseTemporaire(${idx})">×</b></span>
+        `).join('');
+    }
+    function supprimerEntrepriseTemporaire(index) { entreprisesTemporaires.splice(index, 1); rafraichirListeEntreprisesTemporaire(); }
+
+    /* --- SYNCHRONISATION DIRECTE DEPUIS LE WORKSPACE TERRAIN --- */
+    function rafraichirEntreprisesTerrain() {
+        if(!chantierActuel) return;
+        document.getElementById('viewEntreprises').innerHTML = chantierActuel.entreprises.map((e, idx) => `
+            <span class="enterprise-badge">${e} <b onclick="supprimerEntrepriseDirectTerrain(${idx})">×</b></span>
+        `).join('') || "<span style='color:#999; font-style:italic;'>Aucune entreprise rattachée.</span>";
+    }
+
+    function ajouterEntrepriseDirectTerrain() {
+        const input = document.getElementById('nomEntrepriseTerrainInput');
+        const nom = input.value.trim();
+        if(nom && chantierActuel) {
+            if(!chantierActuel.entreprises.includes(nom)) {
+                chantierActuel.entreprises.push(nom);
+                rafraichirEntreprisesTerrain();
+                if(puceSelectionneeId !== null) selectionnerPuce(puceSelectionneeId);
+                input.value = "";
+            }
+        }
+    }
+
+    function supprimerEntrepriseDirectTerrain(index) {
+        const nomEntreprise = chantierActuel.entreprises[index];
+        if(confirm(`Retirer l'entreprise "${nomEntreprise}" de cette affaire ?`)) {
+            chantierActuel.entreprises.splice(index, 1);
+            chantierActuel.puces.forEach(p => {
+                if(p.entreprises) p.entreprises = p.entreprises.filter(e => e !== nomEntreprise);
+            });
+            rafraichirEntreprisesTerrain();
+            rafraichirTableauRemarques();
+            if(puceSelectionneeId !== null) selectionnerPuce(puceSelectionneeId);
+        }
+    }
+
+    function chargerImagePlanNiveauTerrain(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) { planTerrainEnCoursDeChargementBase64 = e.target.result; };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function ajouterNiveauDirectTerrain() {
+        const inputNom = document.getElementById('nomNiveauTerrainInput');
+        const nom = inputNom.value.trim();
+        const inputFichier = document.getElementById('planTerrainInput');
+
+        if(nom && planTerrainEnCoursDeChargementBase64 && chantierActuel) {
+            if(chantierActuel.niveaux.some(n => n.nom.toLowerCase() === nom.toLowerCase())) {
+                alert("Ce plan existe déjà.");
+                return;
+            }
+            chantierActuel.niveaux.push({ nom: nom, plan: planTerrainEnCoursDeChargementBase64 });
+            const selectNiveau = document.getElementById('selectNiveauVisite');
+            selectNiveau.innerHTML = chantierActuel.niveaux.map((n, index) => `<option value="${index}">${n.nom}</option>`).join('');
+            
+            indexNiveauActuel = chantierActuel.niveaux.length - 1;
+            selectNiveau.value = indexNiveauActuel;
+            chargerPlanEtPucesDuNiveauActuel();
+
+            inputNom.value = ""; inputFichier.value = ""; planTerrainEnCoursDeChargementBase64 = "";
+        } else {
+            alert("Renseignez un nom de niveau et injectez une image.");
+        }
+    }
+
+    function supprimerNiveauActuelDirectTerrain() {
+        if(!chantierActuel || chantierActuel.niveaux.length <= 1) {
+            alert("L'affaire doit conserver au minimum un plan.");
+            return;
+        }
+        const nomNiveauAsupprimer = chantierActuel.niveaux[indexNiveauActuel].nom;
+        if(confirm(`Supprimer définitivement le plan "${nomNiveauAsupprimer}" et toutes ses puces liées ?`)) {
+            chantierActuel.puces = chantierActuel.puces.filter(p => p.niveauNom !== nomNiveauAsupprimer);
+            chantierActuel.puces.forEach((p, index) => { p.numero = index + 1; });
+            chantierActuel.niveaux.splice(indexNiveauActuel, 1);
+            
+            const selectNiveau = document.getElementById('selectNiveauVisite');
+            selectNiveau.innerHTML = chantierActuel.niveaux.map((n, index) => `<option value="${index}">${n.nom}</option>`).join('');
+            indexNiveauActuel = 0;
+            selectNiveau.value = indexNiveauActuel;
+            chargerPlanEtPucesDuNiveauActuel();
+        }
+    }
+
     function changerPage(pageId) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        
         if (pageId === 'pageAccueil') {
             reinitialiserFormulaireChantier();
             rafraichirVueAccueil();
@@ -377,9 +481,7 @@
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                planEnCoursDeChargementBase64 = e.target.result;
-            };
+            reader.onload = function(e) { planEnCoursDeChargementBase64 = e.target.result; };
             reader.readAsDataURL(file);
         }
     }
@@ -391,15 +493,10 @@
 
         if (nom && planEnCoursDeChargementBase64) {
             niveauxTemporaires.push({ nom: nom, plan: planEnCoursDeChargementBase64 });
-            document.getElementById('listeNiveauxTemporaire').innerHTML = niveauxTemporaires.map(n => `
-                <span class="enterprise-badge" style="background:#e6fffa; color:#00875a; border:1px solid #00875a;">📍 ${n.nom}</span>
-            `).join('');
-            
-            inputNom.value = "";
-            inputFichier.value = "";
-            planEnCoursDeChargementBase64 = "";
+            rafraichirListeNiveauxTemporaire();
+            inputNom.value = ""; inputFichier.value = ""; planEnCoursDeChargementBase64 = "";
         } else {
-            alert("Renseignez un nom de niveau (ex: RDC) et chargez son image de plan avant de valider.");
+            alert("Renseignez un nom de niveau et liez un plan.");
         }
     }
 
@@ -408,17 +505,14 @@
         const nom = input.value.trim();
         if (nom && !entreprisesTemporaires.includes(nom)) {
             entreprisesTemporaires.push(nom);
-            document.getElementById('listeEntreprisesTemporaire').innerHTML = entreprisesTemporaires.map(e => `<span class="enterprise-badge">${e}</span>`).join('');
+            rafraichirListeEntreprisesTemporaire();
             input.value = "";
         }
     }
 
     function sauvegarderChantier(e) {
         e.preventDefault();
-        if(niveauxTemporaires.length === 0) {
-            alert("Veuillez configurer au moins un niveau avec son plan.");
-            return;
-        }
+        if(niveauxTemporaires.length === 0) { alert("Associez au moins un niveau."); return; }
 
         chantierActuel = {
             id: Date.now(),
@@ -429,7 +523,6 @@
             entreprises: entreprisesTemporaires,
             puces: [] 
         };
-
         telechargerFichierChantier();
         changerPage('pageAccueil');
     }
@@ -439,7 +532,6 @@
         const stringData = JSON.stringify(chantierActuel);
         const blob = new Blob([stringData], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        
         const a = document.createElement('a');
         a.href = url;
         a.download = `${chantierActuel.nom.replace(/\s+/g, '_')}_Affaire.visite`;
@@ -452,15 +544,12 @@
     function importerFichierChantier(event) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
                 chantierActuel = JSON.parse(e.target.result);
                 ouvrirLeChantierCharge();
-            } catch (err) {
-                alert("Erreur lors de la lecture du fichier de chantier (.visite). Le fichier semble corrompu.");
-            }
+            } catch (err) { alert("Lecture impossible."); }
         };
         reader.readAsText(file);
     }
@@ -468,7 +557,7 @@
     function rafraichirVueAccueil() {
         const container = document.getElementById('listeChantiers');
         if (!chantierActuel) {
-            container.innerHTML = "<p style='color: #666; font-style: italic;'>Aucun chantier chargé en session active. Veuillez créer un chantier ou ouvrir un fichier de configuration (.visite).</p>";
+            container.innerHTML = "<p style='color: #666; font-style: italic;'>Aucune affaire chargée.</p>";
             return;
         }
         container.innerHTML = `
@@ -481,21 +570,19 @@
                     ${chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('')}
                 </div>
                 <div style="margin-top: 10px; font-size:12px; color:#1a73e8; font-weight:bold;">
-                    📊 ${chantierActuel.puces ? chantierActuel.puces.length : 0} puce(s) réparties sur ${(chantierActuel.niveaux || []).length} plan(s)
+                    📊 ${chantierActuel.puces ? chantierActuel.puces.length : 0} puce(s) réparties sur ${chantierActuel.niveaux.length} plan(s)
                 </div>
             </div>
         `;
     }
 
-    function abrirLeChantierCharge() { ouvrirLeChantierCharge(); }
-
     function ouvrirLeChantierCharge() {
         if(!chantierActuel) return;
-        
         document.getElementById('viewNom').innerText = chantierActuel.nom;
         document.getElementById('viewRef').innerText = chantierActuel.reference;
         document.getElementById('viewLoc').innerText = chantierActuel.localisation;
-        document.getElementById('viewEntreprises').innerHTML = chantierActuel.entreprises.map(e => `<span class="enterprise-badge">${e}</span>`).join('') || "Aucune entreprise configurée.";
+        
+        rafraichirEntreprisesTerrain();
         
         const selectNiveau = document.getElementById('selectNiveauVisite');
         selectNiveau.innerHTML = chantierActuel.niveaux.map((n, index) => `<option value="${index}">${n.nom}</option>`).join('');
@@ -506,17 +593,12 @@
     }
 
     function fermerChantierActuel() {
-        if(confirm("Fermer la session ? Pensez à enregistrer vos modifications dans le fichier avant.")) {
-            chantierActuel = null;
-            changerPage('pageAccueil');
-        }
+        if(confirm("Fermer la session ? Enregistrez vos modifications avant.")) { chantierActuel = null; changerPage('pageAccueil'); }
     }
 
     function reinitialiserFormulaireChantier() {
         document.getElementById('formChantier').reset();
-        entreprisesTemporaires = [];
-        niveauxTemporaires = [];
-        planEnCoursDeChargementBase64 = "";
+        entreprisesTemporaires = []; niveauxTemporaires = []; planEnCoursDeChargementBase64 = "";
         document.getElementById('listeEntreprisesTemporaire').innerHTML = "";
         document.getElementById('listeNiveauxTemporaire').innerHTML = "";
     }
@@ -524,13 +606,8 @@
     function chargerPlanEtPucesDuNiveauActuel() {
         const imgElement = document.getElementById('viewPlanImg');
         imgElement.src = chantierActuel.niveaux[indexNiveauActuel].plan;
-
-        imgElement.onload = function() {
-            rafraichirPucesGraphiques();
-            rafraichirTableauRemarques();
-        };
-        rafraichirPucesGraphiques();
-        rafraichirTableauRemarques();
+        imgElement.onload = function() { rafraichirPucesGraphiques(); rafraichirTableauRemarques(); };
+        rafraichirPucesGraphiques(); rafraichirTableauRemarques();
         document.getElementById('zoneSaisiePuce').style.display = 'none';
     }
 
@@ -542,33 +619,35 @@
     function placerPuce(event) {
         const img = document.getElementById('viewPlanImg');
         const rect = img.getBoundingClientRect();
-        
         const xPct = ((event.clientX - rect.left) / rect.width) * 100;
         const yPct = ((event.clientY - rect.top) / rect.height) * 100;
 
+        // GLISSER/DÉPLACER RECTIFIÉ : Si sélectionné, on repositionne au clic au lieu de dupliquer
+        if (puceSelectionneeId !== null) {
+            const puceA_Modifier = chantierActuel.puces.find(p => p.id === puceSelectionneeId);
+            if (puceA_Modifier) {
+                puceA_Modifier.x = xPct; puceA_Modifier.y = yPct;
+                puceA_Modifier.niveauNom = chantierActuel.niveaux[indexNiveauActuel].nom;
+                rafraichirPucesGraphiques(); rafraichirTableauRemarques();
+                return;
+            }
+        }
+
         const prochainNumero = chantierActuel.puces.length > 0 ? Math.max(...chantierActuel.puces.map(p => p.numero)) + 1 : 1;
-
         const nouvellePuce = {
-            id: Date.now(),
-            numero: prochainNumero,
+            id: Date.now(), numero: prochainNumero,
             niveauNom: chantierActuel.niveaux[indexNiveauActuel].nom, 
-            x: xPct,
-            y: yPct,
-            commentaire: "",
-            photo: "",
-            entreprises: []
+            x: xPct, y: yPct, commentaire: "", photo: "", entreprises: [],
+            dateCreation: new Date().toLocaleDateString('fr-FR') // Date auto
         };
-
         chantierActuel.puces.push(nouvellePuce);
-        rafraichirPucesGraphiques();
-        rafraichirTableauRemarques();
+        rafraichirPucesGraphiques(); rafraichirTableauRemarques();
         selectionnerPuce(nouvellePuce.id);
     }
 
     function rafraichirPucesGraphiques() {
         const container = document.getElementById('planContainer');
         container.querySelectorAll('.pin').forEach(p => p.remove());
-
         const nomDuNiveauActuel = chantierActuel.niveaux[indexNiveauActuel].nom;
 
         chantierActuel.puces.forEach(p => {
@@ -576,13 +655,9 @@
                 const div = document.createElement('div');
                 div.className = 'pin';
                 if (puceSelectionneeId === p.id) div.className += ' selected';
-                div.style.left = p.x + '%';
-                div.style.top = p.y + '%';
+                div.style.left = p.x + '%'; div.style.top = p.y + '%';
                 div.innerText = p.numero;
-                div.onclick = function(e) {
-                    e.stopPropagation();
-                    selectionnerPuce(p.id);
-                };
+                div.onclick = function(e) { e.stopPropagation(); selectionnerPuce(p.id); };
                 container.appendChild(div);
             }
         });
@@ -599,7 +674,6 @@
             document.getElementById('selectNiveauVisite').value = indexNiveauActuel;
             chargerPlanEtPucesDuNiveauActuel();
         }
-
         rafraichirPucesGraphiques();
 
         document.getElementById('zoneSaisiePuce').style.display = 'block';
@@ -609,7 +683,7 @@
         
         const zoneCheckboxes = document.getElementById('zoneEntreprisesPuceCheckboxes');
         if (!chantierActuel.entreprises || chantierActuel.entreprises.length === 0) {
-            zoneCheckboxes.innerHTML = "<p style='color:#999; font-style:italic; margin:0; font-size:13px;'>Aucune entreprise configurée sur ce chantier.</p>";
+            zoneCheckboxes.innerHTML = "<p style='color:#999; font-style:italic; margin:0; font-size:13px;'>Aucune entreprise rattachée.</p>";
         } else {
             const pEnt = puce.entreprises || [];
             zoneCheckboxes.innerHTML = chantierActuel.entreprises.map(e => `
@@ -622,15 +696,12 @@
 
         const preview = document.getElementById('photoPreview');
         if (puce.photo) {
-            preview.style.backgroundImage = `url(${puce.photo})`;
-            preview.innerText = "";
+            preview.style.backgroundImage = `url(${puce.photo})`; preview.innerText = "";
             photoTemporaireBase64 = puce.photo;
         } else {
-            preview.style.backgroundImage = "none";
-            preview.innerText = "Aucune photo sélectionnée";
+            preview.style.backgroundImage = "none"; preview.innerText = "Aucune photo sélectionnée";
             photoTemporaireBase64 = "";
         }
-        
         document.getElementById('zoneSaisiePuce').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -641,8 +712,7 @@
             reader.onload = function(e) {
                 photoTemporaireBase64 = e.target.result;
                 const preview = document.getElementById('photoPreview');
-                preview.style.backgroundImage = `url(${photoTemporaireBase64})`;
-                preview.innerText = "";
+                preview.style.backgroundImage = `url(${photoTemporaireBase64})`; preview.innerText = "";
             };
             reader.readAsDataURL(file);
         }
@@ -653,13 +723,11 @@
         if (puce) {
             puce.commentaire = document.getElementById('commentairePuce').value;
             puce.photo = photoTemporaireBase64;
-            
             const cochees = [];
             document.querySelectorAll('#zoneEntreprisesPuceCheckboxes input[type="checkbox"]').forEach(chk => {
                 if(chk.checked) cochees.push(chk.value);
             });
             puce.entreprises = cochees;
-
             rafraichirTableauRemarques();
             document.getElementById('zoneSaisiePuce').style.display = 'none';
             puceSelectionneeId = null;
@@ -669,11 +737,10 @@
     }
 
     function supprimerPuceActuelle() {
-        if (confirm("Supprimer définitivement cette puce et ses données associées ?")) {
+        if (confirm("Supprimer définitivement cette puce ?")) {
             chantierActuel.puces = chantierActuel.puces.filter(p => p.id !== puceSelectionneeId);
             chantierActuel.puces.forEach((p, index) => { p.numero = index + 1; });
-            rafraichirPucesGraphiques();
-            rafraichirTableauRemarques();
+            rafraichirPucesGraphiques(); rafraichirTableauRemarques();
             document.getElementById('zoneSaisiePuce').style.display = 'none';
             puceSelectionneeId = null;
         }
@@ -682,191 +749,103 @@
     function rafraichirTableauRemarques() {
         const tbody = document.getElementById('corpsTableauRemarques');
         if (!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; font-style:italic;">Aucune puce placée sur le plan pour le moment.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#999; font-style:italic;">Aucune observation pour le moment.</td></tr>`;
             return;
         }
         const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
         tbody.innerHTML = pucesTriees.map(p => {
             const listEnt = p.entreprises && p.entreprises.length > 0 
                 ? p.entreprises.map(e => `<span class="enterprise-badge danger">${e}</span>`).join('') 
-                : `<span style="color:#999; font-size:12px; font-style:italic; display:block; margin-bottom:4px;">Aucune entreprise ciblée</span>`;
-
+                : `<span style="color:#999; font-size:12px; font-style:italic;">Aucune entreprise</span>`;
             return `
                 <tr style="cursor:pointer;" onclick="selectionnerPuce(${p.id})">
                     <td style="text-align:center;"><b style="background:#d93025; color:white; padding:3px 8px; border-radius:10px; font-size:12px;">${p.numero}</b></td>
                     <td style="text-align:center;"><span class="enterprise-badge" style="background:#f1f3f4; color:#333; margin:0;">${p.niveauNom}</span></td>
-                    <td style="text-align:center;">
-                        ${p.photo ? `<img src="${p.photo}" class="thumb-preview">` : `<span style="color:#999;font-size:12px;">Pas de photo</span>`}
-                    </td>
+                    <td style="text-align:center;">${p.photo ? `<img src="${p.photo}" class="thumb-preview">` : `<span style="color:#999;font-size:12px;">Non</span>`}</td>
                     <td>
-                        <div style="margin-bottom: 6px;">${listEnt}</div>
-                        <div style="font-weight:500; font-size:15px; color:#222;">${p.commentaire ? p.commentaire : `<span style="color:#999; font-style:italic;">Aucun commentaire rédigé</span>`}</div>
+                        <div style="margin-bottom: 4px;">${listEnt}</div>
+                        <div style="font-weight:500; font-size:14px; color:#222;">${p.commentaire || `<span style="color:#999; font-style:italic;">Sans commentaire</span>`}</div>
                     </td>
+                    <td style="text-align:center; font-size:12px; color:#666;">${p.dateCreation || new Date().toLocaleDateString('fr-FR')}</td>
                 </tr>
             `;
         }).join('');
     }
 
     function exporterRemarquesCSV() {
-        if (!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) {
-            alert("Aucune remarque à exporter.");
-            return;
-        }
-
+        if (!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) { alert("Aucune remarque."); return; }
         let csvContent = "Numéro Puce;Niveau;Entreprises concernées;Observations & Commentaires\n";
-        const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
-        
-        pucesTriees.forEach(p => {
-            const numero = p.numero;
-            const niveau = p.niveauNom.replace(/"/g, '""');
-            const entreprises = (p.entreprises || []).join(', ').replace(/"/g, '""');
-            const commentaire = (p.commentaire || "Aucun commentaire").replace(/\n/g, ' ').replace(/"/g, '""');
-            csvContent += `"${numero}";"${niveau}";"${entreprises}";"${commentaire}"\n`;
+        [...chantierActuel.puces].sort((a,b) => a.numero - b.numero).forEach(p => {
+            csvContent += `"${p.numero}";"${p.niveauNom.replace(/"/g, '""')}";"${(p.entreprises || []).join(', ').replace(/"/g, '""')}";"${(p.commentaire || "").replace(/\n/g, ' ').replace(/"/g, '""')}"\n`;
         });
-
         const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
+        const link = document.createElement("a"); link.setAttribute("href", url);
         link.setAttribute("download", `Remarques_${chantierActuel.nom.replace(/\s+/g, '_')}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function importerCharteEntreprise(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const config = JSON.parse(e.target.result);
-                appliquerConfigurationCharte(config);
-                alert("Charte de l'entreprise importée manuellement avec succès !");
-            } catch (err) {
-                alert("Erreur lors de la lecture du fichier JSON. Vérifiez sa syntaxe.");
-                console.error(err);
-            }
-        };
-        reader.readAsText(file);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
     function declencherImpression() {
         if (!chantierActuel) return;
-
         document.querySelectorAll('#printTemplate #pdfNomChantier').forEach(el => el.innerText = chantierActuel.nom);
         document.querySelectorAll('#printTemplate #pdfRefChantier').forEach(el => el.innerText = chantierActuel.reference);
         document.querySelectorAll('#printTemplate #pdfLocChantier').forEach(el => el.innerText = chantierActuel.localisation);
         document.querySelectorAll('#printTemplate #pdfDateVisite').forEach(el => el.innerText = new Date().toLocaleDateString('fr-FR'));
         document.getElementById('pdfEntreprises').innerText = chantierActuel.entreprises.join(', ') || "Aucune entreprise spécifiée";
 
-        const pdfPlansMultiples = document.getElementById('pdfPlansMultiples');
-        pdfPlansMultiples.innerHTML = "";
-
+        const pdfPlansMultiples = document.getElementById('pdfPlansMultiples'); pdfPlansMultiples.innerHTML = "";
         chantierActuel.niveaux.forEach(niv => {
-            const blockNiveau = document.createElement('div');
-            blockNiveau.style.marginBottom = "30px";
-            blockNiveau.style.pageBreakInside = "avoid";
+            const blockNiveau = document.createElement('div'); blockNiveau.style.marginBottom = "30px"; blockNiveau.style.pageBreakInside = "avoid";
             blockNiveau.innerHTML = `<h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-top:20px;">Niveau : ${niv.nom}</h3>`;
-
-            const ctn = document.createElement('div');
-            ctn.className = "plan-container";
-            ctn.style.border = "1px solid #ccc";
-            ctn.style.padding = "5px";
-
-            const img = document.createElement('img');
-            img.className = "plan-img";
-            img.src = niv.plan;
-
+            const ctn = document.createElement('div'); ctn.className = "plan-container"; ctn.style.border = "1px solid #ccc"; ctn.style.padding = "5px";
+            const img = document.createElement('img'); img.className = "plan-img"; img.src = niv.plan;
             ctn.appendChild(img);
-
             chantierActuel.puces.forEach(p => {
                 if (p.niveauNom === niv.nom) {
-                    const pin = document.createElement('div');
-                    pin.className = 'pin';
-                    pin.style.left = p.x + '%';
-                    pin.style.top = p.y + '%';
-                    pin.innerText = p.numero;
+                    const pin = document.createElement('div'); pin.className = 'pin'; pin.style.left = p.x + '%'; pin.style.top = p.y + '%'; pin.innerText = p.numero;
                     ctn.appendChild(pin);
                 }
             });
-
-            blockNiveau.appendChild(ctn);
-            pdfPlansMultiples.appendChild(blockNiveau);
+            blockNiveau.appendChild(ctn); pdfPlansMultiples.appendChild(blockNiveau);
         });
 
-        const pdfCorpsTableau = document.getElementById('pdfCorpsTableau');
-        pdfCorpsTableau.innerHTML = "";
+        const pdfCorpsTableau = document.getElementById('pdfCorpsTableau'); pdfCorpsTableau.innerHTML = "";
         const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
-        
         if(pucesTriees.length === 0) {
-            pdfCorpsTableau.innerHTML = `<tr><td colspan="3" style="text-align:center;">Aucune constatation enregistrée.</td></tr>`;
+            pdfCorpsTableau.innerHTML = `<tr><td colspan="3" style="text-align:center;">Aucune constatation.</td></tr>`;
         } else {
             pucesTriees.forEach(p => {
                 const tr = document.createElement('tr');
                 const entStr = p.entreprises && p.entreprises.length > 0 ? `[${p.entreprises.join(', ')}] ` : '';
-                tr.innerHTML = `
-                    <td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td>
-                    <td style="text-align:center;">${p.niveauNom}</td>
-                    <td><strong>${entStr}</strong>${p.commentaire ? p.commentaire : 'Aucun commentaire.'}</td>
-                `;
+                tr.innerHTML = `<td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td><td style="text-align:center;">${p.niveauNom}</td><td><strong>${entStr}</strong>${p.commentaire || 'Aucun commentaire.'}</td>`;
                 pdfCorpsTableau.appendChild(tr);
             });
         }
 
-        const photoPagesContainer = document.getElementById('pdfPhotoPagesContainer');
-        photoPagesContainer.innerHTML = "";
+        const photoPagesContainer = document.getElementById('pdfPhotoPagesContainer'); photoPagesContainer.innerHTML = "";
         const pucesAvecPhoto = pucesTriees.filter(p => p.photo);
-        
         if (pucesAvecPhoto.length === 0) {
-            photoPagesContainer.innerHTML = "<p style='font-style:italic;'>Aucune photographie n'a été prise durant cette visite.</p>";
+            photoPagesContainer.innerHTML = "<p style='font-style:italic;'>Aucune photographie.</p>";
         } else {
-            const PHOTOS_PAR_PAGE = 4;
-            const nbPagesNecessaires = Math.ceil(pucesAvecPhoto.length / PHOTOS_PAR_PAGE);
-
-            for (let pageIdx = 0; pageIdx < nbPagesNecessaires; pageIdx++) {
-                if (pageIdx > 0) {
-                    const pageBreakDiv = document.createElement('div');
-                    pageBreakDiv.className = "page-break";
-                    photoPagesContainer.appendChild(pageBreakDiv);
-                }
-
-                const pageTitle = document.createElement('h3');
-                pageTitle.innerText = `Planche Photos — Page ${pageIdx + 1} / ${nbPagesNecessaires}`;
-                photoPagesContainer.appendChild(pageTitle);
-
-                const table = document.createElement('table');
-                table.className = "photo-grid-table";
-                let currentTr = null;
-
+            const PHOTOS_PAR_PAGE = 4; const nbPages = Math.ceil(pucesAvecPhoto.length / PHOTOS_PAR_PAGE);
+            for (let pageIdx = 0; pageIdx < nbPages; pageIdx++) {
+                if (pageIdx > 0) { const pb = document.createElement('div'); pb.className = "page-break"; photoPagesContainer.appendChild(pb); }
+                const title = document.createElement('h3'); title.innerText = `Planche Photos — Page ${pageIdx + 1} / ${nbPages}`; photoPagesContainer.appendChild(title);
+                const table = document.createElement('table'); table.className = "photo-grid-table"; let currentTr = null;
                 for (let i = 0; i < PHOTOS_PAR_PAGE; i++) {
                     const photoIndex = (pageIdx * PHOTOS_PAR_PAGE) + i;
-                    if (i % 2 === 0) {
-                        currentTr = document.createElement('tr');
-                        table.appendChild(currentTr);
-                    }
-
+                    if (i % 2 === 0) { currentTr = document.createElement('tr'); table.appendChild(currentTr); }
                     const td = document.createElement('td');
                     if (photoIndex < pucesAvecPhoto.length) {
-                        const puceData = pucesAvecPhoto[photoIndex];
-                        td.innerHTML = `
-                            <img src="${puceData.photo}" class="photo-grid-img">
-                            <div class="photo-grid-caption">PUCE N° ${puceData.numero} (${puceData.niveauNom})</div>
-                        `;
-                    } else {
-                        td.style.border = "none";
-                        td.style.background = "transparent";
-                    }
+                        td.innerHTML = `<img src="${pucesAvecPhoto[photoIndex].photo}" class="photo-grid-img"><div class="photo-grid-caption">PUCE N° ${pucesAvecPhoto[photoIndex].numero} (${pucesAvecPhoto[photoIndex].niveauNom})</div>`;
+                    } else { td.style.border = "none"; td.style.background = "transparent"; }
                     currentTr.appendChild(td);
                 }
                 photoPagesContainer.appendChild(table);
             }
         }
-
         setTimeout(() => { window.print(); }, 300);
     }
-
     rafraichirVueAccueil();
 </script>
 </body>
