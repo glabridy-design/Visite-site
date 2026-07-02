@@ -142,7 +142,7 @@
                 <div id="listeNiveauxTemporaire" style="margin-top:10px; display: flex; flex-wrap: wrap; gap: 5px;"></div>
             </div>
 
-            <label>Entreprises sous-traitantes / Intervenantes :</label>
+            <label>Entreprises Intervenantes :</label>
             <div class="flex-row">
                 <input type="text" id="nomEntreprise" placeholder="Ex: Entreprise Générale Maçonnerie...">
                 <button type="button" class="btn btn-small" style="padding:12px 20px;" onclick="ajouterEntreprise()">Ajouter</button>
@@ -254,14 +254,14 @@
                 <div id="pdfLogoPlaceholder" style="font-weight: bold; color: #999; border: 1px dashed #ccc; padding: 10px;">[Logo]</div>
             </div>
             <div style="text-align: right; font-size: 9pt; color: #555; line-height: 1.4;">
-                <h2 id="pdfNomEntreprise" style="margin: 0 0 5px 0; color: #1a73e8; font-size: 14pt; font-weight: bold;">---</h2>
+                <h2 id="pdfNomEntreprise" style="margin: 0 0 5px 0; color: #4c4f54; font-size: 14pt; font-weight: bold;">---</h2>
                 <span id="pdfStatutEntreprise"></span><br>
                 <span id="pdfAdresseEntreprise"></span><br>
                 Tél : <span id="pdfTelEntreprise"></span> | Email : <span id="pdfEmailEntreprise"></span><br>
-                Site : <a id="pdfSiteEntreprise" href="#" style="color: #1a73e8; text-decoration: none;" target="_blank">---</a>
+                Site : <a id="pdfSiteEntreprise" href="#" style="color: #4c4f54; text-decoration: none;" target="_blank">---</a>
             </div>
         </div>
-        <div id="pdfLigneSeparation" style="border-bottom: 1px solid #1a73e8; margin-top: 2px;"></div>
+        <div id="pdfLigneSeparation" style="border-bottom: 1px solid #4c4f54; margin-top: 2px;"></div>
     </div>
 
     <div style="margin-bottom: 25px; padding-top: 10px;">
@@ -269,11 +269,11 @@
         
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: #fafafa; border: 1px solid #ddd;">
             <tr>
-                <td style="width: 50%; padding: 12px; border: none; font-size: 18pt; line-height: 1.5; vertical-align: top;">
-                    <strong>Chantier :</strong> <span id="pdfNomChantier" style="color: #1a73e8; font-weight: bold;">---</span><br>
+                <td style="width: 50%; padding: 12px; border: none; font-size: 16pt; line-height: 1.5; vertical-align: top;">
+                    <strong>Chantier :</strong> <span id="pdfNomChantier" style="color: #4c4f54; font-weight: bold;">---</span><br>
                     <strong>Affaire Ref :</strong> <span id="pdfRefChantier">---</span>
                 </td>
-                <td style="width: 50%; padding: 12px; border: none; font-size: 18pt; line-height: 1.5; text-align: right; vertical-align: top;">
+                <td style="width: 50%; padding: 12px; border: none; font-size: 16pt; line-height: 1.5; text-align: right; vertical-align: top;">
                     <strong>Date de visite :</strong> <span id="pdfDateVisite">---</span><br>
                     <strong>Localisation :</strong> <span id="pdfLocChantier">---</span>
                 </td>
