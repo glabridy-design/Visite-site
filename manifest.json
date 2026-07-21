@@ -1,0 +1,16 @@
+{
+  "short_name": "ChantierPWA",
+  "name": "Outil de création de rapport de visite sur site",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#b9babd",
+  "theme_color": "#45494f",
+  "display": "standalone",
+  "orientation": "portrait"
+}
