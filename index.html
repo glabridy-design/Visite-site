@@ -703,17 +703,36 @@
 
         try {
             let sha = null;
-            const resCheck = await fetch(url, { headers: { "Authorization": `token ${token}` } });
-            if(resCheck.ok) { sha = (await resCheck.json()).sha; }
+            // Interrogation directe anti-cache de GitHub pour récupérer le SHA du fichier existant
+            const resCheck = await fetch(`${url}?t=${Date.now()}`, { 
+                headers: { 
+                    "Authorization": `token ${token}`,
+                    "Accept": "application/vnd.github.v3+json"
+                },
+                cache: "no-store"
+            });
 
-            const bodyData = { message: `Mise à jour chantier : ${chantierActuel.nom}`, content: contentBase64 };
+            if(resCheck.status === 200) {
+                const fileInfo = await resCheck.json();
+                if(fileInfo && fileInfo.sha) sha = fileInfo.sha;
+            }
+
+            const bodyData = { 
+                message: `Mise à jour chantier : ${chantierActuel.nom}`, 
+                content: contentBase64 
+            };
             if(sha) bodyData.sha = sha;
 
             const resPush = await fetch(url, {
                 method: "PUT",
-                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                headers: { 
+                    "Authorization": `token ${token}`, 
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json" 
+                },
                 body: JSON.stringify(bodyData)
             });
+
             if(resPush.ok) alert(`☁️ Chantier "${chantierActuel.nom}" synchronisé avec succès dans "${nomDossier}/config.json" !`);
             else {
                 const errJson = await resPush.json();
@@ -782,22 +801,40 @@
 
             try {
                 let sha = null;
-                const resCheck = await fetch(urlGitHub, { headers: { "Authorization": `token ${token}` } });
-                if(resCheck.ok) { sha = (await resCheck.json()).sha; }
+                const resCheck = await fetch(`${urlGitHub}?t=${Date.now()}`, { 
+                    headers: { 
+                        "Authorization": `token ${token}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    },
+                    cache: "no-store"
+                });
 
-                const bodyData = { message: `Rapport de visite du ${dateAujourdhui} - ${chantierActuel.nom}`, content: contentBase64 };
+                if(resCheck.status === 200) {
+                    const fileInfo = await resCheck.json();
+                    if(fileInfo && fileInfo.sha) sha = fileInfo.sha;
+                }
+
+                const bodyData = { 
+                    message: `Rapport de visite du ${dateAujourdhui} - ${chantierActuel.nom}`, 
+                    content: contentBase64 
+                };
                 if(sha) bodyData.sha = sha;
 
                 const resPush = await fetch(urlGitHub, {
                     method: "PUT",
-                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    headers: { 
+                        "Authorization": `token ${token}`, 
+                        "Accept": "application/vnd.github.v3+json",
+                        "Content-Type": "application/json" 
+                    },
                     body: JSON.stringify(bodyData)
                 });
 
                 if(resPush.ok) {
                     alert(`⏏️ Succès ! Le rapport du jour a été téléchargé en local ET sauvegardé sur le Cloud dans "${nomDossier}/${nomFichier}".`);
                 } else {
-                    alert(`⚠️ Rapport téléchargé en local, mais échec d'envoi Cloud GitHub (Code ${resPush.status}).`);
+                    const errJson = await resPush.json();
+                    alert(`⚠️ Rapport téléchargé en local, mais échec d'envoi Cloud GitHub (Code ${resPush.status}) : ${errJson.message || ''}`);
                 }
             } catch(e) {
                 alert(`⚠️ Rapport téléchargé en local, mais erreur réseau Cloud : ${e.message}`);
