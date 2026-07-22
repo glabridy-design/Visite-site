@@ -1,0 +1,34 @@
+{
+  "type_fichier": "rapport_visite_incremental",
+  "chantier_id": 1784104648390,
+  "nom_chantier": "Centre commercial Super U",
+  "reference": "DL_SuperU_Dive",
+  "date_visite": "22-07-2026",
+  "constatations_puces": [
+    {
+      "id": 1784707166890,
+      "numero": 1,
+      "niveauNom": "RDC_Bas",
+      "zonePrecis": "",
+      "x": 31.966570641122953,
+      "y": 58.59133542768612,
+      "commentaire": "zaezrt",
+      "photos": [
+        "photos/puce_1_photo_1.webp"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false
+    }
+  ],
+  "notes_associees": [
+    {
+      "id": 1784707186207,
+      "texte": "cygvboink ;zm",
+      "croquis": "croquis/croquis_note_1.svg",
+      "puceLieeId": 1784707166890,
+      "inclurePdf": true,
+      "dateCreation": "22/07/2026 09:59"
+    }
+  ]
+}
