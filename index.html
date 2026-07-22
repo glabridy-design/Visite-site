@@ -247,7 +247,7 @@
                     <button onclick="declencherImpression()">🖨️ Exporter en PDF</button>
                     <button onclick="sauvegarderEtSynchroniser()">☁️ Synchro Cloud (.json)</button>
                     <button onclick="exporterChantierEnFichierLocal()">💾 Exporter l'Affaire (.json)</button>
-                    <button onclick="exporterRapportDuJourIncr()">⏏️ Exporter Visite du Jour (.json)</button>
+                    <button onclick="exporterRapportDuJourIncr()">⏏️ Exporter Visite du Jour (.json / Cloud)</button>
                     <button onclick="document.getElementById('importHistoriquePucesInput').click(); fermerMenuActions();">📥 Fusionner un Historique (.json)</button>
                 </div>
             </div>
@@ -523,7 +523,7 @@
     let estEnTrainDeDessiner = false;
     let couleurPinceauCourante = '#000000';
     let taillePinceauCourante = 3;
-    let polygonesCroquisActuel = []; // Stockage vectoriel des traits
+    let polygonesCroquisActuel = [];
     let traitEnCours = null;
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -549,7 +549,16 @@
         });
     });
 
-    /* CHARGEMENT AUTOMATIQUE DES VARIABLES .ENV SI PRÉSENTES SUR LE SERVEUR */
+    /* CONVERTISSEUR UNIVERSEL ROBUSTE UTF8 EN BASE64 POUR LES REQUÊTES GITHUB */
+    function convertirTexteEnBase64Utf8(texteData) {
+        const bytes = new TextEncoder().encode(texteData);
+        let binStr = "";
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binStr += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binStr);
+    }
+
     async function chargerVariablesEnvironnement() {
         try {
             const res = await fetch('.env.json');
@@ -559,10 +568,9 @@
                 if(env.GIT_REPO && !localStorage.getItem('git_repo')) localStorage.setItem('git_repo', env.GIT_REPO);
                 if(env.GIT_TOKEN && !localStorage.getItem('git_token')) localStorage.setItem('git_token', env.GIT_TOKEN);
             }
-        } catch(e) { /* Pas de fichier .env.json configuré, mode fallback localStorage */ }
+        } catch(e) { }
     }
 
-    /* COMPRESSION DES PHOTOS AU FORMAT OPTIMISÉ AVIF / WEBP */
     function compresserImage(base64Str, maxWidth = 1200, maxHeight = 1200) {
         return new Promise((resolve) => {
             const img = new Image();
@@ -576,7 +584,6 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // Tentative en AVIF (Gain 50%), sinon Fallback WebP (Gain 30%)
                 try {
                     const avifData = canvas.toDataURL('image/avif', 0.65);
                     if (avifData.startsWith('data:image/avif')) {
@@ -673,6 +680,7 @@
         chargerCharteDepuisGitHub();
     }
 
+    /* SYNCHRONISATION DU CHANTIER COMPLET DANS Nom_Chantier/config.json */
     async function sauvegarderEtSynchroniser() {
         fermerMenuActions();
         if(!chantierActuel) return;
@@ -688,10 +696,10 @@
         const user = localStorage.getItem('git_user');
         const repo = localStorage.getItem('git_repo');
         const token = localStorage.getItem('git_token');
-        if(!user || !repo || !token) return alert("Sauvegardé en local.");
+        if(!user || !repo || !token) return alert("Sauvegardé uniquement en local. Connectez votre compte GitHub pour la synchro Cloud.");
 
         const url = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossier}/config.json`;
-        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(chantierActuel))));
+        const contentBase64 = convertirTexteEnBase64Utf8(JSON.stringify(chantierActuel, null, 2));
 
         try {
             let sha = null;
@@ -706,9 +714,12 @@
                 headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
                 body: JSON.stringify(bodyData)
             });
-            if(resPush.ok) alert(`☁️ Chantier "${chantierActuel.nom}" synchronisé avec succès dans le dossier "${nomDossier}/" !`);
-            else alert("Erreur de transfert Cloud.");
-        } catch(e) { alert("Erreur réseau."); }
+            if(resPush.ok) alert(`☁️ Chantier "${chantierActuel.nom}" synchronisé avec succès dans "${nomDossier}/config.json" !`);
+            else {
+                const errJson = await resPush.json();
+                alert(`⚠️ Erreur Cloud GitHub (${resPush.status}) : ${errJson.message || 'Échec d'envoi'}`);
+            }
+        } catch(e) { alert("Erreur réseau : " + e.message); }
     }
 
     function exporterChantierEnFichierLocal() {
@@ -726,6 +737,7 @@
         URL.revokeObjectURL(url);
     }
 
+    /* EXPORT ET DÉPÔT DU RAPPORT DE VISITE ISOLÉ DU JOUR DANS Nom_Chantier/rapport_visite_XX-XX-XXXX.json SUR GITHUB */
     async function exporterRapportDuJourIncr() {
         fermerMenuActions();
         if(!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) {
@@ -733,6 +745,7 @@
         }
         
         const dateAujourdhui = new Date().toLocaleDateString('fr-FR').replace(/\//g, "-");
+        const nomDossier = obtenirNomDossierChantier(chantierActuel.nom);
         
         const rapportIncr = {
             type_fichier: "rapport_visite_incremental",
@@ -740,24 +753,58 @@
             nom_chantier: chantierActuel.nom,
             reference: chantierActuel.reference,
             date_visite: dateAujourdhui,
-            constatations_puces: chantierActuel.puces 
+            constatations_puces: chantierActuel.puces,
+            notes_associees: chantierActuel.notes || []
         };
 
         const stringData = JSON.stringify(rapportIncr, null, 2);
+        const nomFichier = `rapport_visite_${dateAujourdhui}.json`;
+
+        // 1. TÉLÉCHARGEMENT LOCAL
         const blob = new Blob([stringData], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        
-        const nomFichierLocal = `rapport_${chantierActuel.nom.replace(/\s+/g, '_')}_${dateAujourdhui}.json`;
-        
+        const urlBlob = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = nomFichierLocal;
+        a.href = urlBlob;
+        a.download = `${nomDossier}_${nomFichier}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        alert("⏏️ Votre rapport de visite isolé du jour a été téléchargé avec succès !");
+        URL.revokeObjectURL(urlBlob);
+
+        // 2. ENVOI AUTOMATIQUE SUR GITHUB SI CONNECTÉ
+        const user = localStorage.getItem('git_user');
+        const repo = localStorage.getItem('git_repo');
+        const token = localStorage.getItem('git_token');
+
+        if(user && repo && token) {
+            const urlGitHub = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossier}/${nomFichier}`;
+            const contentBase64 = convertirTexteEnBase64Utf8(stringData);
+
+            try {
+                let sha = null;
+                const resCheck = await fetch(urlGitHub, { headers: { "Authorization": `token ${token}` } });
+                if(resCheck.ok) { sha = (await resCheck.json()).sha; }
+
+                const bodyData = { message: `Rapport de visite du ${dateAujourdhui} - ${chantierActuel.nom}`, content: contentBase64 };
+                if(sha) bodyData.sha = sha;
+
+                const resPush = await fetch(urlGitHub, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify(bodyData)
+                });
+
+                if(resPush.ok) {
+                    alert(`⏏️ Succès ! Le rapport du jour a été téléchargé en local ET sauvegardé sur le Cloud dans "${nomDossier}/${nomFichier}".`);
+                } else {
+                    alert(`⚠️ Rapport téléchargé en local, mais échec d'envoi Cloud GitHub (Code ${resPush.status}).`);
+                }
+            } catch(e) {
+                alert(`⚠️ Rapport téléchargé en local, mais erreur réseau Cloud : ${e.message}`);
+            }
+        } else {
+            alert("⏏️ Votre rapport de visite isolé du jour a été téléchargé en local.");
+        }
     }
 
     function injecterHistoriqueRemarquesJson(event) {
@@ -1452,7 +1499,6 @@
         polygonesCroquisActuel = [];
     }
 
-    // CONVERSION DU TRACÉ EN SVG VECTORIEL PUR (BASE64 SVG)
     function validerEtSauvegarderCroquis() {
         if(idNoteCroquisEnCours === null || !chantierActuel.notes[idNoteCroquisEnCours]) return;
         const canvas = document.getElementById('sketchCanvas');
