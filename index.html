@@ -17,23 +17,22 @@
         .section.active { display: block; }
         
         /* Navigation principale */
-        .nav-bar { display: block; margin-bottom: 20px; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; }
-        .nav-bar::after { content: ""; display: table; clear: both; }
-        .btn-back { float: left; background: #5f6368; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; flex-wrap: wrap; }
+        .btn-back { background: #5f6368; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
         
         /* MENU DÉROULANT DES ACTIONS */
-        .dropdown-container { float: right; position: relative; display: inline-block; }
+        .dropdown-container { position: relative; display: inline-block; }
         .btn-dropdown { background: #1a73e8; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
         .btn-dropdown:hover { background: #1557b0; }
-        .dropdown-menu { display: none; position: absolute; right: 0; top: 100%; background-color: white; min-width: 240px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 6px; border: 1px solid #dadce0; z-index: 100; margin-top: 5px; overflow: hidden; }
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 100%; background-color: white; min-width: 260px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 6px; border: 1px solid #dadce0; z-index: 100; margin-top: 5px; overflow: hidden; }
         .dropdown-menu.show { display: block; }
         .dropdown-menu button { color: #333; padding: 12px 16px; text-decoration: none; display: block; width: 100%; border: none; background: none; text-align: left; font-size: 14px; cursor: pointer; border-bottom: 1px solid #f1f3f4; }
         .dropdown-menu button:last-child { border-bottom: none; }
         .dropdown-menu button:hover { background-color: #f8f9fa; color: #1a73e8; }
 
         /* Onglets internes */
-        .tabs-container { display: flex; border-bottom: 2px solid #dadce0; margin-bottom: 20px; gap: 5px; clear: both; padding-top: 15px; }
-        .tab-button { flex: 1; padding: 12px; background: #f1f3f4; border: none; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: bold; font-size: 15px; color: #5f6368; transition: all 0.2s; }
+        .tabs-container { display: flex; border-bottom: 2px solid #dadce0; margin-bottom: 20px; gap: 5px; padding-top: 10px; flex-wrap: wrap; }
+        .tab-button { flex: 1; min-width: 140px; padding: 12px 8px; background: #f1f3f4; border: none; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: bold; font-size: 14px; color: #5f6368; transition: all 0.2s; text-align: center; }
         .tab-button:hover { background: #e8eaed; color: #1a73e8; }
         .tab-button.active { background: #1a73e8; color: white; border-bottom: 2px solid #1a73e8; }
         .tab-content { display: none; }
@@ -45,8 +44,8 @@
         input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
         
         /* Flexbox */
-        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .flex-row input { flex: 1; }
+        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+        .flex-row input { flex: 1; min-width: 200px; }
         
         /* Boutons */
         .btn { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 15px; text-align: center; }
@@ -75,7 +74,7 @@
         .status-badge.late-task { background: #fadbd8; color: #d93025; border: 1px solid #f5b7b1; margin-left: 5px; }
 
         /* Zones d'options et filtres */
-        .map-filters-box { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; padding: 12px 15px; margin-top: 10px; display: flex; gap: 20px; align-items: center; }
+        .map-filters-box { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; padding: 12px 15px; margin-top: 10px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .print-options-box { background: #edf2fa; border: 1px solid #b4cff7; border-radius: 8px; padding: 15px; margin-top: 25px; }
         .filter-checkbox-label { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; cursor: pointer; margin: 0; color: #4a4a4a; }
 
@@ -87,12 +86,13 @@
         .plan-container { position: relative; display: inline-block; max-width: 100%; }
         .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
         
-        .pin { position: absolute; width: 18px; height: 18px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 10px; font-weight: bold; line-height: 14px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
+        .pin { position: absolute; width: 22px; height: 22px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 11px; font-weight: bold; line-height: 18px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
         .pin.resolved { background: #28a745; }
-        .pin.selected { z-index: 10; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 0 3px rgba(26,115,232,0.6); }
+        .pin.selected { z-index: 10; transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 0 3px rgba(26,115,232,0.6); }
         
         /* Tableaux et Gantt */
-        .table-remarques { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
+        .table-remarques { width: 100%; border-collapse: collapse; min-width: 600px; }
         .table-remarques th, .table-remarques td { border: 1px solid #dadce0; padding: 10px; text-align: left; font-size: 14px; }
         .table-remarques th { background: #f1f3f4; }
         
@@ -102,21 +102,21 @@
         
         .gantt-row.collapsed-child { display: none !important; }
         
-        .gantt-row-main { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; }
-        .gantt-col-name { width: 45%; padding-right: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .gantt-row-main { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; flex-wrap: wrap; }
+        .gantt-col-name { width: 100%; max-width: 300px; padding-right: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
         .gantt-col-name.summary-clickable { cursor: pointer; user-select: none; }
         .gantt-col-name.summary-clickable:hover { color: #1a73e8; text-decoration: underline; }
         
-        .gantt-col-bar-container { width: 55%; display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
-        .gantt-progress-track { width: 160px; height: 16px; background: #e8eaed; border-radius: 8px; overflow: hidden; position: relative; }
+        .gantt-col-bar-container { flex: 1; display: flex; align-items: center; gap: 10px; justify-content: flex-end; min-width: 250px; }
+        .gantt-progress-track { width: 140px; height: 16px; background: #e8eaed; border-radius: 8px; overflow: hidden; position: relative; }
         .gantt-progress-bar { height: 100%; background: #1a73e8; border-radius: 8px 0 0 8px; transition: width 0.3s; }
         .gantt-progress-bar.summary { background: #24292e; }
         .gantt-progress-bar.late { background: #d93025; }
-        .gantt-dates { font-size: 11px; color: #5f6368; white-space: nowrap; width: 150px; text-align: right; }
+        .gantt-dates { font-size: 11px; color: #5f6368; white-space: nowrap; width: 140px; text-align: right; }
 
-        .gantt-pilotage-control { display: flex; align-items: center; gap: 10px; margin-top: 8px; background: #f8f9fa; padding: 6px 12px; border-radius: 6px; width: fit-content; margin-left: 24px; border: 1px solid #e0e0e0; }
-        .gantt-slider { width: 150px; cursor: pointer; }
+        .gantt-pilotage-control { display: flex; align-items: center; gap: 10px; margin-top: 8px; background: #f8f9fa; padding: 6px 12px; border-radius: 6px; width: fit-content; border: 1px solid #e0e0e0; }
+        .gantt-slider { width: 130px; cursor: pointer; }
         .gantt-badge-val { font-size: 12px; font-weight: bold; color: #1a73e8; min-width: 35px; }
 
         /* Saisie photo multiple */
@@ -129,17 +129,41 @@
 
         /* STYLE ONGLET NOTES & CROQUIS */
         .note-card { background: #fff; border: 1px solid #dadce0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-        .note-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #f1f3f4; padding-bottom: 8px; }
+        .note-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #f1f3f4; padding-bottom: 8px; flex-wrap: wrap; gap: 8px; }
         .note-sketch-img { max-width: 100%; max-height: 250px; border: 1px solid #ccc; border-radius: 6px; margin-top: 10px; display: block; background: #fff; }
         
-        /* POPUP MODALE CROQUIS VECTORIEL (SVG) */
-        .sketch-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
-        .sketch-modal-card { background: white; border-radius: 12px; padding: 15px; width: 95%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .sketch-canvas-container { border: 2px dashed #999; border-radius: 8px; background: white; touch-action: none; margin: 10px 0; overflow: hidden; text-align: center; }
-        #sketchCanvas { background: #fff; cursor: crosshair; display: block; margin: 0 auto; }
+        /* POPUP MODALE SELECTION CLOUD & CROQUIS */
+        .sketch-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 10px; }
+        .sketch-modal-card { background: white; border-radius: 12px; padding: 15px; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 95vh; overflow-y: auto; }
+        .sketch-canvas-container { border: 2px dashed #999; border-radius: 8px; background: white; touch-action: none; margin: 10px 0; overflow: hidden; text-align: center; width: 100%; }
+        #sketchCanvas { background: #fff; cursor: crosshair; display: block; margin: 0 auto; max-width: 100%; height: auto; }
         .sketch-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
         .color-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; cursor: pointer; box-shadow: 0 0 3px rgba(0,0,0,0.5); }
         .color-btn.selected { transform: scale(1.2); border-color: #1a73e8; }
+
+        .cloud-report-item { padding: 12px; border: 1px solid #dadce0; border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .cloud-report-item:hover { background: #edf2fa; border-color: #1a73e8; }
+
+        /* ADAPTATIONS MOBILES ET SMARTPHONES (< 600px) */
+        @media screen and (max-width: 600px) {
+            .app-container { margin: 0; padding: 12px; border-radius: 0; }
+            h1 { font-size: 20px; }
+            h2 { font-size: 17px; }
+            .nav-bar { flex-direction: column; align-items: stretch; }
+            .btn-back { width: 100%; text-align: center; }
+            .dropdown-container { width: 100%; }
+            .btn-dropdown { width: 100%; text-align: center; }
+            .dropdown-menu { width: 100%; left: 0; right: 0; }
+            
+            .tabs-container { flex-direction: column; }
+            .tab-button { width: 100%; border-radius: 6px; margin-bottom: 4px; text-align: left; padding: 10px 14px; }
+            .tab-button.active { border-bottom: none; border-left: 4px solid white; }
+            
+            .chantier-card { padding: 15px; }
+            .btn-delete-card { position: static; display: block; width: 100%; margin-top: 10px; text-align: center; }
+
+            .pin { width: 24px; height: 22px; font-size: 11px; line-height: 20px; }
+        }
 
         @media print {
             @page { size: auto; margin: 0mm; }
@@ -225,7 +249,7 @@
                     <input type="file" id="planInput" accept="image/*,.svg" onchange="chargerImagePlanNiveau(event)">
                 </div>
                 <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="enregistrerNiveauDansListe()">+ Ajouter ce niveau</button>
-                <div id="listeNiveauxTemporaire" style="margin-top:10px; display: flex; gap: 5px;"></div>
+                <div id="listeNiveauxTemporaire" style="margin-top:10px; display: flex; gap: 5px; flex-wrap: wrap;"></div>
             </div>
 
             <label>Entreprises :</label>
@@ -250,7 +274,8 @@
                     <button onclick="sauvegarderEtSynchroniser()">☁️ Synchro Structure Chantier (config.json)</button>
                     <button onclick="exporterChantierEnFichierLocal()">💾 Exporter l'Affaire (.json)</button>
                     <button onclick="exporterRapportDuJourIncr()">⏏️ Exporter Visite du Jour (.zip / Cloud)</button>
-                    <button onclick="document.getElementById('importHistoriquePucesInput').click(); fermerMenuActions();">📥 Fusionner un Rapport (.zip / .json)</button>
+                    <button onclick="document.getElementById('importHistoriquePucesInput').click(); fermerMenuActions();">📥 Fusionner un Rapport Local (.zip / .json)</button>
+                    <button onclick="ouvrirModalSelectionRapportsCloud()">🌐 Fusionner un Rapport Cloud (GitHub)</button>
                 </div>
             </div>
             <input type="file" id="importHistoriquePucesInput" accept=".zip,.json" style="display:none;" onchange="injecterHistoriqueRemarquesJson(event)">
@@ -340,12 +365,14 @@
             </div>
 
             <h2>Observations enregistrées</h2>
-            <table class="table-remarques">
-                <thead>
-                    <tr><th>N°</th><th>Niveau / Zone</th><th>Photos</th><th>Statut</th><th>Entreprises &amp; Constats</th><th>Date</th></tr>
-                </thead>
-                <tbody id="corpsTableauRemarques"></tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table-remarques">
+                    <thead>
+                        <tr><th>N°</th><th>Niveau / Zone</th><th>Photos</th><th>Statut</th><th>Entreprises &amp; Constats</th><th>Date</th></tr>
+                    </thead>
+                    <tbody id="corpsTableauRemarques"></tbody>
+                </table>
+            </div>
 
             <div class="print-options-box no-print">
                 <h3 style="color:#0b57d0; font-size:14px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">⚙️ Options d'impression du rapport PDF</h3>
@@ -376,7 +403,7 @@
             <h2>📅 Planning prévisionnel Gantt (MS Project)</h2>
             <p style="font-size: 14px; color:#5f6368;">Importez le fichier de planification `.xml` généré depuis MS Project pour afficher et mettre à jour l'avancement chronologique.</p>
             
-            <div style="background:#f8f9fa; border:1px solid #dadce0; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; gap:10px; align-items:center;">
+            <div style="background:#f8f9fa; border:1px solid #dadce0; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                 <button type="button" class="btn btn-small" style="background:#24292e; margin:0;" onclick="document.getElementById('importGanttXmlInput').click()">📥 Importer XML MS Project</button>
                 <input type="file" id="importGanttXmlInput" accept=".xml" style="display:none;" onchange="importerFichierGanttXml(event)">
                 <span id="ganttStatusLabel" style="font-size:13px; color:#666; font-style:italic;">Aucun planning chargé.</span>
@@ -396,10 +423,24 @@
     </div>
 </div>
 
-<!-- POPUP MODALE CROQUIS VECTORIEL (SVG) -->
+<!-- MODALE CHOIX DES RAPPORTS CLOUD SUR GITHUB -->
+<div id="cloudReportsModalOverlay" class="sketch-modal-overlay">
+    <div class="sketch-modal-card">
+        <h3 style="margin-top:0; color:#1a73e8;">🌐 Importer un Rapport Cloud (GitHub)</h3>
+        <p style="font-size:13px; color:#666;">Sélectionnez un rapport de visite antérieur présent dans le dossier Cloud de cette affaire :</p>
+        
+        <div id="listeRapportsCloudContainer" style="max-height: 250px; overflow-y: auto; margin: 15px 0;">Chargement...</div>
+
+        <div style="display:flex; justify-content:flex-end;">
+            <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="fermerModalRapportsCloud()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- POPUP MODALE CROQUIS VECTORIEL (SVG) RESPONSIVE -->
 <div id="sketchModalOverlay" class="sketch-modal-overlay">
     <div class="sketch-modal-card">
-        <h3 style="margin-top:0; color:#1a73e8;">✏️ Croquis Vectoriel SVG (Poids ultra-léger)</h3>
+        <h3 style="margin-top:0; color:#1a73e8;">✏️ Croquis Vectoriel SVG</h3>
         <div class="sketch-tools">
             <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                 <span style="font-size:13px; font-weight:bold;">Couleur :</span>
@@ -423,7 +464,7 @@
             <canvas id="sketchCanvas" width="550" height="320"></canvas>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
             <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="fermerFenetreCroquis()">Annuler</button>
             <button type="button" class="btn btn-small btn-success" onclick="validerEtSauvegarderCroquis()">Valider ce schéma (SVG)</button>
         </div>
@@ -782,13 +823,11 @@
         const nomSousDossierRapport = `Rapport_visite_${dateAujourdhui}`;
 
         const zip = new JSZip();
-        const dossiersFichiersGitHub = []; // Collection pour poussée Cloud
+        const dossiersFichiersGitHub = []; 
 
-        // Cloner puces et notes pour nettoyer les images lourdes et mettre des liens
         const pucesCopie = JSON.parse(JSON.stringify(chantierActuel.puces || []));
         const notesCopie = JSON.parse(JSON.stringify(chantierActuel.notes || []));
 
-        // 1. Extraction des photos terrain vers /photos/
         pucesCopie.forEach((p, idxPuce) => {
             if (p.photos && p.photos.length > 0) {
                 const nouveauxChemins = [];
@@ -811,7 +850,6 @@
             }
         });
 
-        // 2. Extraction des croquis vectoriels vers /croquis/
         notesCopie.forEach((n, idxNote) => {
             if (n.croquis && n.croquis.startsWith('data:')) {
                 const nomFichierCroquis = `croquis_note_${idxNote + 1}.svg`;
@@ -825,7 +863,6 @@
             }
         });
 
-        // 3. Fichier rapport.json ultra-léger
         const rapportJsonObj = {
             type_fichier: "rapport_visite_incremental",
             chantier_id: chantierActuel.id,
@@ -840,7 +877,6 @@
         zip.file("rapport.json", stringRapportJson);
         dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/rapport.json`, textContent: stringRapportJson, isText: true });
 
-        // 4. Génération & Téléchargement du fichier ZIP Local
         const zipBlob = await zip.generateAsync({ type: "blob" });
         const zipNomFichierLocal = `${nomDossierChantier}_${nomSousDossierRapport}.zip`;
         
@@ -853,7 +889,6 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(urlBlob);
 
-        // 5. Envoi découplé sur GitHub (Si connecté)
         const { user, repo, token } = obtenirIdentifiantsGitHub();
 
         if(user && repo && token) {
@@ -904,7 +939,7 @@
         }
     }
 
-    /* FUSION D'UN RAPPORT DEPUIS UN FICHIER .ZIP OU .JSON */
+    /* FUSION D'UN RAPPORT DEPUIS UN FICHIER .ZIP OU .JSON LOCAL */
     async function injecterHistoriqueRemarquesJson(event) {
         const file = event.target.files[0];
         if (!file || !chantierActuel) return;
@@ -927,7 +962,6 @@
                 pucesAInjecter = rapportObj.constatations_puces || rapportObj.puces || [];
                 notesAInjecter = rapportObj.notes_associees || rapportObj.notes || [];
 
-                // Reconstitution des photos
                 for (let p of pucesAInjecter) {
                     if (p.photos && p.photos.length > 0) {
                         const photosReconstituees = [];
@@ -947,7 +981,6 @@
                     }
                 }
 
-                // Reconstitution des croquis
                 for (let n of notesAInjecter) {
                     if (n.croquis && n.croquis.startsWith('croquis/')) {
                         const croquisFileInZip = zip.file(n.croquis);
@@ -958,46 +991,152 @@
                     }
                 }
             } else {
-                // Ancien format JSON direct
                 const jsonText = await file.text();
                 const rapportObj = JSON.parse(jsonText);
                 pucesAInjecter = rapportObj.constatations_puces || rapportObj.puces || [];
                 notesAInjecter = rapportObj.notes_associees || rapportObj.notes || [];
             }
 
-            if (pucesAInjecter.length === 0 && notesAInjecter.length === 0) {
-                return alert("⚠️ Aucune remarque ou note valide trouvée dans ce rapport.");
-            }
-
-            // Normalisation et fusion
-            pucesAInjecter.forEach(p => {
-                if (p.photo && (!p.photos || p.photos.length === 0)) {
-                    p.photos = [p.photo];
-                    delete p.photo;
-                }
-                if(!p.photos) p.photos = [];
-                if(p.resolue === undefined) p.resolue = false;
-            });
-
-            chantierActuel.puces = [...chantierActuel.puces, ...pucesAInjecter];
-            chantierActuel.puces.forEach((p, i) => p.numero = i + 1);
-
-            if (notesAInjecter.length > 0) {
-                chantierActuel.notes = [...notesAInjecter, ...(chantierActuel.notes || [])];
-            }
-
-            const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
-            if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-            localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
-
-            chargerPlanEtPucesDuNiveauActuel();
-            rafraichirVueNotes();
-            alert(`🎯 Succès ! ${pucesAInjecter.length} puces et ${notesAInjecter.length} note(s) ont été fusionnées sur vos plans.`);
+            appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter);
 
         } catch (err) {
             alert("❌ Impossible de décompresser ou lire ce fichier rapport. Détail : " + err.message);
         }
         event.target.value = ""; 
+    }
+
+    /* IMPORTATION ET FUSION DIRECTE DEPUIS LE CLOUD GITHUB */
+    async function ouvrirModalSelectionRapportsCloud() {
+        fermerMenuActions();
+        if(!chantierActuel) return alert("Veuillez sélectionner un chantier actif.");
+        const { user, repo, token } = obtenirIdentifiantsGitHub();
+        if(!user || !repo || !token) return alert("Identifiants GitHub non configurés.");
+
+        const nomDossierChantier = obtenirNomDossierChantier(chantierActuel.nom);
+        const container = document.getElementById('listeRapportsCloudContainer');
+        container.innerHTML = "🔍 Recherche des rapports sur le Cloud...";
+        document.getElementById('cloudReportsModalOverlay').style.display = "flex";
+
+        try {
+            const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}`;
+            const res = await fetch(urlApi, { headers: { "Authorization": `token ${token}` } });
+            
+            if(!res.ok) {
+                container.innerHTML = "<p style='color:#d93025;'>Aucun dossier de rapport trouvé pour ce chantier sur le Cloud.</p>";
+                return;
+            }
+
+            const items = await res.json();
+            const dossiersRapports = items.filter(i => i.type === "dir" && i.name.startsWith("Rapport_visite_"));
+
+            if(dossiersRapports.length === 0) {
+                container.innerHTML = "<p style='color:#666;'>Aucun rapport antérieur trouvé dans le sous-dossier Cloud.</p>";
+                return;
+            }
+
+            container.innerHTML = dossiersRapports.map(d => `
+                <div class="cloud-report-item" onclick="importerRapportCloudParNomDossier('${d.name}')">
+                    <span>📁 <strong>${d.name.replace("Rapport_visite_", "Visite du ")}</strong></span>
+                    <button class="btn btn-small btn-success" style="padding:4px 8px; font-size:12px;">Télécharger &amp; Fusionner 📥</button>
+                </div>
+            `).join('');
+
+        } catch(e) {
+            container.innerHTML = `<p style='color:#d93025;'>Erreur réseau : ${e.message}</p>`;
+        }
+    }
+
+    function fermerModalRapportsCloud() {
+        document.getElementById('cloudReportsModalOverlay').style.display = "none";
+    }
+
+    async function importerRapportCloudParNomDossier(nomDossierRapport) {
+        const { user, repo, token } = obtenirIdentifiantsGitHub();
+        const nomDossierChantier = obtenirNomDossierChantier(chantierActuel.nom);
+        
+        fermerModalRapportsCloud();
+        alert(`📥 Téléchargement des médias et données du rapport "${nomDossierRapport}" depuis GitHub...`);
+
+        try {
+            // 1. Lecture du rapport.json
+            const urlJson = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/rapport.json`;
+            const resJson = await fetch(urlJson, { headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3.raw" } });
+            if(!resJson.ok) throw new Error("Fichier 'rapport.json' introuvable dans ce dossier Cloud.");
+            
+            const textJson = await resJson.text();
+            const rapportObj = JSON.parse(textJson);
+
+            let pucesAInjecter = rapportObj.constatations_puces || [];
+            let notesAInjecter = rapportObj.notes_associees || [];
+
+            // 2. Reconstitution des photos depuis GitHub
+            for (let p of pucesAInjecter) {
+                if (p.photos && p.photos.length > 0) {
+                    const photosReconstituees = [];
+                    for (let pPath of p.photos) {
+                        if (pPath.startsWith('photos/')) {
+                            const urlMedia = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${pPath}`;
+                            const resMedia = await fetch(urlMedia, { headers: { "Authorization": `token ${token}` } });
+                            if(resMedia.ok) {
+                                const mediaData = await resMedia.json();
+                                const mime = pPath.endsWith('.avif') ? 'image/avif' : (pPath.endsWith('.webp') ? 'image/webp' : 'image/jpeg');
+                                photosReconstituees.push(`data:${mime};base64,${mediaData.content.replace(/\n/g, '')}`);
+                            }
+                        } else {
+                            photosReconstituees.push(pPath);
+                        }
+                    }
+                    p.photos = photosReconstituees;
+                }
+            }
+
+            // 3. Reconstitution des croquis depuis GitHub
+            for (let n of notesAInjecter) {
+                if (n.croquis && n.croquis.startsWith('croquis/')) {
+                    const urlCroquis = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${n.croquis}`;
+                    const resCroquis = await fetch(urlCroquis, { headers: { "Authorization": `token ${token}` } });
+                    if(resCroquis.ok) {
+                        const croquisData = await resCroquis.json();
+                        notesAInjecter.croquis = `data:image/svg+xml;base64,${croquisData.content.replace(/\n/g, '')}`;
+                    }
+                }
+            }
+
+            appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter);
+
+        } catch(e) {
+            alert(`❌ Échec de téléchargement du rapport Cloud : ${e.message}`);
+        }
+    }
+
+    function appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter) {
+        if (pucesAInjecter.length === 0 && notesAInjecter.length === 0) {
+            return alert("⚠️ Aucune remarque ou note valide trouvée dans ce rapport.");
+        }
+
+        pucesAInjecter.forEach(p => {
+            if (p.photo && (!p.photos || p.photos.length === 0)) {
+                p.photos = [p.photo];
+                delete p.photo;
+            }
+            if(!p.photos) p.photos = [];
+            if(p.resolue === undefined) p.resolue = false;
+        });
+
+        chantierActuel.puces = [...chantierActuel.puces, ...pucesAInjecter];
+        chantierActuel.puces.forEach((p, i) => p.numero = i + 1);
+
+        if (notesAInjecter.length > 0) {
+            chantierActuel.notes = [...notesAInjecter, ...(chantierActuel.notes || [])];
+        }
+
+        const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
+        if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
+        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+
+        chargerPlanEtPucesDuNiveauActuel();
+        rafraichirVueNotes();
+        alert(`🎯 Succès ! ${pucesAInjecter.length} puces et ${notesAInjecter.length} note(s) ont été fusionnées sur vos plans.`);
     }
 
     function importerFichierGanttXml(event) {
@@ -1092,7 +1231,7 @@
                 ignorerJusqu_a_OutlineLevel = t.outlineLevel;
             }
 
-            const indent = (t.outlineLevel - 1) * 20;
+            const indent = (t.outlineLevel - 1) * 15;
             const textStyle = t.isSummary ? "font-weight: bold; color: #1a73e8;" : "font-weight: normal;";
             const formatStart = t.start ? t.start.split("-").reverse().join("/") : "N/A";
             const formatFinish = t.finish ? t.finish.split("-").reverse().join("/") : "N/A";
@@ -1357,7 +1496,7 @@
         if (listeTousChantiers.length === 0) { container.innerHTML = "<p>Aucun chantier actif.</p>"; return; }
         container.innerHTML = listeTousChantiers.map(c => `
             <div class="chantier-card" onclick="ouvrirEtChargerChantier('${c.id}')">
-                <h3 style="margin:0; padding-right:100px;">🏢 ${c.nom}</h3>
+                <h3 style="margin:0; padding-right:80px; font-size:16px;">🏢 ${c.nom}</h3>
                 <p style="margin:5px 0 0 0; font-size:13px; color:#666;">Ref : ${c.reference} — Lieu : ${c.localisation}</p>
                 <div style="margin-top:5px; font-size:11px; color:#1a73e8; font-weight:bold;">📊 ${c.puces ? c.puces.length : 0} puce(s) active(s)</div>
                 <button type="button" class="btn-delete-card" onclick="supprimerChantierDefinitif(event, '${c.id}', '${c.nom.replace(/'/g, "\\'")}')">Supprimer 🗑️</button>
