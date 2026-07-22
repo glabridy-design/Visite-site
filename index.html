@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapport de Visite de Chantier</title>
     <link rel="manifest" href="manifest.json">
+    <!-- Librairie JSZip pour l'exportation et l'importation d'archives ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; color: #333; }
@@ -245,13 +247,13 @@
                 <button class="btn-dropdown" onclick="basculerMenuActions(event)">⚙️ Actions &amp; Exports ▾</button>
                 <div id="dropdownMenuActions" class="dropdown-menu">
                     <button onclick="declencherImpression()">🖨️ Exporter en PDF</button>
-                    <button onclick="sauvegarderEtSynchroniser()">☁️ Synchro Cloud (.json)</button>
+                    <button onclick="sauvegarderEtSynchroniser()">☁️ Synchro Structure Chantier (config.json)</button>
                     <button onclick="exporterChantierEnFichierLocal()">💾 Exporter l'Affaire (.json)</button>
-                    <button onclick="exporterRapportDuJourIncr()">⏏️ Exporter Visite du Jour (.json / Cloud)</button>
-                    <button onclick="document.getElementById('importHistoriquePucesInput').click(); fermerMenuActions();">📥 Fusionner un Historique (.json)</button>
+                    <button onclick="exporterRapportDuJourIncr()">⏏️ Exporter Visite du Jour (.zip / Cloud)</button>
+                    <button onclick="document.getElementById('importHistoriquePucesInput').click(); fermerMenuActions();">📥 Fusionner un Rapport (.zip / .json)</button>
                 </div>
             </div>
-            <input type="file" id="importHistoriquePucesInput" accept=".json" style="display:none;" onchange="injecterHistoriqueRemarquesJson(event)">
+            <input type="file" id="importHistoriquePucesInput" accept=".zip,.json" style="display:none;" onchange="injecterHistoriqueRemarquesJson(event)">
         </div>
         
         <h1 id="viewNom">---</h1>
@@ -549,14 +551,32 @@
         });
     });
 
-    /* CONVERTISSEUR UNIVERSEL ROBUSTE UTF8 EN BASE64 POUR LES REQUÊTES GITHUB */
+    /* CONVERTISSEUR UTF-8 EN BASE64 HAUTE PERFORMANCE (PAR CHUNKS) */
     function convertirTexteEnBase64Utf8(texteData) {
         const bytes = new TextEncoder().encode(texteData);
         let binStr = "";
-        for (let i = 0; i < bytes.byteLength; i++) {
-            binStr += String.fromCharCode(bytes[i]);
+        const chunkSize = 32768;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            binStr += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
         }
         return btoa(binStr);
+    }
+
+    function convertirDataUrlEnUint8Array(dataUrl) {
+        const base64Str = dataUrl.split(',')[1];
+        const binaryStr = atob(base64Str);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {
+            bytes[i] = binaryStr.charCodeAt(i);
+        }
+        return bytes;
+    }
+
+    function obtenirIdentifiantsGitHub() {
+        let user = localStorage.getItem('git_user') || document.getElementById('cloudUser').value.trim();
+        let repo = localStorage.getItem('git_repo') || document.getElementById('cloudRepo').value.trim();
+        let token = localStorage.getItem('git_token') || document.getElementById('cloudToken').value.trim();
+        return { user, repo, token };
     }
 
     async function chargerVariablesEnvironnement() {
@@ -622,9 +642,7 @@
     }
 
     async function chargerCharteDepuisGitHub() {
-        const user = localStorage.getItem('git_user');
-        const repo = localStorage.getItem('git_repo');
-        const token = localStorage.getItem('git_token');
+        const { user, repo, token } = obtenirIdentifiantsGitHub();
         if(!user || !repo || !token) return;
 
         const url = `https://api.github.com/repos/${user}/${repo}/contents/Charte.json?ref=main`;
@@ -680,7 +698,7 @@
         chargerCharteDepuisGitHub();
     }
 
-    /* SYNCHRONISATION DU CHANTIER COMPLET DANS Nom_Chantier/config.json */
+    /* SYNCHRONISATION DU CHANTIER COMPLET FIXE DANS Nom_Chantier/config.json */
     async function sauvegarderEtSynchroniser() {
         fermerMenuActions();
         if(!chantierActuel) return;
@@ -693,17 +711,15 @@
         localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
         rafraichirVueAccueil();
 
-        const user = localStorage.getItem('git_user');
-        const repo = localStorage.getItem('git_repo');
-        const token = localStorage.getItem('git_token');
+        const { user, repo, token } = obtenirIdentifiantsGitHub();
         if(!user || !repo || !token) return alert("Sauvegardé uniquement en local. Connectez votre compte GitHub pour la synchro Cloud.");
 
         const url = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossier}/config.json`;
-        const contentBase64 = convertirTexteEnBase64Utf8(JSON.stringify(chantierActuel, null, 2));
 
         try {
+            const contentBase64 = convertirTexteEnBase64Utf8(JSON.stringify(chantierActuel, null, 2));
             let sha = null;
-            // Interrogation directe anti-cache de GitHub pour récupérer le SHA du fichier existant
+
             const resCheck = await fetch(`${url}?t=${Date.now()}`, { 
                 headers: { 
                     "Authorization": `token ${token}`,
@@ -718,7 +734,7 @@
             }
 
             const bodyData = { 
-                message: `Mise à jour chantier : ${chantierActuel.nom}`, 
+                message: `Mise à jour structure chantier : ${chantierActuel.nom}`, 
                 content: contentBase64 
             };
             if(sha) bodyData.sha = sha;
@@ -733,12 +749,12 @@
                 body: JSON.stringify(bodyData)
             });
 
-            if(resPush.ok) alert(`☁️ Chantier "${chantierActuel.nom}" synchronisé avec succès dans "${nomDossier}/config.json" !`);
+            if(resPush.ok) alert(`☁️ Structure du chantier "${chantierActuel.nom}" synchronisée avec succès (${nomDossier}/config.json) !`);
             else {
                 const errJson = await resPush.json();
-                    alert(`⚠️ Erreur Cloud GitHub (${resPush.status}) : ${errJson.message}`);
+                alert(`⚠️ Erreur Cloud GitHub (${resPush.status}) : ${errJson.message || 'Échec'}`);
             }
-        } catch(e) { alert("Erreur réseau : " + e.message); }
+        } catch(e) { alert("Erreur : " + e.message); }
     }
 
     function exporterChantierEnFichierLocal() {
@@ -756,132 +772,231 @@
         URL.revokeObjectURL(url);
     }
 
-    /* EXPORT ET DÉPÔT DU RAPPORT DE VISITE ISOLÉ DU JOUR DANS Nom_Chantier/rapport_visite_XX-XX-XXXX.json SUR GITHUB */
+    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI FICHIERS DÉCOUPLÉS (CLOUD GITHUB) */
     async function exporterRapportDuJourIncr() {
         fermerMenuActions();
-        if(!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) {
-            return alert("Aucune puce active pour générer le rapport.");
-        }
+        if(!chantierActuel) return alert("Aucun chantier actif sélectionné.");
         
         const dateAujourdhui = new Date().toLocaleDateString('fr-FR').replace(/\//g, "-");
-        const nomDossier = obtenirNomDossierChantier(chantierActuel.nom);
-        
-        const rapportIncr = {
+        const nomDossierChantier = obtenirNomDossierChantier(chantierActuel.nom);
+        const nomSousDossierRapport = `Rapport_visite_${dateAujourdhui}`;
+
+        const zip = new JSZip();
+        const dossiersFichiersGitHub = []; // Collection pour poussée Cloud
+
+        // Cloner puces et notes pour nettoyer les images lourdes et mettre des liens
+        const pucesCopie = JSON.parse(JSON.stringify(chantierActuel.puces || []));
+        const notesCopie = JSON.parse(JSON.stringify(chantierActuel.notes || []));
+
+        // 1. Extraction des photos terrain vers /photos/
+        pucesCopie.forEach((p, idxPuce) => {
+            if (p.photos && p.photos.length > 0) {
+                const nouveauxChemins = [];
+                p.photos.forEach((photoDataUrl, idxPhoto) => {
+                    if (photoDataUrl.startsWith('data:')) {
+                        const ext = photoDataUrl.includes('image/avif') ? 'avif' : (photoDataUrl.includes('image/webp') ? 'webp' : 'jpg');
+                        const nomFichierPhoto = `puce_${p.numero}_photo_${idxPhoto + 1}.${ext}`;
+                        const cheminRelatif = `photos/${nomFichierPhoto}`;
+                        
+                        const bytes = convertirDataUrlEnUint8Array(photoDataUrl);
+                        zip.file(cheminRelatif, bytes);
+                        dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/${cheminRelatif}`, binary: bytes, isText: false });
+
+                        nouveauxChemins.push(cheminRelatif);
+                    } else {
+                        nouveauxChemins.push(photoDataUrl);
+                    }
+                });
+                p.photos = nouveauxChemins;
+            }
+        });
+
+        // 2. Extraction des croquis vectoriels vers /croquis/
+        notesCopie.forEach((n, idxNote) => {
+            if (n.croquis && n.croquis.startsWith('data:')) {
+                const nomFichierCroquis = `croquis_note_${idxNote + 1}.svg`;
+                const cheminRelatif = `croquis/${nomFichierCroquis}`;
+
+                const bytes = convertirDataUrlEnUint8Array(n.croquis);
+                zip.file(cheminRelatif, bytes);
+                dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/${cheminRelatif}`, binary: bytes, isText: false });
+
+                n.croquis = cheminRelatif;
+            }
+        });
+
+        // 3. Fichier rapport.json ultra-léger
+        const rapportJsonObj = {
             type_fichier: "rapport_visite_incremental",
             chantier_id: chantierActuel.id,
             nom_chantier: chantierActuel.nom,
             reference: chantierActuel.reference,
             date_visite: dateAujourdhui,
-            constatations_puces: chantierActuel.puces,
-            notes_associees: chantierActuel.notes || []
+            constatations_puces: pucesCopie,
+            notes_associees: notesCopie
         };
 
-        const stringData = JSON.stringify(rapportIncr, null, 2);
-        const nomFichier = `rapport_visite_${dateAujourdhui}.json`;
+        const stringRapportJson = JSON.stringify(rapportJsonObj, null, 2);
+        zip.file("rapport.json", stringRapportJson);
+        dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/rapport.json`, textContent: stringRapportJson, isText: true });
 
-        // 1. TÉLÉCHARGEMENT LOCAL
-        const blob = new Blob([stringData], { type: "application/json" });
-        const urlBlob = URL.createObjectURL(blob);
+        // 4. Génération & Téléchargement du fichier ZIP Local
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const zipNomFichierLocal = `${nomDossierChantier}_${nomSousDossierRapport}.zip`;
+        
+        const urlBlob = URL.createObjectURL(zipBlob);
         const a = document.createElement('a');
         a.href = urlBlob;
-        a.download = `${nomDossier}_${nomFichier}`;
+        a.download = zipNomFichierLocal;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(urlBlob);
 
-        // 2. ENVOI AUTOMATIQUE SUR GITHUB SI CONNECTÉ
-        const user = localStorage.getItem('git_user');
-        const repo = localStorage.getItem('git_repo');
-        const token = localStorage.getItem('git_token');
+        // 5. Envoi découplé sur GitHub (Si connecté)
+        const { user, repo, token } = obtenirIdentifiantsGitHub();
 
         if(user && repo && token) {
-            const urlGitHub = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossier}/${nomFichier}`;
-            const contentBase64 = convertirTexteEnBase64Utf8(stringData);
-
+            let succesCompteur = 0;
             try {
-                let sha = null;
-                const resCheck = await fetch(`${urlGitHub}?t=${Date.now()}`, { 
-                    headers: { 
-                        "Authorization": `token ${token}`,
-                        "Accept": "application/vnd.github.v3+json"
-                    },
-                    cache: "no-store"
-                });
+                for (let fileItem of dossiersFichiersGitHub) {
+                    const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${fileItem.chemin}`;
+                    
+                    let contentBase64 = "";
+                    if(fileItem.isText) {
+                        contentBase64 = convertirTexteEnBase64Utf8(fileItem.textContent);
+                    } else {
+                        let binStr = "";
+                        for (let i = 0; i < fileItem.binary.length; i++) {
+                            binStr += String.fromCharCode(fileItem.binary[i]);
+                        }
+                        contentBase64 = btoa(binStr);
+                    }
 
-                if(resCheck.status === 200) {
-                    const fileInfo = await resCheck.json();
-                    if(fileInfo && fileInfo.sha) sha = fileInfo.sha;
+                    let sha = null;
+                    const resCheck = await fetch(`${urlApi}?t=${Date.now()}`, { 
+                        headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" },
+                        cache: "no-store"
+                    });
+                    if(resCheck.status === 200) {
+                        const info = await resCheck.json();
+                        if(info && info.sha) sha = info.sha;
+                    }
+
+                    const bodyData = { message: `Dépôt ${fileItem.chemin}`, content: contentBase64 };
+                    if(sha) bodyData.sha = sha;
+
+                    const resPush = await fetch(urlApi, {
+                        method: "PUT",
+                        headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
+                        body: JSON.stringify(bodyData)
+                    });
+
+                    if(resPush.ok) succesCompteur++;
                 }
 
-                const bodyData = { 
-                    message: `Rapport de visite du ${dateAujourdhui} - ${chantierActuel.nom}`, 
-                    content: contentBase64 
-                };
-                if(sha) bodyData.sha = sha;
-
-                const resPush = await fetch(urlGitHub, {
-                    method: "PUT",
-                    headers: { 
-                        "Authorization": `token ${token}`, 
-                        "Accept": "application/vnd.github.v3+json",
-                        "Content-Type": "application/json" 
-                    },
-                    body: JSON.stringify(bodyData)
-                });
-
-                if(resPush.ok) {
-                    alert(`⏏️ Succès ! Le rapport du jour a été téléchargé en local ET sauvegardé sur le Cloud dans "${nomDossier}/${nomFichier}".`);
-                } else {
-                    const errJson = await resPush.json();
-                    alert(`⚠️ Rapport téléchargé en local, mais échec d'envoi Cloud GitHub (Code ${resPush.status}) : ${errJson.message || ''}`);
-                }
+                alert(`📦 Archive ZIP téléchargée en local ET ${succesCompteur}/${dossiersFichiersGitHub.length} fichier(s) synchronisé(s) sur le Cloud dans "${nomDossierChantier}/${nomSousDossierRapport}/" !`);
             } catch(e) {
-                alert(`⚠️ Rapport téléchargé en local, mais erreur réseau Cloud : ${e.message}`);
+                alert(`📦 Archive ZIP téléchargée en local, mais échec synchro Cloud : ${e.message}`);
             }
         } else {
-            alert("⏏️ Votre rapport de visite isolé du jour a été téléchargé en local.");
+            alert("📦 Archive ZIP téléchargée avec succès en local !");
         }
     }
 
-    function injecterHistoriqueRemarquesJson(event) {
+    /* FUSION D'UN RAPPORT DEPUIS UN FICHIER .ZIP OU .JSON */
+    async function injecterHistoriqueRemarquesJson(event) {
         const file = event.target.files[0];
         if (!file || !chantierActuel) return;
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const historiqueImporte = JSON.parse(e.target.result);
-                const pucesAInjecter = historiqueImporte.puces || historiqueImporte.constatations_puces || [];
+        try {
+            let pucesAInjecter = [];
+            let notesAInjecter = [];
+
+            if (file.name.endsWith('.zip')) {
+                const zip = await JSZip.loadAsync(file);
+                const rapportJsonFile = zip.file("rapport.json");
                 
-                if(pucesAInjecter.length === 0) {
-                    alert("⚠️ Aucun point ou aucune puce n'a été trouvé dans ce fichier historique.");
-                    return;
+                if (!rapportJsonFile) {
+                    return alert("❌ Fichier 'rapport.json' introuvable à la racine de cette archive ZIP.");
                 }
 
-                pucesAInjecter.forEach(p => {
-                    if (p.photo && (!p.photos || p.photos.length === 0)) {
-                        p.photos = [p.photo];
-                        delete p.photo;
+                const jsonText = await rapportJsonFile.async("string");
+                const rapportObj = JSON.parse(jsonText);
+
+                pucesAInjecter = rapportObj.constatations_puces || rapportObj.puces || [];
+                notesAInjecter = rapportObj.notes_associees || rapportObj.notes || [];
+
+                // Reconstitution des photos
+                for (let p of pucesAInjecter) {
+                    if (p.photos && p.photos.length > 0) {
+                        const photosReconstituees = [];
+                        for (let pPath of p.photos) {
+                            if (pPath.startsWith('photos/')) {
+                                const photoFileInZip = zip.file(pPath);
+                                if (photoFileInZip) {
+                                    const base64Str = await photoFileInZip.async("base64");
+                                    const mime = pPath.endsWith('.avif') ? 'image/avif' : (pPath.endsWith('.webp') ? 'image/webp' : 'image/jpeg');
+                                    photosReconstituees.push(`data:${mime};base64,${base64Str}`);
+                                }
+                            } else {
+                                photosReconstituees.push(pPath);
+                            }
+                        }
+                        p.photos = photosReconstituees;
                     }
-                    if(!p.photos) p.photos = [];
-                    if(p.resolue === undefined) p.resolue = false;
-                });
+                }
 
-                chantierActuel.puces = [...chantierActuel.puces, ...pucesAInjecter];
-                chantierActuel.puces.forEach((p, i) => p.numero = i + 1);
-
-                const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
-                if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-                localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
-
-                chargerPlanEtPucesDuNiveauActuel();
-                alert(`🎯 Succès ! ${pucesAInjecter.length} puces historiques ont été fusionnées sur vos plans.`);
-            } catch (err) {
-                alert("❌ Impossible de lire ce fichier historique. Vérifiez qu'il s'agit d'un fichier .json valide.");
+                // Reconstitution des croquis
+                for (let n of notesAInjecter) {
+                    if (n.croquis && n.croquis.startsWith('croquis/')) {
+                        const croquisFileInZip = zip.file(n.croquis);
+                        if (croquisFileInZip) {
+                            const base64Str = await croquisFileInZip.async("base64");
+                            n.croquis = `data:image/svg+xml;base64,${base64Str}`;
+                        }
+                    }
+                }
+            } else {
+                // Ancien format JSON direct
+                const jsonText = await file.text();
+                const rapportObj = JSON.parse(jsonText);
+                pucesAInjecter = rapportObj.constatations_puces || rapportObj.puces || [];
+                notesAInjecter = rapportObj.notes_associees || rapportObj.notes || [];
             }
-        };
-        reader.readAsText(file);
+
+            if (pucesAInjecter.length === 0 && notesAInjecter.length === 0) {
+                return alert("⚠️ Aucune remarque ou note valide trouvée dans ce rapport.");
+            }
+
+            // Normalisation et fusion
+            pucesAInjecter.forEach(p => {
+                if (p.photo && (!p.photos || p.photos.length === 0)) {
+                    p.photos = [p.photo];
+                    delete p.photo;
+                }
+                if(!p.photos) p.photos = [];
+                if(p.resolue === undefined) p.resolue = false;
+            });
+
+            chantierActuel.puces = [...chantierActuel.puces, ...pucesAInjecter];
+            chantierActuel.puces.forEach((p, i) => p.numero = i + 1);
+
+            if (notesAInjecter.length > 0) {
+                chantierActuel.notes = [...notesAInjecter, ...(chantierActuel.notes || [])];
+            }
+
+            const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
+            if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
+            localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+
+            chargerPlanEtPucesDuNiveauActuel();
+            rafraichirVueNotes();
+            alert(`🎯 Succès ! ${pucesAInjecter.length} puces et ${notesAInjecter.length} note(s) ont été fusionnées sur vos plans.`);
+
+        } catch (err) {
+            alert("❌ Impossible de décompresser ou lire ce fichier rapport. Détail : " + err.message);
+        }
         event.target.value = ""; 
     }
 
@@ -1137,9 +1252,7 @@
     }
 
     async function chargerIndexDepuisGitHub() {
-        const user = localStorage.getItem('git_user');
-        const repo = localStorage.getItem('git_repo');
-        const token = localStorage.getItem('git_token');
+        const { user, repo, token } = obtenirIdentifiantsGitHub();
         if(!user || !repo || !token) return alert("Identifiants non configurés.");
 
         const urlRoot = `https://api.github.com/repos/${user}/${repo}/contents/`;
