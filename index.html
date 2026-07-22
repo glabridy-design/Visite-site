@@ -717,7 +717,7 @@
             if(resPush.ok) alert(`☁️ Chantier "${chantierActuel.nom}" synchronisé avec succès dans "${nomDossier}/config.json" !`);
             else {
                 const errJson = await resPush.json();
-                alert(`⚠️ Erreur Cloud GitHub (${resPush.status}) : ${errJson.message || 'Échec d'envoi'}`);
+                    alert(`⚠️ Erreur Cloud GitHub (${resPush.status}) : ${errJson.message}`);
             }
         } catch(e) { alert("Erreur réseau : " + e.message); }
     }
