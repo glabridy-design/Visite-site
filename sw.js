@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-conducteur-v2';
+const CACHE_NAME = 'Rapport Visite V2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
