@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapport de Visite de Chantier</title>
     <link rel="manifest" href="manifest.json">
-    <!-- Librairie JSZip pour l'exportation et l'importation d'archives ZIP -->
+    <!-- Librairie JSZip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -63,25 +63,20 @@
         .chantier-card:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,0,0,0.08); border-color: #1a73e8; }
         .enterprise-badge { display: inline-flex; align-items: center; gap: 5px; background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; margin: 4px 4px 0 0; font-size: 13px; font-weight: 500; }
         
-        /* Bouton Supprimer sur la carte d'accueil */
         .btn-delete-card { position: absolute; top: 15px; right: 15px; background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
         .btn-delete-card:hover { background: #d93025; color: white; border-color: #d93025; }
 
-        /* Badges de Statut */
         .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
         .status-badge.active { background: #fadbd8; color: #c0392b; border: 1px solid #f5b7b1; }
         .status-badge.resolved { background: #d4efdf; color: #1e8449; border: 1px solid #a9dfbf; }
         .status-badge.late-task { background: #fadbd8; color: #d93025; border: 1px solid #f5b7b1; margin-left: 5px; }
 
-        /* Zones d'options et filtres */
         .map-filters-box { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; padding: 12px 15px; margin-top: 10px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .print-options-box { background: #edf2fa; border: 1px solid #b4cff7; border-radius: 8px; padding: 15px; margin-top: 25px; }
         .filter-checkbox-label { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; cursor: pointer; margin: 0; color: #4a4a4a; }
 
-        /* Config Cloud Box */
         .config-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
 
-        /* Plan interactif */
         .plan-wrapper { position: relative; width: 100%; overflow: auto; background: #eaeaea; border: 2px dashed #ccc; border-radius: 8px; margin-top: 10px; text-align: center; }
         .plan-container { position: relative; display: inline-block; max-width: 100%; }
         .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
@@ -90,7 +85,6 @@
         .pin.resolved { background: #28a745; }
         .pin.selected { z-index: 10; transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 0 3px rgba(26,115,232,0.6); }
         
-        /* Tableaux et Gantt */
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
         .table-remarques { width: 100%; border-collapse: collapse; min-width: 600px; }
         .table-remarques th, .table-remarques td { border: 1px solid #dadce0; padding: 10px; text-align: left; font-size: 14px; }
@@ -119,7 +113,6 @@
         .gantt-slider { width: 130px; cursor: pointer; }
         .gantt-badge-val { font-size: 12px; font-weight: bold; color: #1a73e8; min-width: 35px; }
 
-        /* Saisie photo multiple */
         .photo-gallery-wrapper { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; min-height: 90px; padding: 10px; border: 1px dashed #ccc; border-radius: 8px; background: #f8f9fa; }
         .photo-gallery-item { position: relative; width: 80px; height: 80px; border-radius: 6px; border: 1px solid #dadce0; background-size: cover; background-position: center; }
         .photo-gallery-del-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #d93025; color: white; border-radius: 50%; font-size: 12px; font-weight: bold; text-align: center; line-height: 18px; cursor: pointer; border: 1px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
@@ -127,12 +120,10 @@
         .entreprises-selection-list { max-height: 120px; overflow-y: auto; background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 10px; margin-top: 5px; }
         .entreprise-checkbox-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; cursor: pointer; }
 
-        /* STYLE ONGLET NOTES & CROQUIS */
         .note-card { background: #fff; border: 1px solid #dadce0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
         .note-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #f1f3f4; padding-bottom: 8px; flex-wrap: wrap; gap: 8px; }
         .note-sketch-img { max-width: 100%; max-height: 250px; border: 1px solid #ccc; border-radius: 6px; margin-top: 10px; display: block; background: #fff; }
         
-        /* POPUP MODALE SELECTION CLOUD & CROQUIS */
         .sketch-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 10px; }
         .sketch-modal-card { background: white; border-radius: 12px; padding: 15px; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 95vh; overflow-y: auto; }
         .sketch-canvas-container { border: 2px dashed #999; border-radius: 8px; background: white; touch-action: none; margin: 10px 0; overflow: hidden; text-align: center; width: 100%; }
@@ -144,7 +135,6 @@
         .cloud-report-item { padding: 12px; border: 1px solid #dadce0; border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
         .cloud-report-item:hover { background: #edf2fa; border-color: #1a73e8; }
 
-        /* ADAPTATIONS MOBILES ET SMARTPHONES (< 600px) */
         @media screen and (max-width: 600px) {
             .app-container { margin: 0; padding: 12px; border-radius: 0; }
             h1 { font-size: 20px; }
@@ -427,7 +417,7 @@
 <div id="cloudReportsModalOverlay" class="sketch-modal-overlay">
     <div class="sketch-modal-card">
         <h3 style="margin-top:0; color:#1a73e8;">🌐 Importer un Rapport Cloud (GitHub)</h3>
-        <p style="font-size:13px; color:#666;">Sélectionnez un rapport de visite antérieur présent dans le dossier Cloud de cette affaire :</p>
+        <p style="font-size:13px; color:#666;">Sélectionnez un rapport (.zip) présent dans le dossier Cloud de cette affaire :</p>
         
         <div id="listeRapportsCloudContainer" style="max-height: 250px; overflow-y: auto; margin: 15px 0;">Chargement...</div>
 
@@ -690,7 +680,7 @@
         try {
             const res = await fetch(url, { 
                 headers: { 
-                    "Authorization": `token ${token}`,
+                    "Authorization": `Bearer ${token}`,
                     "Accept": "application/vnd.github.v3.raw"
                 } 
             });
@@ -763,7 +753,7 @@
 
             const resCheck = await fetch(`${url}?t=${Date.now()}`, { 
                 headers: { 
-                    "Authorization": `token ${token}`,
+                    "Authorization": `Bearer ${token}`,
                     "Accept": "application/vnd.github.v3+json"
                 },
                 cache: "no-store"
@@ -783,7 +773,7 @@
             const resPush = await fetch(url, {
                 method: "PUT",
                 headers: { 
-                    "Authorization": `token ${token}`, 
+                    "Authorization": `Bearer ${token}`, 
                     "Accept": "application/vnd.github.v3+json",
                     "Content-Type": "application/json" 
                 },
@@ -813,33 +803,32 @@
         URL.revokeObjectURL(url);
     }
 
-    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI FICHIERS DÉCOUPLÉS (CLOUD GITHUB) */
+    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI DU FICHIER .ZIP SUR GITHUB (CLOUD) */
     async function exporterRapportDuJourIncr() {
         fermerMenuActions();
         if(!chantierActuel) return alert("Aucun chantier actif sélectionné.");
         
         const dateAujourdhui = new Date().toLocaleDateString('fr-FR').replace(/\//g, "-");
         const nomDossierChantier = obtenirNomDossierChantier(chantierActuel.nom);
-        const nomSousDossierRapport = `Rapport_visite_${dateAujourdhui}`;
+        const nomFichierZip = `Rapport_visite_${dateAujourdhui}.zip`;
 
         const zip = new JSZip();
-        const dossiersFichiersGitHub = []; 
 
         const pucesCopie = JSON.parse(JSON.stringify(chantierActuel.puces || []));
         const notesCopie = JSON.parse(JSON.stringify(chantierActuel.notes || []));
 
-        pucesCopie.forEach((p, idxPuce) => {
+        // 1. Extraction des photos terrain vers /photos/
+        pucesCopie.forEach((p) => {
             if (p.photos && p.photos.length > 0) {
                 const nouveauxChemins = [];
                 p.photos.forEach((photoDataUrl, idxPhoto) => {
-                    if (photoDataUrl.startsWith('data:')) {
+                    if (photoDataUrl && photoDataUrl.startsWith('data:')) {
                         const ext = photoDataUrl.includes('image/avif') ? 'avif' : (photoDataUrl.includes('image/webp') ? 'webp' : 'jpg');
                         const nomFichierPhoto = `puce_${p.numero}_photo_${idxPhoto + 1}.${ext}`;
                         const cheminRelatif = `photos/${nomFichierPhoto}`;
                         
                         const bytes = convertirDataUrlEnUint8Array(photoDataUrl);
                         zip.file(cheminRelatif, bytes);
-                        dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/${cheminRelatif}`, binary: bytes, isText: false });
 
                         nouveauxChemins.push(cheminRelatif);
                     } else {
@@ -850,6 +839,7 @@
             }
         });
 
+        // 2. Extraction des croquis vectoriels vers /croquis/
         notesCopie.forEach((n, idxNote) => {
             if (n.croquis && n.croquis.startsWith('data:')) {
                 const nomFichierCroquis = `croquis_note_${idxNote + 1}.svg`;
@@ -857,12 +847,12 @@
 
                 const bytes = convertirDataUrlEnUint8Array(n.croquis);
                 zip.file(cheminRelatif, bytes);
-                dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/${cheminRelatif}`, binary: bytes, isText: false });
 
                 n.croquis = cheminRelatif;
             }
         });
 
+        // 3. Fichier rapport.json ultra-léger
         const rapportJsonObj = {
             type_fichier: "rapport_visite_incremental",
             chantier_id: chantierActuel.id,
@@ -875,10 +865,10 @@
 
         const stringRapportJson = JSON.stringify(rapportJsonObj, null, 2);
         zip.file("rapport.json", stringRapportJson);
-        dossiersFichiersGitHub.push({ chemin: `${nomSousDossierRapport}/rapport.json`, textContent: stringRapportJson, isText: true });
 
+        // 4. Génération & Téléchargement du fichier ZIP Local
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        const zipNomFichierLocal = `${nomDossierChantier}_${nomSousDossierRapport}.zip`;
+        const zipNomFichierLocal = `${nomDossierChantier}_${nomFichierZip}`;
         
         const urlBlob = URL.createObjectURL(zipBlob);
         const a = document.createElement('a');
@@ -889,53 +879,56 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(urlBlob);
 
+        // 5. Envoi direct du fichier .ZIP sur GitHub (Si connecté)
         const { user, repo, token } = obtenirIdentifiantsGitHub();
 
         if(user && repo && token) {
-            let succesCompteur = 0;
             try {
-                for (let fileItem of dossiersFichiersGitHub) {
-                    const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${fileItem.chemin}`;
-                    
-                    let contentBase64 = "";
-                    if(fileItem.isText) {
-                        contentBase64 = convertirTexteEnBase64Utf8(fileItem.textContent);
-                    } else {
-                        let binStr = "";
-                        for (let i = 0; i < fileItem.binary.length; i++) {
-                            binStr += String.fromCharCode(fileItem.binary[i]);
-                        }
-                        contentBase64 = btoa(binStr);
-                    }
+                // Conversion du Blob ZIP en Uint8Array pour GitHub
+                const arrayBuffer = await zipBlob.arrayBuffer();
+                const bytes = new Uint8Array(arrayBuffer);
+                
+                let binStr = "";
+                const chunkSize = 32768;
+                for (let i = 0; i < bytes.length; i += chunkSize) {
+                    binStr += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+                }
+                const contentBase64 = btoa(binStr);
 
-                    let sha = null;
-                    const resCheck = await fetch(`${urlApi}?t=${Date.now()}`, { 
-                        headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" },
-                        cache: "no-store"
-                    });
-                    if(resCheck.status === 200) {
-                        const info = await resCheck.json();
-                        if(info && info.sha) sha = info.sha;
-                    }
+                const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomFichierZip}`;
 
-                    const bodyData = { message: `Dépôt ${fileItem.chemin}`, content: contentBase64 };
-                    if(sha) bodyData.sha = sha;
+                let sha = null;
+                const resCheck = await fetch(`${urlApi}?t=${Date.now()}`, { 
+                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" },
+                    cache: "no-store"
+                });
 
-                    const resPush = await fetch(urlApi, {
-                        method: "PUT",
-                        headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
-                        body: JSON.stringify(bodyData)
-                    });
-
-                    if(resPush.ok) succesCompteur++;
+                if(resCheck.status === 200) {
+                    const info = await resCheck.json();
+                    if(info && info.sha) sha = info.sha;
                 }
 
-                alert(`📦 Archive ZIP téléchargée en local ET ${succesCompteur}/${dossiersFichiersGitHub.length} fichier(s) synchronisé(s) sur le Cloud dans "${nomDossierChantier}/${nomSousDossierRapport}/" !`);
+                const bodyData = { message: `Dépôt rapport ${nomFichierZip}`, content: contentBase64 };
+                if(sha) bodyData.sha = sha;
+
+                const resPush = await fetch(urlApi, {
+                    method: "PUT",
+                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
+                    body: JSON.stringify(bodyData)
+                });
+
+                if(resPush.ok) {
+                    alert(`📦 Archive ZIP téléchargée en local ET synchronisée avec succès sur le Cloud dans "${nomDossierChantier}/${nomFichierZip}" !`);
+                } else {
+                    const errJson = await resPush.json();
+                    alert(`📦 Archive ZIP téléchargée en local, mais échec synchro Cloud (Code ${resPush.status}) : ${errJson.message || ''}`);
+                }
+
             } catch(e) {
-                alert(`📦 Archive ZIP téléchargée en local, mais échec synchro Cloud : ${e.message}`);
+                alert(`📦 Archive ZIP téléchargée en local, mais erreur technique Cloud : ${e.message}`);
             }
         } else {
-            alert("📦 Archive ZIP téléchargée avec succès en local !");
+            alert("📦 Archive ZIP téléchargée avec succès en local ! (Identifiants GitHub non renseignés pour la synchro Cloud)");
         }
     }
 
@@ -1005,7 +998,7 @@
         event.target.value = ""; 
     }
 
-    /* IMPORTATION ET FUSION DIRECTE DEPUIS LE CLOUD GITHUB */
+    /* IMPORTATION ET FUSION DIRECTE DEPUIS UN FICHIER .ZIP SUR LE CLOUD GITHUB */
     async function ouvrirModalSelectionRapportsCloud() {
         fermerMenuActions();
         if(!chantierActuel) return alert("Veuillez sélectionner un chantier actif.");
@@ -1014,29 +1007,29 @@
 
         const nomDossierChantier = obtenirNomDossierChantier(chantierActuel.nom);
         const container = document.getElementById('listeRapportsCloudContainer');
-        container.innerHTML = "🔍 Recherche des rapports sur le Cloud...";
+        container.innerHTML = "🔍 Recherche des rapports .zip sur le Cloud...";
         document.getElementById('cloudReportsModalOverlay').style.display = "flex";
 
         try {
             const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}`;
-            const res = await fetch(urlApi, { headers: { "Authorization": `token ${token}` } });
+            const res = await fetch(urlApi, { headers: { "Authorization": `Bearer ${token}` } });
             
             if(!res.ok) {
-                container.innerHTML = "<p style='color:#d93025;'>Aucun dossier de rapport trouvé pour ce chantier sur le Cloud.</p>";
+                container.innerHTML = "<p style='color:#d93025;'>Aucun sous-dossier trouvé pour ce chantier sur le Cloud.</p>";
                 return;
             }
 
             const items = await res.json();
-            const dossiersRapports = items.filter(i => i.type === "dir" && i.name.startsWith("Rapport_visite_"));
+            const fichiersZipRapports = items.filter(i => i.type === "file" && i.name.startsWith("Rapport_visite_") && i.name.endsWith(".zip"));
 
-            if(dossiersRapports.length === 0) {
-                container.innerHTML = "<p style='color:#666;'>Aucun rapport antérieur trouvé dans le sous-dossier Cloud.</p>";
+            if(fichiersZipRapports.length === 0) {
+                container.innerHTML = "<p style='color:#666;'>Aucun rapport antérieur (.zip) trouvé sur le Cloud.</p>";
                 return;
             }
 
-            container.innerHTML = dossiersRapports.map(d => `
-                <div class="cloud-report-item" onclick="importerRapportCloudParNomDossier('${d.name}')">
-                    <span>📁 <strong>${d.name.replace("Rapport_visite_", "Visite du ")}</strong></span>
+            container.innerHTML = fichiersZipRapports.map(f => `
+                <div class="cloud-report-item" onclick="importerRapportCloudParNomFichier('${f.name}')">
+                    <span>📦 <strong>${f.name.replace("Rapport_visite_", "Visite du ").replace(".zip", "")}</strong></span>
                     <button class="btn btn-small btn-success" style="padding:4px 8px; font-size:12px;">Télécharger &amp; Fusionner 📥</button>
                 </div>
             `).join('');
@@ -1050,54 +1043,57 @@
         document.getElementById('cloudReportsModalOverlay').style.display = "none";
     }
 
-    async function importerRapportCloudParNomDossier(nomDossierRapport) {
+    async function importerRapportCloudParNomFichier(nomFichierZip) {
         const { user, repo, token } = obtenirIdentifiantsGitHub();
         const nomDossierChantier = obtenirNomDossierChantier(chantierActuel.nom);
         
         fermerModalRapportsCloud();
-        alert(`📥 Téléchargement des médias et données du rapport "${nomDossierRapport}" depuis GitHub...`);
+        alert(`📥 Téléchargement de l'archive "${nomFichierZip}" depuis GitHub...`);
 
         try {
-            // 1. Lecture du rapport.json
-            const urlJson = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/rapport.json`;
-            const resJson = await fetch(urlJson, { headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3.raw" } });
-            if(!resJson.ok) throw new Error("Fichier 'rapport.json' introuvable dans ce dossier Cloud.");
+            const urlZip = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomFichierZip}`;
+            const resZip = await fetch(urlZip, { headers: { "Authorization": `Bearer ${token}` } });
+            if(!resZip.ok) throw new Error("Fichier ZIP introuvable sur le Cloud.");
             
-            const textJson = await resJson.text();
-            const rapportObj = JSON.parse(textJson);
+            const fileData = await resZip.json();
+            const base64Content = fileData.content.replace(/\n/g, '');
+            
+            // Décompression du ZIP en mémoire
+            const zip = await JSZip.loadAsync(base64Content, { base64: true });
+            const rapportJsonFile = zip.file("rapport.json");
+            if(!rapportJsonFile) throw new Error("Fichier 'rapport.json' manquant dans ce ZIP Cloud.");
+
+            const jsonText = await rapportJsonFile.async("string");
+            const rapportObj = JSON.parse(jsonText);
 
             let pucesAInjecter = rapportObj.constatations_puces || [];
             let notesAInjecter = rapportObj.notes_associees || [];
 
-            // 2. Reconstitution des photos depuis GitHub
+            // Reconstitution photos
             for (let p of pucesAInjecter) {
                 if (p.photos && p.photos.length > 0) {
                     const photosReconstituees = [];
                     for (let pPath of p.photos) {
                         if (pPath.startsWith('photos/')) {
-                            const urlMedia = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${pPath}`;
-                            const resMedia = await fetch(urlMedia, { headers: { "Authorization": `token ${token}` } });
-                            if(resMedia.ok) {
-                                const mediaData = await resMedia.json();
+                            const photoInZip = zip.file(pPath);
+                            if(photoInZip) {
+                                const b64 = await photoInZip.async("base64");
                                 const mime = pPath.endsWith('.avif') ? 'image/avif' : (pPath.endsWith('.webp') ? 'image/webp' : 'image/jpeg');
-                                photosReconstituees.push(`data:${mime};base64,${mediaData.content.replace(/\n/g, '')}`);
+                                photosReconstituees.push(`data:${mime};base64,${b64}`);
                             }
-                        } else {
-                            photosReconstituees.push(pPath);
-                        }
+                        } else { photosReconstituees.push(pPath); }
                     }
                     p.photos = photosReconstituees;
                 }
             }
 
-            // 3. Reconstitution des croquis depuis GitHub
+            // Reconstitution croquis
             for (let n of notesAInjecter) {
                 if (n.croquis && n.croquis.startsWith('croquis/')) {
-                    const urlCroquis = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${n.croquis}`;
-                    const resCroquis = await fetch(urlCroquis, { headers: { "Authorization": `token ${token}` } });
-                    if(resCroquis.ok) {
-                        const croquisData = await resCroquis.json();
-                        notesAInjecter.croquis = `data:image/svg+xml;base64,${croquisData.content.replace(/\n/g, '')}`;
+                    const croquisInZip = zip.file(n.croquis);
+                    if(croquisInZip) {
+                        const b64 = await croquisInZip.async("base64");
+                        n.croquis = `data:image/svg+xml;base64,${b64}`;
                     }
                 }
             }
@@ -1396,7 +1392,7 @@
 
         const urlRoot = `https://api.github.com/repos/${user}/${repo}/contents/`;
         try {
-            const res = await fetch(urlRoot, { headers: { "Authorization": `token ${token}` } });
+            const res = await fetch(urlRoot, { headers: { "Authorization": `Bearer ${token}` } });
             if(!res.ok) throw new Error("Code HTTP " + res.status);
             
             const tousLesElements = await res.json();
@@ -1412,7 +1408,7 @@
                 const configUrl = `https://api.github.com/repos/${user}/${repo}/contents/${d.name}/config.json`;
                 const resConfig = await fetch(configUrl, {
                     headers: {
-                        "Authorization": `token ${token}`,
+                        "Authorization": `Bearer ${token}`,
                         "Accept": "application/vnd.github.v3.raw"
                     }
                 });
