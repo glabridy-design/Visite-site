@@ -43,11 +43,9 @@
         input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-size: 16px; background: #f8f9fa; transition: border 0.2s; }
         input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
         
-        /* Flexbox */
         .flex-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
         .flex-row input { flex: 1; min-width: 200px; }
         
-        /* Boutons */
         .btn { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 15px; text-align: center; }
         .btn:hover { background: #1557b0; }
         .btn-success { background: #28a745; }
@@ -58,7 +56,6 @@
         .btn-warning:hover { background: #d35400; }
         .btn-small { width: auto; display: inline-block; padding: 8px 15px; font-size: 14px; margin: 0; }
         
-        /* Cartes Accueil */
         .chantier-card { position: relative; background: #fff; border: 1px solid #dadce0; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
         .chantier-card:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,0,0,0.08); border-color: #1a73e8; }
         .enterprise-badge { display: inline-flex; align-items: center; gap: 5px; background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; margin: 4px 4px 0 0; font-size: 13px; font-weight: 500; }
@@ -93,22 +90,17 @@
         .gantt-chart-container { background: #fff; border: 1px solid #dadce0; border-radius: 8px; padding: 15px; margin-top: 15px; overflow-x: auto; }
         .gantt-row { display: flex; flex-direction: column; border-bottom: 1px solid #f1f3f4; padding: 12px 0; font-size: 14px; }
         .gantt-row:last-child { border-bottom: none; }
-        
         .gantt-row.collapsed-child { display: none !important; }
-        
         .gantt-row-main { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; flex-wrap: wrap; }
         .gantt-col-name { width: 100%; max-width: 300px; padding-right: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
         .gantt-col-name.summary-clickable { cursor: pointer; user-select: none; }
         .gantt-col-name.summary-clickable:hover { color: #1a73e8; text-decoration: underline; }
-        
         .gantt-col-bar-container { flex: 1; display: flex; align-items: center; gap: 10px; justify-content: flex-end; min-width: 250px; }
         .gantt-progress-track { width: 140px; height: 16px; background: #e8eaed; border-radius: 8px; overflow: hidden; position: relative; }
         .gantt-progress-bar { height: 100%; background: #1a73e8; border-radius: 8px 0 0 8px; transition: width 0.3s; }
         .gantt-progress-bar.summary { background: #24292e; }
         .gantt-progress-bar.late { background: #d93025; }
         .gantt-dates { font-size: 11px; color: #5f6368; white-space: nowrap; width: 140px; text-align: right; }
-
         .gantt-pilotage-control { display: flex; align-items: center; gap: 10px; margin-top: 8px; background: #f8f9fa; padding: 6px 12px; border-radius: 6px; width: fit-content; border: 1px solid #e0e0e0; }
         .gantt-slider { width: 130px; cursor: pointer; }
         .gantt-badge-val { font-size: 12px; font-weight: bold; color: #1a73e8; min-width: 35px; }
@@ -559,18 +551,87 @@
     let polygonesCroquisActuel = [];
     let traitEnCours = null;
 
+    /* ==========================================================================
+       1. MOTEUR INDEXEDDB (STOCKAGE LOCAL ULTRA-HAUTE CAPACITÉ & SANS LAG)
+       ========================================================================== */
+    function ouvrirDB() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open("PWA_ConducteurChantier_DB", 1);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains("chantiers")) {
+                    db.createObjectStore("chantiers", { keyPath: "id" });
+                }
+            };
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    async function rechargerTousChantiersDepuisIndexedDB() {
+        try {
+            const db = await ouvrirDB();
+            const tx = db.transaction("chantiers", "readonly");
+            const store = tx.objectStore("chantiers");
+            const req = store.getAll();
+            return new Promise((resolve) => {
+                req.onsuccess = () => resolve(req.result || []);
+            });
+        } catch(e) {
+            return [];
+        }
+    }
+
+    async function sauvegarderTousChantiersDansIndexedDB(tableauChantiers) {
+        try {
+            const db = await ouvrirDB();
+            const tx = db.transaction("chantiers", "readwrite");
+            const store = tx.objectStore("chantiers");
+            store.clear();
+            tableauChantiers.forEach(c => store.put(c));
+        } catch(e) { console.error("Erreur d'écriture IndexedDB :", e); }
+    }
+
+    async function sauvegarderUnChantierDansIndexedDB(chantierObj) {
+        try {
+            const db = await ouvrirDB();
+            const tx = db.transaction("chantiers", "readwrite");
+            tx.objectStore("chantiers").put(chantierObj);
+        } catch(e) { console.error("Erreur sauvegarde unique :", e); }
+    }
+
+    /* ==========================================================================
+       2. INITIALISATION ET SERVICE WORKER PWA
+       ========================================================================== */
     window.addEventListener('DOMContentLoaded', async () => {
+        // Enregistrement du Service Worker PWA (Hors-ligne)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(() => {
+                console.log('✅ Service Worker PWA opérationnel');
+            }).catch(err => console.log('SW ERREUR :', err));
+        }
+
         await chargerVariablesEnvironnement();
 
         document.getElementById('cloudUser').value = localStorage.getItem('git_user') || '';
         document.getElementById('cloudRepo').value = localStorage.getItem('git_repo') || '';
         document.getElementById('cloudToken').value = localStorage.getItem('git_token') || '';
         
-        const localData = localStorage.getItem('liste_chantiers_pwa');
-        if(localData) {
-            listeTousChantiers = JSON.parse(localData);
-            rafraichirVueAccueil();
+        // Migration automatique du localStorage vers IndexedDB si présent
+        const legacyData = localStorage.getItem('liste_chantiers_pwa');
+        if (legacyData) {
+            try {
+                const parsed = JSON.parse(legacyData);
+                if (parsed.length > 0) {
+                    await sauvegarderTousChantiersDansIndexedDB(parsed);
+                    localStorage.removeItem('liste_chantiers_pwa');
+                }
+            } catch(e) {}
         }
+
+        listeTousChantiers = await rechargerTousChantiersDepuisIndexedDB();
+        rafraichirVueAccueil();
+
         await chargerCharteDepuisGitHub();
         initialiserModuleCroquisCanvas();
 
@@ -582,7 +643,7 @@
         });
     });
 
-    /* CONVERTISSEUR UTF-8 EN BASE64 HAUTE PERFORMANCE (PAR CHUNKS) */
+    /* CONVERTISSEURS UTILES */
     function convertirTexteEnBase64Utf8(texteData) {
         const bytes = new TextEncoder().encode(texteData);
         let binStr = "";
@@ -739,7 +800,7 @@
         const index = listeTousChantiers.findIndex(c => c.id == chantierActuel.id || c.folderName == nomDossier);
         if(index !== -1) listeTousChantiers[index] = chantierActuel;
 
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        await sauvegarderUnChantierDansIndexedDB(chantierActuel);
         rafraichirVueAccueil();
 
         const { user, repo, token } = obtenirIdentifiantsGitHub();
@@ -884,7 +945,6 @@
 
         if(user && repo && token) {
             try {
-                // Conversion du Blob ZIP en Uint8Array pour GitHub
                 const arrayBuffer = await zipBlob.arrayBuffer();
                 const bytes = new Uint8Array(arrayBuffer);
                 
@@ -990,7 +1050,7 @@
                 notesAInjecter = rapportObj.notes_associees || rapportObj.notes || [];
             }
 
-            appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter);
+            await appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter);
 
         } catch (err) {
             alert("❌ Impossible de décompresser ou lire ce fichier rapport. Détail : " + err.message);
@@ -1058,7 +1118,6 @@
             const fileData = await resZip.json();
             const base64Content = fileData.content.replace(/\n/g, '');
             
-            // Décompression du ZIP en mémoire
             const zip = await JSZip.loadAsync(base64Content, { base64: true });
             const rapportJsonFile = zip.file("rapport.json");
             if(!rapportJsonFile) throw new Error("Fichier 'rapport.json' manquant dans ce ZIP Cloud.");
@@ -1069,7 +1128,6 @@
             let pucesAInjecter = rapportObj.constatations_puces || [];
             let notesAInjecter = rapportObj.notes_associees || [];
 
-            // Reconstitution photos
             for (let p of pucesAInjecter) {
                 if (p.photos && p.photos.length > 0) {
                     const photosReconstituees = [];
@@ -1087,7 +1145,6 @@
                 }
             }
 
-            // Reconstitution croquis
             for (let n of notesAInjecter) {
                 if (n.croquis && n.croquis.startsWith('croquis/')) {
                     const croquisInZip = zip.file(n.croquis);
@@ -1098,14 +1155,14 @@
                 }
             }
 
-            appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter);
+            await appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter);
 
         } catch(e) {
             alert(`❌ Échec de téléchargement du rapport Cloud : ${e.message}`);
         }
     }
 
-    function appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter) {
+    async function appliquerFusionDonneesRapport(pucesAInjecter, notesAInjecter) {
         if (pucesAInjecter.length === 0 && notesAInjecter.length === 0) {
             return alert("⚠️ Aucune remarque ou note valide trouvée dans ce rapport.");
         }
@@ -1128,7 +1185,8 @@
 
         const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
         if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        
+        await sauvegarderUnChantierDansIndexedDB(chantierActuel);
 
         chargerPlanEtPucesDuNiveauActuel();
         rafraichirVueNotes();
@@ -1140,7 +1198,7 @@
         if(!file || !chantierActuel) return;
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             try {
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
@@ -1176,7 +1234,8 @@
                 chantierActuel.planning = listeTachesParsees;
                 const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
                 if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-                localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+                
+                await sauvegarderUnChantierDansIndexedDB(chantierActuel);
 
                 summaryTasksRepliees = {};
 
@@ -1284,17 +1343,18 @@
         document.getElementById(`progressBadgeLive-${indexTableau}`).innerText = valEntiere + "%";
     }
 
-    function sauvegarderAvancementsGanttEnLocal() {
+    async function sauvegarderAvancementsGanttEnLocal() {
         if(!chantierActuel) return;
         const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
         if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        
+        await sauvegarderUnChantierDansIndexedDB(chantierActuel);
         
         dessinerPlanningGantt();
         alert("💾 Vos modifications d'avancement de planning ont été enregistrées avec succès !");
     }
 
-    function supprimerPlanningChantierActuelDefinitif() {
+    async function supprimerPlanningChantierActuelDefinitif() {
         if(!chantierActuel) return;
         
         const conf1 = confirm(`Êtes-vous sûr de vouloir supprimer TOUT le planning associé au chantier "${chantierActuel.nom}" ?`);
@@ -1306,7 +1366,8 @@
                 
                 const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
                 if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-                localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+                
+                await sauvegarderUnChantierDansIndexedDB(chantierActuel);
                 
                 dessinerPlanningGantt(); 
                 alert("🗑️ Le planning a été entièrement effacé de ce chantier ! Vous pouvez à présent charger un nouveau fichier .xml propre.");
@@ -1325,7 +1386,7 @@
         }
     }
 
-    function injecterNiveauDirectDansFichierSource() {
+    async function injecterNiveauDirectDansFichierSource() {
         const inputNom = document.getElementById('nomNiveauDirectInput');
         const nomNiv = inputNom.value.trim();
 
@@ -1338,7 +1399,8 @@
 
         const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
         if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        
+        await sauvegarderUnChantierDansIndexedDB(chantierActuel);
 
         document.getElementById('selectNiveauVisite').innerHTML = chantierActuel.niveaux.map((n, i) => `<option value="${i}">${n.nom}</option>`).join('');
         indexNiveauActuel = chantierActuel.niveaux.length - 1;
@@ -1357,7 +1419,7 @@
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             try {
                 const donneesImportees = JSON.parse(e.target.result);
                 if(!donneesImportees.nom || !donneesImportees.niveaux) {
@@ -1374,7 +1436,7 @@
                     listeTousChantiers.push(donneesImportees);
                 }
 
-                localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+                await sauvegarderUnChantierDansIndexedDB(donneesImportees);
                 rafraichirVueAccueil();
                 ouvrirEtChargerChantier(donneesImportees.id);
                 alert(`📁 Chantier "${donneesImportees.nom}" importé !`);
@@ -1423,12 +1485,13 @@
                         const idx = listeTousChantiers.findIndex(x => x.id == cObj.id || x.folderName == d.name);
                         if(idx !== -1) listeTousChantiers[idx] = cObj;
                         else listeTousChantiers.push(cObj);
+                        
+                        await sauvegarderUnChantierDansIndexedDB(cObj);
                         nbCharges++;
                     } catch(e) {}
                 }
             }
 
-            localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
             rafraichirVueAccueil();
             alert(`✅ Synchronisation réussie : ${nbCharges} dossier(s) de chantier téléchargé(s) !`);
         } catch(e) {
@@ -1464,7 +1527,7 @@
         }
     }
 
-    function sauvegarderChantier(e) {
+    async function sauvegarderChantier(e) {
         e.preventDefault();
         if(niveauxTemporaires.length === 0) return alert("Ajoutez au moins un niveau.");
         const nouveauNom = document.getElementById('nom').value.trim();
@@ -1478,7 +1541,8 @@
         };
         
         listeTousChantiers.push(nouveauChantier);
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        await sauvegarderUnChantierDansIndexedDB(nouveauChantier);
+
         document.getElementById('formChantier').reset();
         niveauxTemporaires = []; entreprisesTemporaires = [];
         document.getElementById('listeNiveauxTemporaire').innerHTML = "";
@@ -1500,7 +1564,7 @@
         `).join('');
     }
 
-    function supprimerChantierDefinitif(event, idTarget, nomChantier) {
+    async function supprimerChantierDefinitif(event, idTarget, nomChantier) {
         event.stopPropagation();
         
         const confirmation1 = confirm(`Êtes-vous sûr de vouloir supprimer définitivement le chantier "${nomChantier}" de cet appareil ?`);
@@ -1508,7 +1572,11 @@
             const confirmation2 = confirm(`⚠️ ATTENTION : Cette action effacera toutes les puces, photos et plannings associés à ce chantier de manière irréversible. Confirmer ?`);
             if (confirmation2) {
                 listeTousChantiers = listeTousChantiers.filter(c => c.id != idTarget);
-                localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+                
+                const db = await ouvrirDB();
+                const tx = db.transaction("chantiers", "readwrite");
+                tx.objectStore("chantiers").delete(parseFloat(idTarget) || idTarget);
+
                 rafraichirVueAccueil();
             }
         }
@@ -1637,24 +1705,25 @@
         sauvegarderLocalEtMettreAJourNotes(false);
     }
 
-    function supprimerNoteIndex(index) {
+    async function supprimerNoteIndex(index) {
         if(!chantierActuel || !chantierActuel.notes[index]) return;
         if(confirm("Voulez-vous vraiment supprimer cette note ?")) {
             chantierActuel.notes.splice(index, 1);
-            sauvegarderLocalEtMettreAJourNotes(true);
+            await sauvegarderLocalEtMettreAJourNotes(true);
         }
     }
 
-    function supprimerCroquisDeNote(index) {
+    async function supprimerCroquisDeNote(index) {
         if(!chantierActuel || !chantierActuel.notes[index]) return;
         chantierActuel.notes[index].croquis = null;
-        sauvegarderLocalEtMettreAJourNotes(true);
+        await sauvegarderLocalEtMettreAJourNotes(true);
     }
 
-    function sauvegarderLocalEtMettreAJourNotes(rafraichirRendu = true) {
+    async function sauvegarderLocalEtMettreAJourNotes(rafraichirRendu = true) {
         const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
         if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        
+        await sauvegarderUnChantierDansIndexedDB(chantierActuel);
         if(rafraichirRendu) rafraichirVueNotes();
     }
 
@@ -1784,7 +1853,7 @@
         polygonesCroquisActuel = [];
     }
 
-    function validerEtSauvegarderCroquis() {
+    async function validerEtSauvegarderCroquis() {
         if(idNoteCroquisEnCours === null || !chantierActuel.notes[idNoteCroquisEnCours]) return;
         const canvas = document.getElementById('sketchCanvas');
 
@@ -1798,7 +1867,7 @@
         const svgBase64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgBrut)));
 
         chantierActuel.notes[idNoteCroquisEnCours].croquis = svgBase64;
-        sauvegarderLocalEtMettreAJourNotes(true);
+        await sauvegarderLocalEtMettreAJourNotes(true);
         fermerFenetreCroquis();
     }
 
@@ -1928,7 +1997,7 @@
         }
     }
     
-    function sauvegarderDonniesPuce() {
+    async function sauvegarderDonniesPuce() {
         const p = chantierActuel.puces.find(p => p.id === puceSelectionneeId);
         if(p) {
             p.commentaire = document.getElementById('commentairePuce').value; 
@@ -1939,20 +2008,24 @@
 
             document.getElementById('zoneSaisiePuce').style.display = 'none'; puceSelectionneeId = null;
             rafraichirTableauRemarques(); rafraichirPucesGraphiques();
+            
             const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
             if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-            localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+            
+            await sauvegarderUnChantierDansIndexedDB(chantierActuel);
         }
     }
     
-    function supprimerPuceActuelle() {
+    async function supprimerPuceActuelle() {
         chantierActuel.puces = chantierActuel.puces.filter(p => p.id !== puceSelectionneeId);
         chantierActuel.puces.forEach((p, i) => p.numero = i + 1);
         document.getElementById('zoneSaisiePuce').style.display = 'none'; puceSelectionneeId = null;
         rafraichirPucesGraphiques(); rafraichirTableauRemarques();
+        
         const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
         if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-        localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+        
+        await sauvegarderUnChantierDansIndexedDB(chantierActuel);
     }
     
     function rafraichirTableauRemarques() {
@@ -1980,7 +2053,7 @@
         tbody.innerHTML = html || "<tr><td colspan='6'>Aucune reserve ne correspond aux filtres actifs</td></tr>";
     }
     
-    function ajouterEntrepriseDirectTerrain() {
+    async function ajouterEntrepriseDirectTerrain() {
         const input = document.getElementById('nomEntrepriseTerrainInput');
         const nom = input.value.trim();
         if(nom && chantierActuel) {
@@ -1990,7 +2063,7 @@
                 input.value = "";
                 const idx = listeTousChantiers.findIndex(c => c.id == chantierActuel.id);
                 if(idx !== -1) listeTousChantiers[idx] = chantierActuel;
-                localStorage.setItem('liste_chantiers_pwa', JSON.stringify(listeTousChantiers));
+                await sauvegarderUnChantierDansIndexedDB(chantierActuel);
             }
         }
     }
