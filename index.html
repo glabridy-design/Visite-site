@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapport de Visite de Chantier</title>
     <link rel="manifest" href="manifest.json">
-    <!-- Librairie JSZip pour l'exportation et l'importation d'archives ZIP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- JSZip chargé en local pour une autonomie 100% Hors-Ligne -->
+    <script src="jszip.min.js"></script>
+
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; color: #333; }
@@ -1138,7 +1140,6 @@
         alert(`📥 Téléchargement des médias et données du rapport "${nomDossierRapport}" depuis GitHub...`);
 
         try {
-            // 1. Lecture du rapport.json
             const urlJson = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/rapport.json`;
             const resJson = await fetch(urlJson, { headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3.raw" } });
             if(!resJson.ok) throw new Error("Fichier 'rapport.json' introuvable dans ce dossier Cloud.");
@@ -1149,7 +1150,6 @@
             let pucesAInjecter = rapportObj.constatations_puces || [];
             let notesAInjecter = rapportObj.notes_associees || [];
 
-            // 2. Reconstitution des photos
             for (let p of pucesAInjecter) {
                 if (p.photos && p.photos.length > 0) {
                     const photosReconstituees = [];
@@ -1170,7 +1170,6 @@
                 }
             }
 
-            // 3. Reconstitution des croquis
             for (let n of notesAInjecter) {
                 if (n.croquis && n.croquis.startsWith('croquis/')) {
                     const urlCroquis = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${n.croquis}`;
