@@ -1,13 +1,12 @@
-const CACHE_NAME = 'Rapport de visite';
+const CACHE_NAME = 'pwa-conducteur-v2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './manifest.json',
-    'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
-    './jszip.min.js'    
+    './jszip.min.js' // <-- Fichier local autonome mis en cache
 ];
 
-// Installation du Service Worker et mise en cache des fichiers de base
+// Installation du Service Worker
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -33,9 +32,9 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Stratégie : Cache-First avec Fallback Réseau (Pour un accès instantané hors-ligne)
+// Stratégie Offline : Cache-First
 self.addEventListener('fetch', (event) => {
-    // Ne pas intercepter les requêtes directes vers l'API GitHub pour garder la synchro live
+    // Ne pas intercepter les requêtes API GitHub
     if (event.request.url.includes('api.github.com')) {
         return;
     }
