@@ -1,43 +1,59 @@
-const CACHE_NAME = 'Rapport-visite-chantier-v5'; // On change le nom pour forcer la mise à jour
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './sw.js',
-  './icon.png'
+const CACHE_NAME = 'pwa-conducteur-v1';
+const ASSETS_TO_CACHE = [
+    './',
+    './index.html',
+    './manifest.json',
+    'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
 ];
 
-// Installation : Mise en cache des fichiers de base
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    }).then(() => self.skipWaiting()) // Force l'activation immédiate
-  );
-});
-
-// Activation : Nettoyage automatique des anciens caches obsolètes
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+// Installation du Service Worker et mise en cache des fichiers de base
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(ASSETS_TO_CACHE);
         })
-      );
-    }).then(() => self.clients.claim())
-  );
+    );
+    self.skipWaiting();
 });
 
-// Stratégie réseau d'abord pour GitHub, sinon secours sur le cache hors-ligne
-self.addEventListener('fetch', (e) => {
-  // On laisse filer les requêtes vers l'API GitHub sans les bloquer dans le cache
-  if (e.request.url.includes('api.github.com')) {
-    return;
-  }
-  e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
-  );
+// Nettoyage des anciens caches
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim();
+});
+
+// Stratégie : Cache-First avec Fallback Réseau (Pour un accès instantané hors-ligne)
+self.addEventListener('fetch', (event) => {
+    // Ne pas intercepter les requêtes directes vers l'API GitHub pour garder la synchro live
+    if (event.request.url.includes('api.github.com')) {
+        return;
+    }
+
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+            return fetch(event.request).then((networkResponse) => {
+                if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+                    return networkResponse;
+                }
+                const responseToCache = networkResponse.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseToCache);
+                });
+                return networkResponse;
+            });
+        })
+    );
 });
