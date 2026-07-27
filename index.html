@@ -163,24 +163,20 @@
         }
 
         @media print {
-            /* Marge à 0 = Force Safari et Chrome à masquer les en-têtes/URL */
             @page { 
                 size: auto; 
                 margin: 0 !important; 
             }
-            
             body { 
                 background: white; 
                 color: black; 
                 font-size: 11pt; 
-                /* Les marges du document sont reportées ici pour ne pas coller au papier */
                 padding: 2mm !important; 
             }
-
             .app-container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; border: none; }
             .section, .nav-bar, .no-print, form, button, input, textarea, select, .config-box, .tabs-container, .map-filters-box, .print-options-box, .gantt-pilotage-control { display: none !important; }
             #printTemplate { display: block !important; }
-            .page-break { page-break-before: always; }
+            .page-break { page-break-before: always; break-before: page; }
             h1, h2, h3 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; margin-top: 20px; }
             .pdf-table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: avoid; }
             .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; font-size: 10pt; text-align: left; }
@@ -210,7 +206,7 @@
             .status-badge.late-task { background-color: #ffcccc !important; color: #d93025 !important; border: 1px solid #d93025 !important; }
 
             .first-page-only { page-break-inside: avoid; }
-                }
+        }
         #printTemplate { display: none; }
     </style>
 </head>
@@ -219,7 +215,7 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1>Rapport visite de Site V4</h1>
+        <h1>Rapport Visite Site V1.0</h1>
         
         <div class="config-box">
             <strong>🔑 Synchronisation Multi-Appareil GitHub :</strong><br>
@@ -2211,12 +2207,10 @@
         rafraichirPucesGraphiques(); selectionnerPuce(nPuce.id);
     }
 
-    // NOUVELLE FONCTION : Permet d'ouvrir une puce depuis le tableau même si on change de niveau
     function selectionnerPuceDepuisTableau(idPuce) {
         const p = chantierActuel.puces.find(item => item.id == idPuce);
         if (!p) return;
 
-        // Si la puce est sur un autre niveau, on bascule automatiquement sur le bon niveau
         const idxNiveau = chantierActuel.niveaux.findIndex(n => n.nom === p.niveauNom);
         if (idxNiveau !== -1 && idxNiveau !== indexNiveauActuel) {
             indexNiveauActuel = idxNiveau;
@@ -2224,10 +2218,7 @@
             chargerPlanEtPucesDuNiveauActuel();
         }
 
-        // Sélection de la puce
         selectionnerPuce(p.id);
-
-        // Défilement doux jusqu'à la zone d'édition/plan
         document.getElementById('zoneSaisiePuce').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     
@@ -2498,7 +2489,6 @@
             const entGlobale = p.entreprises && p.entreprises.length > 0 ? `<div style="font-size:12px; color:#1a73e8;">Lot(s) : ${p.entreprises.join(', ')}</div>` : '';
             const obsText = p.commentaire ? `<div>${p.commentaire}</div>` : '';
 
-            // Rendu de la ligne avec événement onclick direct
             html += `
                 <tr class="clickable-row" ${styleLigne} onclick="selectionnerPuceDepuisTableau(${p.id})">
                     <td><b>Puce ${p.numero}</b></td>
@@ -2537,7 +2527,7 @@
 
     function fermerChantierActuel() { chantierActuel = null; changerPage('pageAccueil'); }
 
-    /* IMPRESSION PDF */
+    /* IMPRESSION PDF AVEC GESTION DES SAUTS DE PAGE SUR PLAN */
     function declencherImpression() {
         fermerMenuActions();
         if (!chantierActuel) return;
@@ -2566,13 +2556,31 @@
             document.getElementById('pdfHeaderPlans').innerText = `${compteurChapitreIndex}. Plans de situation & Implantation des puces`;
             compteurChapitreIndex++;
 
-            const pdfPlansMultiples = document.getElementById('pdfPlansMultiples'); pdfPlansMultiples.innerHTML = "";
-            chantierActuel.niveaux.forEach(niv => {
-                const blockNiveau = document.createElement('div'); blockNiveau.style.marginBottom = "30px"; blockNiveau.style.pageBreakInside = "avoid";
-                blockNiveau.innerHTML = `<h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-top:20px;">Niveau : ${niv.nom}</h3>`;
-                const ctn = document.createElement('div'); ctn.className = "plan-container"; ctn.style.border = "1px solid #ccc"; ctn.style.padding = "5px";
-                const img = document.createElement('img'); img.className = "plan-img"; img.src = niv.plan;
+            const pdfPlansMultiples = document.getElementById('pdfPlansMultiples'); 
+            pdfPlansMultiples.innerHTML = "";
+
+            chantierActuel.niveaux.forEach((niv, idxNiveau) => {
+                const blockNiveau = document.createElement('div'); 
+                blockNiveau.style.marginBottom = "20px";
+                
+                // Saut de page automatique après chaque plan (sauf le tout dernier)
+                if (idxNiveau < chantierActuel.niveaux.length - 1) {
+                    blockNiveau.style.pageBreakAfter = "always";
+                    blockNiveau.style.breakAfter = "page";
+                }
+
+                blockNiveau.innerHTML = `<h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-top:15px; font-size:11pt;">Niveau : ${niv.nom}</h3>`;
+                
+                const ctn = document.createElement('div'); 
+                ctn.className = "plan-container"; 
+                ctn.style.border = "1px solid #ccc"; 
+                ctn.style.padding = "5px";
+
+                const img = document.createElement('img'); 
+                img.className = "plan-img"; 
+                img.src = niv.plan;
                 ctn.appendChild(img);
+
                 chantierActuel.puces.forEach(p => {
                     if (p.niveauNom === niv.nom) {
                         const st = normaliserStatutPuce(p);
@@ -2586,11 +2594,15 @@
 
                         const pin = document.createElement('div'); 
                         pin.className = 'pin' + classPin; 
-                        pin.style.left = p.x + '%'; pin.style.top = p.y + '%'; pin.innerText = p.numero;
+                        pin.style.left = p.x + '%'; 
+                        pin.style.top = p.y + '%'; 
+                        pin.innerText = p.numero;
                         ctn.appendChild(pin);
                     }
                 });
-                blockNiveau.appendChild(ctn); pdfPlansMultiples.appendChild(blockNiveau);
+
+                blockNiveau.appendChild(ctn); 
+                pdfPlansMultiples.appendChild(blockNiveau);
             });
         } else {
             blockPlans.style.display = "none";
