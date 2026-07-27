@@ -93,10 +93,13 @@
         .task-item-card.done { opacity: 0.65; background: #f8f9fa; }
         .task-item-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
 
+        /* Lignes de tableau cliquables */
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
         .table-remarques { width: 100%; border-collapse: collapse; min-width: 600px; }
         .table-remarques th, .table-remarques td { border: 1px solid #dadce0; padding: 10px; text-align: left; font-size: 14px; }
         .table-remarques th { background: #f1f3f4; }
+        .table-remarques tr.clickable-row { cursor: pointer; transition: background 0.15s; }
+        .table-remarques tr.clickable-row:hover { background-color: #edf2fa !important; }
         
         .gantt-chart-container { background: #fff; border: 1px solid #dadce0; border-radius: 8px; padding: 15px; margin-top: 15px; overflow-x: auto; }
         .gantt-row { display: flex; flex-direction: column; border-bottom: 1px solid #f1f3f4; padding: 12px 0; font-size: 14px; }
@@ -204,7 +207,7 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1>Visite Site V3</h1>
+        <h1>Conducteur de Chantier PWA</h1>
         
         <div class="config-box">
             <strong>🔑 Synchronisation Multi-Appareil GitHub :</strong><br>
@@ -356,7 +359,7 @@
                 <label for="zonePuceInput">Localisation Spécifique (Pièce / Zone) :</label>
                 <input type="text" id="zonePuceInput" placeholder="Ex: Logement 102, Couloir, Gaine technique...">
 
-                <!-- NOUVELLE SECTION DE GESTION MULTI-TÂCHES AVEC DATES BUTOIRES -->
+                <!-- SECTION MULTI-TÂCHES AVEC DATES BUTOIRES -->
                 <div style="background:#fff; border:1px solid #b4cff7; padding:12px; border-radius:8px; margin: 15px 0;">
                     <h4 style="margin: 0 0 8px 0; color:#1a73e8;">📋 Actions à mener / Tâches associées</h4>
                     <p style="font-size:12px; color:#666; margin-top:0;">Définissez les tâches, entreprises responsables et échéances précises pour cette puce.</p>
@@ -390,7 +393,7 @@
             <div class="table-responsive">
                 <table class="table-remarques">
                     <thead>
-                        <tr><th>N°</th><th>Niveau / Zone</th><th>Photos</th><th>Statut</th><th>Entreprises &amp; Tâches / Constats</th><th>Date</th></tr>
+                        <tr><th>N°</th><th>Niveau / Zone</th><th>Photos</th><th>Statut</th><th>Entreprises &amp; Tâches / Constats</th><th>Date</th><th>Action</th></tr>
                     </thead>
                     <tbody id="corpsTableauRemarques"></tbody>
                 </table>
@@ -613,7 +616,7 @@
     let planEnCoursDeChargementBase64 = ""; 
     let planDirectTerrainBase64 = "";
     let photosPuceTemporairesTableau = []; 
-    let tachesPuceTemporairesTableau = []; // Tâches d'actions pour la puce en cours d'édition
+    let tachesPuceTemporairesTableau = [];
     let chantierActuel = null; 
     let indexNiveauActuel = 0; 
     let puceSelectionneeId = null;
@@ -732,7 +735,6 @@
         return "active";
     }
 
-    // Calcule si une tâche ou une puce contient un retard par rapport à la date d'aujourd'hui
     function evaluerRetardTache(tache) {
         if (tache.faite) return { enRetard: false, joursRetard: 0 };
         if (!tache.echeance) return { enRetard: false, joursRetard: 0 };
@@ -978,7 +980,7 @@
         URL.revokeObjectURL(url);
     }
 
-    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI DÉCOUPLÉ ET SÉQUENTIEL SUR GITHUB (CLOUD) */
+    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI DÉCOUPLÉ SUR GITHUB (CLOUD) */
     async function exporterRapportDuJourIncr() {
         fermerMenuActions();
         if(!chantierActuel) return alert("Aucun chantier actif sélectionné.");
@@ -993,7 +995,6 @@
         const pucesCopie = JSON.parse(JSON.stringify(chantierActuel.puces || []));
         const notesCopie = JSON.parse(JSON.stringify(chantierActuel.notes || []));
 
-        // 1. Traitement des photos
         pucesCopie.forEach((p) => {
             if (p.photos && p.photos.length > 0) {
                 const nouveauxChemins = [];
@@ -1022,7 +1023,6 @@
             }
         });
 
-        // 2. Traitement des croquis
         notesCopie.forEach((n, idxNote) => {
             if (n.croquis && n.croquis.startsWith('data:')) {
                 const nomFichierCroquis = `croquis_note_${idxNote + 1}.svg`;
@@ -1042,7 +1042,6 @@
             }
         });
 
-        // 3. Fichier rapport.json ultra-léger
         const rapportJsonObj = {
             type_fichier: "rapport_visite_incremental",
             chantier_id: chantierActuel.id,
@@ -1061,7 +1060,6 @@
             dataBase64: convertirTexteEnBase64Utf8(stringRapportJson)
         });
 
-        // 4. Génération & Téléchargement Local du ZIP
         const zipBlob = await zip.generateAsync({ type: "blob" });
         const zipNomFichierLocal = `${nomDossierChantier}_${nomSousDossierRapport}.zip`;
         
@@ -1074,7 +1072,6 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(urlBlob);
 
-        // 5. Téléversement Cloud séquentiel vers GitHub
         const { user, repo, token } = obtenirIdentifiantsGitHub();
 
         if (user && repo && token) {
@@ -1878,7 +1875,7 @@
         if(rafraichirRendu) rafraichirVueNotes();
     }
 
-    /* MOTEUR DE DESSIN VECTORIEL SVG (POIDS ULTRA LÉGER) */
+    /* MOTEUR DE DESSIN VECTORIEL SVG */
     function initialiserModuleCroquisCanvas() {
         const canvas = document.getElementById('sketchCanvas');
         if(!canvas) return;
@@ -2163,7 +2160,7 @@
     }
 
     /* ==========================================================================
-       4. LOGIQUE DES PUCES & GESTION MULTI-TÂCHES AVEC DATES BUTOIRES
+       4. LOGIQUE DES PUCES & SELECTION DEPUIS TABLEAU / PLAN
        ========================================================================== */
     function chargerPlanEtPucesDuNiveauActuel() {
         if(!chantierActuel || !chantierActuel.niveaux[indexNiveauActuel]) return;
@@ -2193,13 +2190,33 @@
             x, y, 
             commentaire: "", 
             photos: [], 
-            taches: [], // Tableau des sous-tâches
+            taches: [], 
             entreprises: [], 
             dateCreation: new Date().toLocaleDateString('fr-FR'), 
             statut: "active" 
         };
         chantierActuel.puces.push(nPuce);
         rafraichirPucesGraphiques(); selectionnerPuce(nPuce.id);
+    }
+
+    // NOUVELLE FONCTION : Permet d'ouvrir une puce depuis le tableau même si on change de niveau
+    function selectionnerPuceDepuisTableau(idPuce) {
+        const p = chantierActuel.puces.find(item => item.id == idPuce);
+        if (!p) return;
+
+        // Si la puce est sur un autre niveau, on bascule automatiquement sur le bon niveau
+        const idxNiveau = chantierActuel.niveaux.findIndex(n => n.nom === p.niveauNom);
+        if (idxNiveau !== -1 && idxNiveau !== indexNiveauActuel) {
+            indexNiveauActuel = idxNiveau;
+            document.getElementById('selectNiveauVisite').value = indexNiveauActuel;
+            chargerPlanEtPucesDuNiveauActuel();
+        }
+
+        // Sélection de la puce
+        selectionnerPuce(p.id);
+
+        // Défilement doux jusqu'à la zone d'édition/plan
+        document.getElementById('zoneSaisiePuce').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     
     function rafraichirPucesGraphiques() {
@@ -2228,7 +2245,6 @@
                 div.className = 'pin' + classStatut + (puceSelectionneeId === p.id ? ' selected' : '');
                 div.style.left = p.x + '%'; div.style.top = p.y + '%'; div.innerText = p.numero;
 
-                // Ajout d'une alerte visuelle si la puce contient un retard
                 if (puceAUnRetardAction(p)) {
                     const badgeAlert = document.createElement('span');
                     badgeAlert.className = 'pin-late-badge';
@@ -2261,7 +2277,6 @@
         photosPuceTemporairesTableau = [...p.photos];
         tachesPuceTemporairesTableau = JSON.parse(JSON.stringify(p.taches));
 
-        // Remplissage du selecteur d'entreprise pour l'ajout de tâche
         const entSelect = document.getElementById('nouvelleTacheEntrepriseSelect');
         entSelect.innerHTML = `<option value="">-- Entreprise responsable --</option>` + 
             (chantierActuel.entreprises || []).map(e => `<option value="${e}">${e}</option>`).join('');
@@ -2428,7 +2443,7 @@
     
     function rafraichirTableauRemarques() {
         const tbody = document.getElementById('corpsTableauRemarques');
-        if(!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) { tbody.innerHTML = "<tr><td colspan='6'>Aucune remarque</td></tr>"; return; }
+        if(!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) { tbody.innerHTML = "<tr><td colspan='7'>Aucune remarque</td></tr>"; return; }
         
         const voirActives = document.getElementById('chkAfficherActives').checked;
         const voirEnCours = document.getElementById('chkAfficherEnCours').checked;
@@ -2457,7 +2472,6 @@
                 styleLigne = 'style="background: #fcfcfc; opacity: 0.85;"';
             }
 
-            // Mise en forme de la liste des tâches
             let tachesHtml = "";
             if (p.taches && p.taches.length > 0) {
                 tachesHtml = `<div style="margin-bottom:6px;">` + p.taches.map(t => {
@@ -2472,9 +2486,20 @@
             const entGlobale = p.entreprises && p.entreprises.length > 0 ? `<div style="font-size:12px; color:#1a73e8;">Lot(s) : ${p.entreprises.join(', ')}</div>` : '';
             const obsText = p.commentaire ? `<div>${p.commentaire}</div>` : '';
 
-            html += `<tr ${styleLigne}><td><b>${p.numero}</b></td><td>${p.niveauNom}${zoneAffichee}</td><td>${nbPics > 0 ? `📷 (${nbPics})` : 'Non'}</td><td>${labelStatut}</td><td>${tachesHtml}${entGlobale}${obsText}</td><td>${p.dateCreation}</td></tr>`;
+            // Rendu de la ligne avec événement onclick direct
+            html += `
+                <tr class="clickable-row" ${styleLigne} onclick="selectionnerPuceDepuisTableau(${p.id})">
+                    <td><b>Puce ${p.numero}</b></td>
+                    <td>${p.niveauNom}${zoneAffichee}</td>
+                    <td>${nbPics > 0 ? `📷 (${nbPics})` : 'Non'}</td>
+                    <td>${labelStatut}</td>
+                    <td>${tachesHtml}${entGlobale}${obsText}</td>
+                    <td>${p.dateCreation}</td>
+                    <td><button type="button" class="btn btn-small" style="padding:4px 8px; font-size:12px;" onclick="event.stopPropagation(); selectionnerPuceDepuisTableau(${p.id});">👁️ Éditer</button></td>
+                </tr>
+            `;
         });
-        tbody.innerHTML = html || "<tr><td colspan='6'>Aucune réserve ne correspond aux filtres actifs</td></tr>";
+        tbody.innerHTML = html || "<tr><td colspan='7'>Aucune réserve ne correspond aux filtres actifs</td></tr>";
     }
     
     async function ajouterEntrepriseDirectTerrain() {
