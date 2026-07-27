@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapport de Visite de Chantier</title>
     <link rel="manifest" href="manifest.json">
-    
     <!-- JSZip chargé en local pour une autonomie 100% Hors-Ligne -->
     <script src="jszip.min.js"></script>
 
@@ -65,8 +64,10 @@
         .btn-delete-card { position: absolute; top: 15px; right: 15px; background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
         .btn-delete-card:hover { background: #d93025; color: white; border-color: #d93025; }
 
+        /* Badges de Statut (3 Statuts) */
         .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
         .status-badge.active { background: #fadbd8; color: #c0392b; border: 1px solid #f5b7b1; }
+        .status-badge.progress { background: #fdebd0; color: #d35400; border: 1px solid #f5cba7; }
         .status-badge.resolved { background: #d4efdf; color: #1e8449; border: 1px solid #a9dfbf; }
         .status-badge.late-task { background: #fadbd8; color: #d93025; border: 1px solid #f5b7b1; margin-left: 5px; }
 
@@ -80,7 +81,9 @@
         .plan-container { position: relative; display: inline-block; max-width: 100%; }
         .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
         
+        /* Puces sur le plan (3 Couleurs) */
         .pin { position: absolute; width: 22px; height: 22px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 11px; font-weight: bold; line-height: 18px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
+        .pin.progress { background: #e67e22; }
         .pin.resolved { background: #28a745; }
         .pin.selected { z-index: 10; transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 0 3px rgba(26,115,232,0.6); }
         
@@ -108,8 +111,9 @@
         .gantt-badge-val { font-size: 12px; font-weight: bold; color: #1a73e8; min-width: 35px; }
 
         .photo-gallery-wrapper { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; min-height: 90px; padding: 10px; border: 1px dashed #ccc; border-radius: 8px; background: #f8f9fa; }
-        .photo-gallery-item { position: relative; width: 80px; height: 80px; border-radius: 6px; border: 1px solid #dadce0; background-size: cover; background-position: center; }
-        .photo-gallery-del-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #d93025; color: white; border-radius: 50%; font-size: 12px; font-weight: bold; text-align: center; line-height: 18px; cursor: pointer; border: 1px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .photo-gallery-item { position: relative; width: 85px; height: 85px; border-radius: 6px; border: 1px solid #dadce0; background-size: cover; background-position: center; }
+        .photo-gallery-del-btn { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; background: #d93025; color: white; border-radius: 50%; font-size: 12px; font-weight: bold; text-align: center; line-height: 20px; cursor: pointer; border: 1px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .photo-gallery-edit-btn { position: absolute; bottom: -6px; right: -6px; width: 24px; height: 24px; background: #1a73e8; color: white; border-radius: 50%; font-size: 12px; text-align: center; line-height: 22px; cursor: pointer; border: 1px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
         .entreprises-selection-list { max-height: 120px; overflow-y: auto; background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 10px; margin-top: 5px; }
         .entreprise-checkbox-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; cursor: pointer; }
@@ -121,7 +125,7 @@
         .sketch-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 10px; }
         .sketch-modal-card { background: white; border-radius: 12px; padding: 15px; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 95vh; overflow-y: auto; }
         .sketch-canvas-container { border: 2px dashed #999; border-radius: 8px; background: white; touch-action: none; margin: 10px 0; overflow: hidden; text-align: center; width: 100%; }
-        #sketchCanvas { background: #fff; cursor: crosshair; display: block; margin: 0 auto; max-width: 100%; height: auto; }
+        #sketchCanvas, #photoAnnotateCanvas { background: #fff; cursor: crosshair; display: block; margin: 0 auto; max-width: 100%; height: auto; }
         .sketch-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
         .color-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; cursor: pointer; box-shadow: 0 0 3px rgba(0,0,0,0.5); }
         .color-btn.selected { transform: scale(1.2); border-color: #1a73e8; }
@@ -175,10 +179,12 @@
             .photo-grid-caption { font-size: 10pt; font-weight: bold; color: #1a73e8; }
             
             .pin { width: 18px !important; height: 18px !important; font-size: 10px !important; line-height: 14px !important; background-color: #d93025 !important; color: white !important; border: 2px solid white !important; transform: translate(-50%, -50%) scale(1) !important; box-shadow: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .pin.progress { background-color: #e67e22 !important; }
             .pin.resolved { background-color: #28a745 !important; }
             
             .status-badge { display: inline-block !important; padding: 2px 6px !important; border-radius: 4px !important; font-size: 8pt !important; font-weight: bold !important; text-transform: uppercase !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .status-badge.active { background-color: #ffcccc !important; color: #900 !important; }
+            .status-badge.progress { background-color: #fdebd0 !important; color: #d35400 !important; border: 1px solid #d35400 !important; }
             .status-badge.resolved { background-color: #ccffcc !important; color: #060 !important; }
             .status-badge.late-task { background-color: #ffcccc !important; color: #d93025 !important; border: 1px solid #d93025 !important; }
 
@@ -192,7 +198,7 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1>Rapport Visite de site V.01</h1>
+        <h1>Conducteur de Chantier PWA</h1>
         
         <div class="config-box">
             <strong>🔑 Synchronisation Multi-Appareil GitHub :</strong><br>
@@ -312,11 +318,15 @@
                 <span style="font-size:13px; color:#5f6368; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">🔍 Filtres plan :</span>
                 <label class="filter-checkbox-label">
                     <input type="checkbox" id="chkAfficherActives" checked onchange="rafraichirPucesGraphiques(); rafraichirTableauRemarques();">
-                    <span style="color:#c0392b;">🔴 Remarques Actives</span>
+                    <span style="color:#c0392b;">🔴 Actives</span>
+                </label>
+                <label class="filter-checkbox-label">
+                    <input type="checkbox" id="chkAfficherEnCours" checked onchange="rafraichirPucesGraphiques(); rafraichirTableauRemarques();">
+                    <span style="color:#e67e22;">🟠 En cours</span>
                 </label>
                 <label class="filter-checkbox-label">
                     <input type="checkbox" id="chkAfficherLevees" checked onchange="rafraichirPucesGraphiques(); rafraichirTableauRemarques();">
-                    <span style="color:#1e8449;">🟢 Remarques Levées</span>
+                    <span style="color:#1e8449;">🟢 Levées</span>
                 </label>
             </div>
 
@@ -325,8 +335,15 @@
                     <h3 style="margin: 0;">Saisie Puce N° <span id="labelNumeroPuce">X</span></h3>
                     <div id="badgeStatutPuce" class="status-badge active">Active</div>
                 </div>
+
+                <label style="color:#1a73e8;">Statut d'avancement du point :</label>
+                <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-small btn-danger" style="flex:1;" onclick="changerStatutPuceTerrain('active')">🔴 Active</button>
+                    <button type="button" class="btn btn-small btn-warning" style="flex:1;" onclick="changerStatutPuceTerrain('en_cours')">🟠 En cours</button>
+                    <button type="button" class="btn btn-small btn-success" style="flex:1;" onclick="changerStatutPuceTerrain('resolue')">🟢 Levée</button>
+                </div>
                 
-                <label>Photos constatations (Compression AVIF/WebP) :</label>
+                <label>Photos constatations (Historique visuel) :</label>
                 <input type="file" id="photoPuce" accept="image/*" onchange="chargerPhotoPuceAjoutMultiples(event)">
                 <div id="photoGalleryContainer" class="photo-gallery-wrapper">Aucune photo enregistrée pour ce constat</div>
 
@@ -336,15 +353,12 @@
                 <label>Entreprises concernées :</label>
                 <div id="zoneEntreprisesPuceCheckboxes" class="entreprises-selection-list"></div>
 
-                <label>Observations :</label>
-                <textarea id="commentairePuce" rows="3"></textarea>
+                <label>Observations &amp; Suivi d'avancement :</label>
+                <textarea id="commentairePuce" rows="3" placeholder="Saisissez ou complétez vos observations de suivi..."></textarea>
 
                 <div style="margin-top:15px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
                     <button type="button" class="btn btn-danger btn-small" style="margin:0;" onclick="supprimerPuceActuelle()">Supprimer</button>
-                    <div style="display: flex; gap: 8px;">
-                        <button type="button" id="btnBasculerLevée" class="btn btn-warning btn-small" style="margin:0;" onclick="basculerStatutRemarqueLevée()">Lever la remarque 🟢</button>
-                        <button type="button" class="btn btn-success btn-small" style="margin:0;" onclick="sauvegarderDonniesPuce()">Valider ce point</button>
-                    </div>
+                    <button type="button" class="btn btn-success btn-small" style="margin:0;" onclick="sauvegarderDonniesPuce()">Valider ce point</button>
                 </div>
             </div>
 
@@ -369,6 +383,7 @@
                 </div>
                 <div style="border-top:1px dashed #b4cff7; padding-top:10px; display:flex; gap:20px; flex-wrap:wrap;">
                     <label class="filter-checkbox-label" style="color:#c0392b;"><input type="checkbox" id="printOptRemarquesActives" checked> 🔴 Inclure Remarques Actives</label>
+                    <label class="filter-checkbox-label" style="color:#e67e22;"><input type="checkbox" id="printOptRemarquesEnCours" checked> 🟠 Inclure Remarques En Cours</label>
                     <label class="filter-checkbox-label" style="color:#1e8449;"><input type="checkbox" id="printOptRemarquesLevees" checked> 🟢 Inclure Remarques Levées</label>
                 </div>
             </div>
@@ -417,6 +432,40 @@
 
         <div style="display:flex; justify-content:flex-end;">
             <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="fermerModalRapportsCloud()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- POPUP MODALE ANNOTATION / DESSIN SUR PHOTO -->
+<div id="photoAnnotationModalOverlay" class="sketch-modal-overlay">
+    <div class="sketch-modal-card">
+        <h3 style="margin-top:0; color:#1a73e8;">✏️ Annoter / Dessiner sur la Photo</h3>
+        <div class="sketch-tools">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <span style="font-size:13px; font-weight:bold;">Couleur :</span>
+                <input type="color" id="photoColorPicker" value="#d93025" style="width:34px; height:32px; border:1px solid #ccc; border-radius:6px; cursor:pointer; padding:0; background:none;" onchange="choisirCouleurPinceauPhoto(this.value, null)" title="Choisir une couleur">
+                
+                <div class="color-btn selected" style="background:#d93025;" onclick="choisirCouleurPinceauPhoto('#d93025', this)" title="Rouge (Défaut)"></div>
+                <div class="color-btn" style="background:#f1c40f;" onclick="choisirCouleurPinceauPhoto('#f1c40f', this)" title="Jaune"></div>
+                <div class="color-btn" style="background:#1a73e8;" onclick="choisirCouleurPinceauPhoto('#1a73e8', this)" title="Bleu"></div>
+                <div class="color-btn" style="background:#28a745;" onclick="choisirCouleurPinceauPhoto('#28a745', this)" title="Vert"></div>
+                <div class="color-btn" style="background:#ffffff;" onclick="choisirCouleurPinceauPhoto('#ffffff', this)" title="Blanc"></div>
+                <div class="color-btn" style="background:#000000;" onclick="choisirCouleurPinceauPhoto('#000000', this)" title="Noir"></div>
+
+                <span style="font-size:13px; font-weight:bold; margin-left:10px;">Taille :</span>
+                <input type="range" id="photoBrushSize" min="2" max="25" value="5" style="width:80px; cursor:pointer;" oninput="changerTaillePinceauPhoto(this.value)">
+                <span id="photoBrushSizeBadge" style="font-size:12px; font-weight:bold; min-width:25px; color:#1a73e8;">5px</span>
+            </div>
+            <button type="button" class="btn btn-small btn-danger" onclick="reinitialiserPhotoOriginale()">Réinitialiser Photo</button>
+        </div>
+        
+        <div class="sketch-canvas-container">
+            <canvas id="photoAnnotateCanvas"></canvas>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+            <button type="button" class="btn btn-small" style="background:#5f6368;" onclick="fermerFenetreAnnotationPhoto()">Annuler</button>
+            <button type="button" class="btn btn-small btn-success" onclick="validerAnnotationPhoto()">Valider l'annotation 💾</button>
         </div>
     </div>
 </div>
@@ -543,7 +592,7 @@
     let chantierActuel = null; 
     let indexNiveauActuel = 0; 
     let puceSelectionneeId = null;
-    let statutPuceTemporaireResolue = false;
+    let statutPuceTemporaire = "active"; // "active", "en_cours", "resolue"
     let summaryTasksRepliees = {};
 
     let idNoteCroquisEnCours = null;
@@ -553,8 +602,15 @@
     let polygonesCroquisActuel = [];
     let traitEnCours = null;
 
+    /* VARIABLES DESSIN / ANNOTATION PHOTO */
+    let indexPhotoAnnoteeEnCours = null;
+    let photoBaseImageObj = null;
+    let estEnTrainDeDessinerPhoto = false;
+    let couleurPinceauPhoto = '#d93025';
+    let taillePinceauPhoto = 5;
+
     /* ==========================================================================
-       1. MOTEUR INDEXEDDB (STOCKAGE LOCAL ULTRA-HAUTE CAPACITÉ & SANS LAG)
+       1. MOTEUR INDEXEDDB (STOCKAGE LOCAL ULTRA-HAUTE CAPACITÉ)
        ========================================================================== */
     function ouvrirDB() {
         return new Promise((resolve, reject) => {
@@ -591,7 +647,7 @@
             const store = tx.objectStore("chantiers");
             store.clear();
             tableauChantiers.forEach(c => store.put(c));
-        } catch(e) { console.error("Erreur d'écriture IndexedDB :", e); }
+        } catch(e) { console.error("Erreur IndexedDB :", e); }
     }
 
     async function sauvegarderUnChantierDansIndexedDB(chantierObj) {
@@ -599,7 +655,7 @@
             const db = await ouvrirDB();
             const tx = db.transaction("chantiers", "readwrite");
             tx.objectStore("chantiers").put(chantierObj);
-        } catch(e) { console.error("Erreur sauvegarde unique :", e); }
+        } catch(e) { console.error("Erreur sauvegarde :", e); }
     }
 
     /* ==========================================================================
@@ -618,7 +674,6 @@
         document.getElementById('cloudRepo').value = localStorage.getItem('git_repo') || '';
         document.getElementById('cloudToken').value = localStorage.getItem('git_token') || '';
         
-        // Migration automatique du localStorage vers IndexedDB si présent
         const legacyData = localStorage.getItem('liste_chantiers_pwa');
         if (legacyData) {
             try {
@@ -635,6 +690,7 @@
 
         await chargerCharteDepuisGitHub();
         initialiserModuleCroquisCanvas();
+        initialiserModuleAnnotationPhoto();
 
         document.addEventListener('click', function(e) {
             const dropdown = document.querySelector('.dropdown-container');
@@ -644,7 +700,13 @@
         });
     });
 
-    /* CONVERTISSEURS UTILES */
+    /* UTILS & HELPER POUR STATUTS */
+    function normaliserStatutPuce(p) {
+        if (p.statut) return p.statut; // "active", "en_cours", "resolue"
+        if (p.resolue === true) return "resolue";
+        return "active";
+    }
+
     function convertirTexteEnBase64Utf8(texteData) {
         const bytes = new TextEncoder().encode(texteData);
         let binStr = "";
@@ -865,7 +927,7 @@
         URL.revokeObjectURL(url);
     }
 
-    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI DÉCOUPLÉ SUR GITHUB (CLOUD) */
+    /* EXPORT EN ARCHIVE .ZIP (LOCAL) + ENVOI DÉCOUPLÉ ET SÉQUENTIEL SUR GITHUB (CLOUD) */
     async function exporterRapportDuJourIncr() {
         fermerMenuActions();
         if(!chantierActuel) return alert("Aucun chantier actif sélectionné.");
@@ -893,9 +955,11 @@
                         const bytes = convertirDataUrlEnUint8Array(photoDataUrl);
                         zip.file(cheminRelatif, bytes);
 
+                        const pureBase64 = photoDataUrl.split(',')[1].replace(/[\r\n\s]/g, '');
+
                         fichiersAEnvoyerCloud.push({
                             cheminGit: `${nomSousDossierRapport}/${cheminRelatif}`,
-                            dataBase64: photoDataUrl.split(',')[1]
+                            dataBase64: pureBase64
                         });
 
                         nouveauxChemins.push(cheminRelatif);
@@ -916,16 +980,18 @@
                 const bytes = convertirDataUrlEnUint8Array(n.croquis);
                 zip.file(cheminRelatif, bytes);
 
+                const pureBase64 = n.croquis.split(',')[1].replace(/[\r\n\s]/g, '');
+
                 fichiersAEnvoyerCloud.push({
                     cheminGit: `${nomSousDossierRapport}/${cheminRelatif}`,
-                    dataBase64: n.croquis.split(',')[1]
+                    dataBase64: pureBase64
                 });
 
                 n.croquis = cheminRelatif;
             }
         });
 
-        // 3. Traitement du fichier rapport.json
+        // 3. Fichier rapport.json ultra-léger
         const rapportJsonObj = {
             type_fichier: "rapport_visite_incremental",
             chantier_id: chantierActuel.id,
@@ -957,67 +1023,72 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(urlBlob);
 
-        // 5. Téléversement Cloud vers GitHub
+        // 5. Téléversement Cloud séquentiel vers GitHub
         const { user, repo, token } = obtenirIdentifiantsGitHub();
 
-        if(user && repo && token) {
+        if (user && repo && token) {
             let nbSucces = 0;
-            let erreurMessage = "";
+            let erreurDetaillee = "";
 
-            try {
-                for (let fileItem of fichiersAEnvoyerCloud) {
-                    const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${fileItem.cheminGit}`;
-                    
+            for (let i = 0; i < fichiersAEnvoyerCloud.length; i++) {
+                const fileItem = fichiersAEnvoyerCloud[i];
+                const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${fileItem.cheminGit}`;
+
+                try {
+                    await new Promise(r => setTimeout(r, 150));
+
                     let sha = null;
                     const resCheck = await fetch(`${urlApi}?t=${Date.now()}`, { 
+                        method: "GET",
                         headers: { 
-                            "Authorization": `Bearer ${token}`, 
+                            "Authorization": `token ${token}`, 
                             "Accept": "application/vnd.github.v3+json" 
                         },
                         cache: "no-store"
                     });
 
-                    if(resCheck.status === 200) {
+                    if (resCheck.status === 200) {
                         const info = await resCheck.json();
-                        if(info && info.sha) sha = info.sha;
+                        if (info && info.sha) sha = info.sha;
                     }
 
                     const bodyData = { 
                         message: `Sauvegarde ${fileItem.cheminGit}`, 
                         content: fileItem.dataBase64 
                     };
-                    if(sha) bodyData.sha = sha;
+                    if (sha) bodyData.sha = sha;
 
                     const resPush = await fetch(urlApi, {
                         method: "PUT",
                         headers: { 
-                            "Authorization": `Bearer ${token}`, 
+                            "Authorization": `token ${token}`, 
                             "Accept": "application/vnd.github.v3+json", 
                             "Content-Type": "application/json" 
                         },
                         body: JSON.stringify(bodyData)
                     });
 
-                    if(resPush.ok) {
+                    if (resPush.ok) {
                         nbSucces++;
                     } else {
-                        const errDetails = await resPush.json();
-                        erreurMessage = `Erreur HTTP ${resPush.status} sur ${fileItem.cheminGit} : ${errDetails.message || ''}`;
+                        const errJson = await resPush.json().catch(() => ({}));
+                        erreurDetaillee = `Fichier ${fileItem.cheminGit} refusé (HTTP ${resPush.status}) : ${errJson.message || 'Erreur inconnue'}`;
                         break;
                     }
-                }
 
-                if (nbSucces === fichiersAEnvoyerCloud.length) {
-                    alert(`📦 Archive ZIP enregistrée en local ET synchronisée sur GitHub (${nbSucces}/${fichiersAEnvoyerCloud.length} fichiers déposés dans "${nomDossierChantier}/${nomSousDossierRapport}/") !`);
-                } else {
-                    alert(`📦 Archive ZIP enregistrée en local, mais échec sur le Cloud.\n${erreurMessage}`);
+                } catch (errFile) {
+                    erreurDetaillee = `Erreur réseau lors de l'envoi de ${fileItem.cheminGit} : ${errFile.message}`;
+                    break;
                 }
+            }
 
-            } catch(e) {
-                alert(`📦 Archive ZIP enregistrée en local, mais erreur réseau Cloud : ${e.message}`);
+            if (nbSucces === fichiersAEnvoyerCloud.length) {
+                alert(`📦 Archive ZIP enregistrée en local ET synchronisée avec succès (${nbSucces}/${fichiersAEnvoyerCloud.length} fichiers déposés dans "${nomDossierChantier}/${nomSousDossierRapport}/") !`);
+            } else {
+                alert(`📦 Archive ZIP enregistrée en local.\n⚠️ Synchro Cloud incomplète (${nbSucces}/${fichiersAEnvoyerCloud.length} envoyés).\n\nDétail : ${erreurDetaillee}`);
             }
         } else {
-            alert("📦 Archive ZIP enregistrée avec succès en local ! (Connectez vos identifiants GitHub pour activer l'envoi Cloud)");
+            alert("📦 Archive ZIP enregistrée avec succès en local ! (Identifiants GitHub non renseignés pour la synchro Cloud)");
         }
     }
 
@@ -1101,7 +1172,7 @@
 
         try {
             const urlApi = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}`;
-            const res = await fetch(urlApi, { headers: { "Authorization": `Bearer ${token}` } });
+            const res = await fetch(urlApi, { headers: { "Authorization": `token ${token}` } });
             
             if(!res.ok) {
                 container.innerHTML = "<p style='color:#d93025;'>Aucun sous-dossier de rapport trouvé sur le Cloud.</p>";
@@ -1141,7 +1212,7 @@
 
         try {
             const urlJson = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/rapport.json`;
-            const resJson = await fetch(urlJson, { headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3.raw" } });
+            const resJson = await fetch(urlJson, { headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3.raw" } });
             if(!resJson.ok) throw new Error("Fichier 'rapport.json' introuvable dans ce dossier Cloud.");
             
             const textJson = await resJson.text();
@@ -1156,7 +1227,7 @@
                     for (let pPath of p.photos) {
                         if (pPath.startsWith('photos/')) {
                             const urlMedia = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${pPath}`;
-                            const resMedia = await fetch(urlMedia, { headers: { "Authorization": `Bearer ${token}` } });
+                            const resMedia = await fetch(urlMedia, { headers: { "Authorization": `token ${token}` } });
                             if(resMedia.ok) {
                                 const mediaData = await resMedia.json();
                                 const mime = pPath.endsWith('.avif') ? 'image/avif' : (pPath.endsWith('.webp') ? 'image/webp' : 'image/jpeg');
@@ -1173,7 +1244,7 @@
             for (let n of notesAInjecter) {
                 if (n.croquis && n.croquis.startsWith('croquis/')) {
                     const urlCroquis = `https://api.github.com/repos/${user}/${repo}/contents/${nomDossierChantier}/${nomDossierRapport}/${n.croquis}`;
-                    const resCroquis = await fetch(urlCroquis, { headers: { "Authorization": `Bearer ${token}` } });
+                    const resCroquis = await fetch(urlCroquis, { headers: { "Authorization": `token ${token}` } });
                     if(resCroquis.ok) {
                         const croquisData = await resCroquis.json();
                         n.croquis = `data:image/svg+xml;base64,${croquisData.content.replace(/\n/g, '')}`;
@@ -1199,7 +1270,7 @@
                 delete p.photo;
             }
             if(!p.photos) p.photos = [];
-            if(p.resolue === undefined) p.resolue = false;
+            p.statut = normaliserStatutPuce(p);
         });
 
         chantierActuel.puces = [...chantierActuel.puces, ...pucesAInjecter];
@@ -1480,7 +1551,7 @@
 
         const urlRoot = `https://api.github.com/repos/${user}/${repo}/contents/`;
         try {
-            const res = await fetch(urlRoot, { headers: { "Authorization": `Bearer ${token}` } });
+            const res = await fetch(urlRoot, { headers: { "Authorization": `token ${token}` } });
             if(!res.ok) throw new Error("Code HTTP " + res.status);
             
             const tousLesElements = await res.json();
@@ -1496,7 +1567,7 @@
                 const configUrl = `https://api.github.com/repos/${user}/${repo}/contents/${d.name}/config.json`;
                 const resConfig = await fetch(configUrl, {
                     headers: {
-                        "Authorization": `Bearer ${token}`,
+                        "Authorization": `token ${token}`,
                         "Accept": "application/vnd.github.v3.raw"
                     }
                 });
@@ -1625,6 +1696,7 @@
         indexNiveauActuel = 0;
         
         document.getElementById('chkAfficherActives').checked = true;
+        document.getElementById('chkAfficherEnCours').checked = true;
         document.getElementById('chkAfficherLevees').checked = true;
 
         document.getElementById('printOptPlans').checked = true;
@@ -1633,6 +1705,7 @@
         document.getElementById('printOptTableau').checked = true;
         document.getElementById('printOptPhotos').checked = true;
         document.getElementById('printOptRemarquesActives').checked = true;
+        document.getElementById('printOptRemarquesEnCours').checked = true;
         document.getElementById('printOptRemarquesLevees').checked = true;
 
         summaryTasksRepliees = {};
@@ -1897,7 +1970,147 @@
         fermerFenetreCroquis();
     }
 
-    /* LOGIQUE EXISTANTE STRICTEMENT INTACTE */
+    /* ==========================================================================
+       3. MODULE DE DESSIN / ANNOTATION SUR LES PHOTOS PRISES
+       ========================================================================== */
+    function initialiserModuleAnnotationPhoto() {
+        const canvas = document.getElementById('photoAnnotateCanvas');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        function obtenirPosRelativePhoto(evt) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX = evt.clientX;
+            let clientY = evt.clientY;
+            if(evt.touches && evt.touches.length > 0) {
+                clientX = evt.touches[0].clientX;
+                clientY = evt.touches[0].clientY;
+            }
+            return {
+                x: Math.round((clientX - rect.left) * (canvas.width / rect.width)),
+                y: Math.round((clientY - rect.top) * (canvas.height / rect.height))
+            };
+        }
+
+        function demarrerDessinPhoto(e) {
+            e.preventDefault();
+            estEnTrainDeDessinerPhoto = true;
+            const pos = obtenirPosRelativePhoto(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        function effectuerDessinPhoto(e) {
+            if(!estEnTrainDeDessinerPhoto) return;
+            e.preventDefault();
+            const pos = obtenirPosRelativePhoto(e);
+
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = couleurPinceauPhoto;
+            ctx.lineWidth = taillePinceauPhoto;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+
+        function stopperDessinPhoto(e) {
+            if(estEnTrainDeDessinerPhoto) {
+                ctx.closePath();
+                estEnTrainDeDessinerPhoto = false;
+            }
+        }
+
+        canvas.addEventListener('mousedown', demarrerDessinPhoto);
+        canvas.addEventListener('mousemove', effectuerDessinPhoto);
+        canvas.addEventListener('mouseup', stopperDessinPhoto);
+        canvas.addEventListener('mouseleave', stopperDessinPhoto);
+
+        canvas.addEventListener('touchstart', demarrerDessinPhoto, { passive: false });
+        canvas.addEventListener('touchmove', effectuerDessinPhoto, { passive: false });
+        canvas.addEventListener('touchend', stopperDessinPhoto);
+    }
+
+    function ouvrirAnnotationPhoto(indexPhoto) {
+        indexPhotoAnnoteeEnCours = indexPhoto;
+        const photoSrc = photosPuceTemporairesTableau[indexPhoto];
+        if(!photoSrc) return;
+
+        const img = new Image();
+        img.src = photoSrc;
+        img.onload = () => {
+            photoBaseImageObj = img;
+            const canvas = document.getElementById('photoAnnotateCanvas');
+            
+            let width = img.width;
+            let height = img.height;
+            const maxW = 600;
+            const maxH = 500;
+            if (width > maxW || height > maxH) {
+                const ratio = Math.min(maxW / width, maxH / height);
+                width = Math.round(width * ratio);
+                height = Math.round(height * ratio);
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            couleurPinceauPhoto = '#d93025';
+            taillePinceauPhoto = parseInt(document.getElementById('photoBrushSize').value || 5);
+            
+            const picker = document.getElementById('photoColorPicker');
+            if(picker) picker.value = '#d93025';
+
+            document.querySelectorAll('#photoAnnotationModalOverlay .color-btn').forEach(b => b.classList.remove('selected'));
+            const rougeBtn = document.querySelector('#photoAnnotationModalOverlay .color-btn');
+            if(rougeBtn) rougeBtn.classList.add('selected');
+
+            document.getElementById('photoAnnotationModalOverlay').style.display = 'flex';
+        };
+    }
+
+    function choisirCouleurPinceauPhoto(color, btnEl) {
+        couleurPinceauPhoto = color;
+        document.querySelectorAll('#photoAnnotationModalOverlay .color-btn').forEach(b => b.classList.remove('selected'));
+        if(btnEl) btnEl.classList.add('selected');
+        
+        const picker = document.getElementById('photoColorPicker');
+        if(picker) picker.value = color;
+    }
+
+    function changerTaillePinceauPhoto(valeur) {
+        taillePinceauPhoto = parseInt(valeur);
+        const badge = document.getElementById('photoBrushSizeBadge');
+        if(badge) badge.innerText = valeur + "px";
+    }
+
+    function reinitialiserPhotoOriginale() {
+        if (!photoBaseImageObj) return;
+        const canvas = document.getElementById('photoAnnotateCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(photoBaseImageObj, 0, 0, canvas.width, canvas.height);
+    }
+
+    function fermerFenetreAnnotationPhoto() {
+        document.getElementById('photoAnnotationModalOverlay').style.display = 'none';
+        indexPhotoAnnoteeEnCours = null;
+        photoBaseImageObj = null;
+    }
+
+    function validerAnnotationPhoto() {
+        if(indexPhotoAnnoteeEnCours === null) return;
+        const canvas = document.getElementById('photoAnnotateCanvas');
+        
+        const annotatedDataUrl = canvas.toDataURL('image/webp', 0.85);
+        photosPuceTemporairesTableau[indexPhotoAnnoteeEnCours] = annotatedDataUrl;
+        
+        rafraichirAffichageGaleriePhotosSaisie();
+        fermerFenetreAnnotationPhoto();
+    }
+
+    /* LOGIQUE DE GESTION DU PLAN ET DES PUCES (3 STATUTS) */
     function chargerPlanEtPucesDuNiveauActuel() {
         if(!chantierActuel || !chantierActuel.niveaux[indexNiveauActuel]) return;
         document.getElementById('viewPlanImg').src = chantierActuel.niveaux[indexNiveauActuel].plan;
@@ -1918,7 +2131,7 @@
             if(p) { p.x = x; p.y = y; rafraichirPucesGraphiques(); puceSelectionneeId = null; return; }
         }
         const num = chantierActuel.puces.length + 1;
-        const nPuce = { id: Date.now(), numero: num, niveauNom: chantierActuel.niveaux[indexNiveauActuel].nom, zonePrecis: "", x, y, commentaire: "", photos: [], entreprises: [], dateCreation: new Date().toLocaleDateString(), resolue: false };
+        const nPuce = { id: Date.now(), numero: num, niveauNom: chantierActuel.niveaux[indexNiveauActuel].nom, zonePrecis: "", x, y, commentaire: "", photos: [], entreprises: [], dateCreation: new Date().toLocaleDateString(), statut: "active" };
         chantierActuel.puces.push(nPuce);
         rafraichirPucesGraphiques(); selectionnerPuce(nPuce.id);
     }
@@ -1929,16 +2142,24 @@
         if(!chantierActuel) return;
 
         const voirActives = document.getElementById('chkAfficherActives').checked;
+        const voirEnCours = document.getElementById('chkAfficherEnCours').checked;
         const voirLevees = document.getElementById('chkAfficherLevees').checked;
 
         chantierActuel.puces.forEach(p => {
             if (p.niveauNom === chantierActuel.niveaux[indexNiveauActuel].nom) {
-                if (p.resolue === undefined) p.resolue = false;
-                if (!voirActives && !p.resolue) return;
-                if (!voirLevees && p.resolue) return;
+                const st = normaliserStatutPuce(p);
+                
+                if (!voirActives && st === "active") return;
+                if (!voirEnCours && st === "en_cours") return;
+                if (!voirLevees && st === "resolue") return;
 
                 const div = document.createElement('div'); 
-                div.className = 'pin' + (p.resolue ? ' resolved' : '') + (puceSelectionneeId === p.id ? ' selected' : '');
+                
+                let classStatut = '';
+                if (st === "en_cours") classStatut = ' progress';
+                else if (st === "resolue") classStatut = ' resolved';
+
+                div.className = 'pin' + classStatut + (puceSelectionneeId === p.id ? ' selected' : '');
                 div.style.left = p.x + '%'; div.style.top = p.y + '%'; div.innerText = p.numero;
                 div.onclick = (e) => { e.stopPropagation(); selectionnerPuce(p.id); };
                 container.appendChild(div);
@@ -1959,14 +2180,32 @@
             delete p.photo;
         }
         if (!p.photos) p.photos = [];
-        if (p.resolue === undefined) p.resolue = false;
 
+        statutPuceTemporaire = normaliserStatutPuce(p);
         photosPuceTemporairesTableau = [...p.photos];
-        statutPuceTemporaireResolue = p.resolue;
 
         rafraichirAffichageGaleriePhotosSaisie();
-        rafraichirBoutonStatutVisuel();
+        rafraichirBadgeStatutVisuel();
         rafraichirPucesGraphiques();
+    }
+
+    function changerStatutPuceTerrain(nouveauStatut) {
+        statutPuceTemporaire = nouveauStatut;
+        rafraichirBadgeStatutVisuel();
+    }
+
+    function rafraichirBadgeStatutVisuel() {
+        const badge = document.getElementById('badgeStatutPuce');
+        if (statutPuceTemporaire === "en_cours") {
+            badge.innerText = "En cours 🟠";
+            badge.className = "status-badge progress";
+        } else if (statutPuceTemporaire === "resolue") {
+            badge.innerText = "Levée 🟢";
+            badge.className = "status-badge resolved";
+        } else {
+            badge.innerText = "Active 🔴";
+            badge.className = "status-badge active";
+        }
     }
     
     function chargerPhotoPuceAjoutMultiples(event) {
@@ -1992,7 +2231,8 @@
         }
         ctn.innerHTML = photosPuceTemporairesTableau.map((pic, idx) => `
             <div class="photo-gallery-item" style="background-image: url(${pic});">
-                <div class="photo-gallery-del-btn" onclick="supprimerPhotoDeLaZoneSaisie(${idx})">×</div>
+                <div class="photo-gallery-del-btn" onclick="supprimerPhotoDeLaZoneSaisie(${idx})" title="Supprimer">×</div>
+                <div class="photo-gallery-edit-btn" onclick="ouvrirAnnotationPhoto(${idx})" title="Dessiner / Annoter">✏️</div>
             </div>
         `).join('');
     }
@@ -2000,27 +2240,6 @@
     function supprimerPhotoDeLaZoneSaisie(index) {
         photosPuceTemporairesTableau.splice(index, 1); 
         rafraichirAffichageGaleriePhotosSaisie();
-    }
-
-    function basculerStatutRemarqueLevée() {
-        statutPuceTemporaireResolue = !statutPuceTemporaireResolue;
-        rafraichirBoutonStatutVisuel();
-    }
-
-    function rafraichirBoutonStatutVisuel() {
-        const badge = document.getElementById('badgeStatutPuce');
-        const btnToggle = document.getElementById('btnBasculerLevée');
-        if (statutPuceTemporaireResolue) {
-            badge.innerText = "Levée";
-            badge.className = "status-badge resolved";
-            btnToggle.innerText = "Réactiver la remarque 🔴";
-            btnToggle.className = "btn btn-danger btn-small";
-        } else {
-            badge.innerText = "Active";
-            badge.className = "status-badge active";
-            btnToggle.innerText = "Lever la remarque 🟢";
-            btnToggle.className = "btn btn-warning btn-small";
-        }
     }
     
     async function sauvegarderDonniesPuce() {
@@ -2030,7 +2249,8 @@
             p.zonePrecis = document.getElementById('zonePuceInput').value.trim(); 
             p.photos = [...photosPuceTemporairesTableau]; 
             p.entreprises = Array.from(document.querySelectorAll('#zoneEntreprisesPuceCheckboxes input:checked')).map(i => i.value);
-            p.resolue = statutPuceTemporaireResolue;
+            p.statut = statutPuceTemporaire;
+            p.resolue = (statutPuceTemporaire === "resolue");
 
             document.getElementById('zoneSaisiePuce').style.display = 'none'; puceSelectionneeId = null;
             rafraichirTableauRemarques(); rafraichirPucesGraphiques();
@@ -2059,24 +2279,35 @@
         if(!chantierActuel || !chantierActuel.puces || chantierActuel.puces.length === 0) { tbody.innerHTML = "<tr><td colspan='6'>Aucune remarque</td></tr>"; return; }
         
         const voirActives = document.getElementById('chkAfficherActives').checked;
+        const voirEnCours = document.getElementById('chkAfficherEnCours').checked;
         const voirLevees = document.getElementById('chkAfficherLevees').checked;
 
         let html = "";
         chantierActuel.puces.forEach(p => {
             if (p.photo && (!p.photos || p.photos.length === 0)) { p.photos = [p.photo]; delete p.photo; }
-            if (p.resolue === undefined) p.resolue = false;
+            const st = normaliserStatutPuce(p);
 
-            if (!voirActives && !p.resolue) return;
-            if (!voirLevees && p.resolue) return;
+            if (!voirActives && st === "active") return;
+            if (!voirEnCours && st === "en_cours") return;
+            if (!voirLevees && st === "resolue") return;
 
             const nbPics = p.photos ? p.photos.length : 0;
             const zoneAffichee = p.zonePrecis ? ` — <b>${p.zonePrecis}</b>` : '';
-            const labelStatut = p.resolue ? '<span class="status-badge resolved">Levée</span>' : '<span class="status-badge active">Active</span>';
-            const styleLigne = p.resolue ? 'style="background: #fcfcfc; opacity: 0.85;"' : '';
+            
+            let labelStatut = '<span class="status-badge active">Active</span>';
+            let styleLigne = '';
+            
+            if (st === "en_cours") {
+                labelStatut = '<span class="status-badge progress">En cours</span>';
+                styleLigne = 'style="background: #fffdf9;"';
+            } else if (st === "resolue") {
+                labelStatut = '<span class="status-badge resolved">Levée</span>';
+                styleLigne = 'style="background: #fcfcfc; opacity: 0.85;"';
+            }
 
             html += `<tr ${styleLigne}><td><b>${p.numero}</b></td><td>${p.niveauNom}${zoneAffichee}</td><td>${nbPics > 0 ? `📷 (${nbPics})` : 'Non'}</td><td>${labelStatut}</td><td>${p.commentaire || ''}</td><td>${p.dateCreation}</td></tr>`;
         });
-        tbody.innerHTML = html || "<tr><td colspan='6'>Aucune reserve ne correspond aux filtres actifs</td></tr>";
+        tbody.innerHTML = html || "<tr><td colspan='6'>Aucune réserve ne correspond aux filtres actifs</td></tr>";
     }
     
     async function ajouterEntrepriseDirectTerrain() {
@@ -2111,6 +2342,7 @@
         const imprimerPhotos = document.getElementById('printOptPhotos').checked;
         
         const inclureActives = document.getElementById('printOptRemarquesActives').checked;
+        const inclureEnCours = document.getElementById('printOptRemarquesEnCours').checked;
         const inclureLevees = document.getElementById('printOptRemarquesLevees').checked;
 
         document.querySelectorAll('#printTemplate #pdfNomChantier').forEach(el => el.innerText = chantierActuel.nom);
@@ -2136,12 +2368,17 @@
                 ctn.appendChild(img);
                 chantierActuel.puces.forEach(p => {
                     if (p.niveauNom === niv.nom) {
-                        if (p.resolue === undefined) p.resolue = false;
-                        if (!inclureActives && !p.resolue) return;
-                        if (!inclureLevees && p.resolue) return;
+                        const st = normaliserStatutPuce(p);
+                        if (!inclureActives && st === "active") return;
+                        if (!inclureEnCours && st === "en_cours") return;
+                        if (!inclureLevees && st === "resolue") return;
+
+                        let classPin = '';
+                        if (st === "en_cours") classPin = ' progress';
+                        else if (st === "resolue") classPin = ' resolved';
 
                         const pin = document.createElement('div'); 
-                        pin.className = 'pin' + (p.resolue ? ' resolved' : ''); 
+                        pin.className = 'pin' + classPin; 
                         pin.style.left = p.x + '%'; pin.style.top = p.y + '%'; pin.innerText = p.numero;
                         ctn.appendChild(pin);
                     }
@@ -2251,9 +2488,10 @@
             const pucesTriees = [...chantierActuel.puces].sort((a,b) => a.numero - b.numero);
             
             let targetPuces = pucesTriees.filter(p => {
-                if (p.resolue === undefined) p.resolue = false;
-                if (!inclureActives && !p.resolue) return false;
-                if (!inclureLevees && p.resolue) return false;
+                const st = normaliserStatutPuce(p);
+                if (!inclureActives && st === "active") return false;
+                if (!inclureEnCours && st === "en_cours") return false;
+                if (!inclureLevees && st === "resolue") return false;
                 return true;
             });
 
@@ -2262,11 +2500,18 @@
             } else {
                 targetPuces.forEach(p => {
                     const tr = document.createElement('tr');
-                    if(p.resolue) {
+                    const st = normaliserStatutPuce(p);
+
+                    let badgeHtml = '<span class="status-badge active">Active</span>';
+                    if (st === "en_cours") {
+                        badgeHtml = '<span class="status-badge progress">En cours</span>';
+                        tr.style.backgroundColor = "#fffdf9";
+                    } else if (st === "resolue") {
+                        badgeHtml = '<span class="status-badge resolved">Levée</span>';
                         tr.style.backgroundColor = "#fafafa";
                         tr.style.color = "#777";
                     }
-                    const badgeHtml = p.resolue ? '<span class="status-badge resolved">Levée</span>' : '<span class="status-badge active">Active</span>';
+
                     const entStr = p.entreprises && p.entreprises.length > 0 ? `[${p.entreprises.join(', ')}] ` : '';
                     const labelNiveauZoneAffiche = p.niveauNom + (p.zonePrecis ? ` / ${p.zonePrecis}` : '');
                     tr.innerHTML = `<td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td><td style="text-align:center;">${labelNiveauZoneAffiche}</td><td style="text-align:center;">${badgeHtml}</td><td><strong>${entStr}</strong>${p.commentaire || 'Aucun commentaire.'}</td>`;
@@ -2289,10 +2534,11 @@
             
             pucesTriees.forEach(p => {
                 if (p.photo && (!p.photos || p.photos.length === 0)) { p.photos = [p.photo]; delete p.photo; }
-                if (p.resolue === undefined) p.resolue = false;
+                const st = normaliserStatutPuce(p);
                 
-                if (!inclureActives && !p.resolue) return;
-                if (!inclureLevees && p.resolue) return;
+                if (!inclureActives && st === "active") return;
+                if (!inclureEnCours && st === "en_cours") return;
+                if (!inclureLevees && st === "resolue") return;
 
                 if (p.photos && p.photos.length > 0) {
                     p.photos.forEach((photoData, indexPhoto) => {
@@ -2300,7 +2546,7 @@
                             src: photoData,
                             numero: p.numero,
                             niveau: p.niveauNom + (p.zonePrecis ? ` (${p.zonePrecis})` : ''),
-                            resolue: p.resolue,
+                            statut: st,
                             labelIndex: p.photos.length > 1 ? ` (${indexPhoto + 1}/${p.photos.length})` : ''
                         });
                     });
@@ -2321,7 +2567,10 @@
                         const td = document.createElement('td');
                         if (photoIndex < collectionToutesPhotosImprimables.length) {
                             const pAvecP = collectionToutesPhotosImprimables[photoIndex];
-                            const statusLabel = pAvecP.resolue ? "LEVÉE" : "ACTIVE";
+                            let statusLabel = "ACTIVE";
+                            if (pAvecP.statut === "en_cours") statusLabel = "EN COURS";
+                            else if (pAvecP.statut === "resolue") statusLabel = "LEVÉE";
+
                             td.innerHTML = `<img src="${pAvecP.src}" class="photo-grid-img"><div class="photo-grid-caption">PUCE N° ${pAvecP.numero}${pAvecP.labelIndex} (${pAvecP.niveau}) - ${statusLabel}</div>`;
                         } else { td.style.border = "none"; td.style.background = "transparent"; }
                         currentTr.appendChild(td);
