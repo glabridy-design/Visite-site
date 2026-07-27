@@ -163,8 +163,12 @@
         }
 
         @media print {
-            @page { size: auto; margin: 0mm; }
-            body { background: white; color: black; font-size: 11pt; padding: 15mm; }
+            /* Suppression des en-têtes/pieds de page automatiques (URL GitHub, Date, etc.) */
+            @page { 
+                size: auto; 
+                margin: 10mm; /* Marges propres pour le document */
+            }
+            body { background: white; color: black; font-size: 11pt; padding: 0; }
             .app-container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; border: none; }
             .section, .nav-bar, .no-print, form, button, input, textarea, select, .config-box, .tabs-container, .map-filters-box, .print-options-box, .gantt-pilotage-control { display: none !important; }
             #printTemplate { display: block !important; }
@@ -207,7 +211,7 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1>Conducteur de Chantier PWA</h1>
+        <h1>Rapport visite de Site V4</h1>
         
         <div class="config-box">
             <strong>🔑 Synchronisation Multi-Appareil GitHub :</strong><br>
