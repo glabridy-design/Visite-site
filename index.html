@@ -41,11 +41,11 @@
 
         /* Formulaires */
         label { display: block; margin: 14px 0 6px; font-weight: 600; font-size: 14px; color: #4a4a4a; }
-        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-size: 16px; background: #f8f9fa; transition: border 0.2s; }
-        input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
+        input[type="text"], input[type="date"], select, textarea { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-size: 16px; background: #f8f9fa; transition: border 0.2s; }
+        input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus { border-color: #1a73e8; background: white; outline: none; }
         
         .flex-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
-        .flex-row input { flex: 1; min-width: 200px; }
+        .flex-row input { flex: 1; min-width: 180px; }
         
         .btn { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 15px; text-align: center; }
         .btn:hover { background: #1557b0; }
@@ -64,12 +64,12 @@
         .btn-delete-card { position: absolute; top: 15px; right: 15px; background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
         .btn-delete-card:hover { background: #d93025; color: white; border-color: #d93025; }
 
-        /* Badges de Statut (3 Statuts) */
+        /* Badges de Statut */
         .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
         .status-badge.active { background: #fadbd8; color: #c0392b; border: 1px solid #f5b7b1; }
         .status-badge.progress { background: #fdebd0; color: #d35400; border: 1px solid #f5cba7; }
         .status-badge.resolved { background: #d4efdf; color: #1e8449; border: 1px solid #a9dfbf; }
-        .status-badge.late-task { background: #fadbd8; color: #d93025; border: 1px solid #f5b7b1; margin-left: 5px; }
+        .status-badge.late-task { background: #fadbd8; color: #d93025; border: 1px solid #f5b7b1; }
 
         .map-filters-box { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; padding: 12px 15px; margin-top: 10px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .print-options-box { background: #edf2fa; border: 1px solid #b4cff7; border-radius: 8px; padding: 15px; margin-top: 25px; }
@@ -81,12 +81,18 @@
         .plan-container { position: relative; display: inline-block; max-width: 100%; }
         .plan-img { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
         
-        /* Puces sur le plan (3 Couleurs) */
+        /* Puces sur le plan */
         .pin { position: absolute; width: 22px; height: 22px; background: #d93025; color: white; border-radius: 50%; text-align: center; font-size: 11px; font-weight: bold; line-height: 18px; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; }
         .pin.progress { background: #e67e22; }
         .pin.resolved { background: #28a745; }
         .pin.selected { z-index: 10; transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 0 3px rgba(26,115,232,0.6); }
-        
+        .pin-late-badge { position: absolute; top: -8px; right: -8px; font-size: 11px; background: white; border-radius: 50%; padding: 1px; }
+
+        /* Style spécifique pour la gestion des sous-tâches */
+        .task-item-card { background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .task-item-card.done { opacity: 0.65; background: #f8f9fa; }
+        .task-item-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
         .table-remarques { width: 100%; border-collapse: collapse; min-width: 600px; }
         .table-remarques th, .table-remarques td { border: 1px solid #dadce0; padding: 10px; text-align: left; font-size: 14px; }
@@ -198,7 +204,7 @@
 <div class="app-container">
 
     <div id="pageAccueil" class="section active">
-        <h1>Conducteur de Chantier PWA</h1>
+        <h1>Visite Site V3</h1>
         
         <div class="config-box">
             <strong>🔑 Synchronisation Multi-Appareil GitHub :</strong><br>
@@ -350,11 +356,29 @@
                 <label for="zonePuceInput">Localisation Spécifique (Pièce / Zone) :</label>
                 <input type="text" id="zonePuceInput" placeholder="Ex: Logement 102, Couloir, Gaine technique...">
 
-                <label>Entreprises concernées :</label>
+                <!-- NOUVELLE SECTION DE GESTION MULTI-TÂCHES AVEC DATES BUTOIRES -->
+                <div style="background:#fff; border:1px solid #b4cff7; padding:12px; border-radius:8px; margin: 15px 0;">
+                    <h4 style="margin: 0 0 8px 0; color:#1a73e8;">📋 Actions à mener / Tâches associées</h4>
+                    <p style="font-size:12px; color:#666; margin-top:0;">Définissez les tâches, entreprises responsables et échéances précises pour cette puce.</p>
+                    
+                    <div id="listeSousTachesContainer"></div>
+
+                    <div style="background:#f8f9fa; border:1px dashed #ccc; padding:10px; border-radius:6px; margin-top:10px;">
+                        <span style="font-size:13px; font-weight:bold; color:#333;">+ Ajouter une action corrective</span>
+                        <div class="flex-row" style="margin-top:6px;">
+                            <input type="text" id="nouvelleTacheDescInput" placeholder="Action à réaliser..." style="font-size:13px; padding:8px;">
+                            <select id="nouvelleTacheEntrepriseSelect" style="font-size:13px; padding:8px; flex:1; min-width:140px;"></select>
+                            <input type="date" id="nouvelleTacheEcheanceInput" style="font-size:13px; padding:8px; width:auto;">
+                            <button type="button" class="btn btn-small btn-success" style="padding:8px 12px;" onclick="ajouterTachePuceActive()">+ Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+
+                <label>Entreprises globales concernées (Optionnel) :</label>
                 <div id="zoneEntreprisesPuceCheckboxes" class="entreprises-selection-list"></div>
 
-                <label>Observations &amp; Suivi d'avancement :</label>
-                <textarea id="commentairePuce" rows="3" placeholder="Saisissez ou complétez vos observations de suivi..."></textarea>
+                <label>Observations complémentaires &amp; Suivi :</label>
+                <textarea id="commentairePuce" rows="3" placeholder="Saisissez vos observations libres..."></textarea>
 
                 <div style="margin-top:15px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
                     <button type="button" class="btn btn-danger btn-small" style="margin:0;" onclick="supprimerPuceActuelle()">Supprimer</button>
@@ -366,7 +390,7 @@
             <div class="table-responsive">
                 <table class="table-remarques">
                     <thead>
-                        <tr><th>N°</th><th>Niveau / Zone</th><th>Photos</th><th>Statut</th><th>Entreprises &amp; Constats</th><th>Date</th></tr>
+                        <tr><th>N°</th><th>Niveau / Zone</th><th>Photos</th><th>Statut</th><th>Entreprises &amp; Tâches / Constats</th><th>Date</th></tr>
                     </thead>
                     <tbody id="corpsTableauRemarques"></tbody>
                 </table>
@@ -589,10 +613,11 @@
     let planEnCoursDeChargementBase64 = ""; 
     let planDirectTerrainBase64 = "";
     let photosPuceTemporairesTableau = []; 
+    let tachesPuceTemporairesTableau = []; // Tâches d'actions pour la puce en cours d'édition
     let chantierActuel = null; 
     let indexNiveauActuel = 0; 
     let puceSelectionneeId = null;
-    let statutPuceTemporaire = "active"; // "active", "en_cours", "resolue"
+    let statutPuceTemporaire = "active"; 
     let summaryTasksRepliees = {};
 
     let idNoteCroquisEnCours = null;
@@ -610,7 +635,7 @@
     let taillePinceauPhoto = 5;
 
     /* ==========================================================================
-       1. MOTEUR INDEXEDDB (STOCKAGE LOCAL ULTRA-HAUTE CAPACITÉ)
+       1. MOTEUR INDEXEDDB
        ========================================================================== */
     function ouvrirDB() {
         return new Promise((resolve, reject) => {
@@ -700,11 +725,37 @@
         });
     });
 
-    /* UTILS & HELPER POUR STATUTS */
+    /* HELPERS ET GESTION DES RETARDS ET STATUTS */
     function normaliserStatutPuce(p) {
-        if (p.statut) return p.statut; // "active", "en_cours", "resolue"
+        if (p.statut) return p.statut; 
         if (p.resolue === true) return "resolue";
         return "active";
+    }
+
+    // Calcule si une tâche ou une puce contient un retard par rapport à la date d'aujourd'hui
+    function evaluerRetardTache(tache) {
+        if (tache.faite) return { enRetard: false, joursRetard: 0 };
+        if (!tache.echeance) return { enRetard: false, joursRetard: 0 };
+
+        const dateAujourdhui = new Date();
+        dateAujourdhui.setHours(0,0,0,0);
+
+        const dateEcheance = new Date(tache.echeance);
+        dateEcheance.setHours(0,0,0,0);
+
+        if (dateEcheance < dateAujourdhui) {
+            const diffTemps = Math.abs(dateAujourdhui - dateEcheance);
+            const diffJours = Math.ceil(diffTemps / (1000 * 60 * 60 * 24));
+            return { enRetard: true, joursRetard: diffJours };
+        }
+        return { enRetard: false, joursRetard: 0 };
+    }
+
+    function puceAUnRetardAction(p) {
+        const st = normaliserStatutPuce(p);
+        if (st === "resolue") return false;
+        if (!p.taches || p.taches.length === 0) return false;
+        return p.taches.some(t => evaluerRetardTache(t).enRetard);
     }
 
     function convertirTexteEnBase64Utf8(texteData) {
@@ -1270,6 +1321,7 @@
                 delete p.photo;
             }
             if(!p.photos) p.photos = [];
+            if(!p.taches) p.taches = [];
             p.statut = normaliserStatutPuce(p);
         });
 
@@ -2110,7 +2162,9 @@
         fermerFenetreAnnotationPhoto();
     }
 
-    /* LOGIQUE DE GESTION DU PLAN ET DES PUCES (3 STATUTS) */
+    /* ==========================================================================
+       4. LOGIQUE DES PUCES & GESTION MULTI-TÂCHES AVEC DATES BUTOIRES
+       ========================================================================== */
     function chargerPlanEtPucesDuNiveauActuel() {
         if(!chantierActuel || !chantierActuel.niveaux[indexNiveauActuel]) return;
         document.getElementById('viewPlanImg').src = chantierActuel.niveaux[indexNiveauActuel].plan;
@@ -2131,7 +2185,19 @@
             if(p) { p.x = x; p.y = y; rafraichirPucesGraphiques(); puceSelectionneeId = null; return; }
         }
         const num = chantierActuel.puces.length + 1;
-        const nPuce = { id: Date.now(), numero: num, niveauNom: chantierActuel.niveaux[indexNiveauActuel].nom, zonePrecis: "", x, y, commentaire: "", photos: [], entreprises: [], dateCreation: new Date().toLocaleDateString(), statut: "active" };
+        const nPuce = { 
+            id: Date.now(), 
+            numero: num, 
+            niveauNom: chantierActuel.niveaux[indexNiveauActuel].nom, 
+            zonePrecis: "", 
+            x, y, 
+            commentaire: "", 
+            photos: [], 
+            taches: [], // Tableau des sous-tâches
+            entreprises: [], 
+            dateCreation: new Date().toLocaleDateString('fr-FR'), 
+            statut: "active" 
+        };
         chantierActuel.puces.push(nPuce);
         rafraichirPucesGraphiques(); selectionnerPuce(nPuce.id);
     }
@@ -2161,6 +2227,15 @@
 
                 div.className = 'pin' + classStatut + (puceSelectionneeId === p.id ? ' selected' : '');
                 div.style.left = p.x + '%'; div.style.top = p.y + '%'; div.innerText = p.numero;
+
+                // Ajout d'une alerte visuelle si la puce contient un retard
+                if (puceAUnRetardAction(p)) {
+                    const badgeAlert = document.createElement('span');
+                    badgeAlert.className = 'pin-late-badge';
+                    badgeAlert.innerText = '🚨';
+                    div.appendChild(badgeAlert);
+                }
+
                 div.onclick = (e) => { e.stopPropagation(); selectionnerPuce(p.id); };
                 container.appendChild(div);
             }
@@ -2180,13 +2255,89 @@
             delete p.photo;
         }
         if (!p.photos) p.photos = [];
+        if (!p.taches) p.taches = [];
 
         statutPuceTemporaire = normaliserStatutPuce(p);
         photosPuceTemporairesTableau = [...p.photos];
+        tachesPuceTemporairesTableau = JSON.parse(JSON.stringify(p.taches));
+
+        // Remplissage du selecteur d'entreprise pour l'ajout de tâche
+        const entSelect = document.getElementById('nouvelleTacheEntrepriseSelect');
+        entSelect.innerHTML = `<option value="">-- Entreprise responsable --</option>` + 
+            (chantierActuel.entreprises || []).map(e => `<option value="${e}">${e}</option>`).join('');
 
         rafraichirAffichageGaleriePhotosSaisie();
+        rafraichirListeSousTachesSaisie();
         rafraichirBadgeStatutVisuel();
         rafraichirPucesGraphiques();
+    }
+
+    function rafraichirListeSousTachesSaisie() {
+        const ctn = document.getElementById('listeSousTachesContainer');
+        if (tachesPuceTemporairesTableau.length === 0) {
+            ctn.innerHTML = "<p style='font-style:italic; font-size:13px; color:#888;'>Aucune action spécifique enregistrée pour ce point.</p>";
+            return;
+        }
+
+        ctn.innerHTML = tachesPuceTemporairesTableau.map((t, idx) => {
+            const evalRetard = evaluerRetardTache(t);
+            const badgeRetard = evalRetard.enRetard ? `<span class="status-badge late-task">🚨 RETARD (${evalRetard.joursRetard}j)</span>` : '';
+            const formatEcheance = t.echeance ? t.echeance.split("-").reverse().join("/") : "Non définie";
+
+            return `
+                <div class="task-item-card ${t.faite ? 'done' : ''}">
+                    <div class="task-item-header">
+                        <label class="filter-checkbox-label" style="font-size:13px;">
+                            <input type="checkbox" ${t.faite ? 'checked' : ''} onchange="basculerEtatSousTache(${idx}, this.checked)">
+                            <strong style="${t.faite ? 'text-decoration:line-through; color:#888;' : ''}">${t.description}</strong>
+                        </label>
+                        <div>
+                            ${badgeRetard}
+                            <button type="button" class="btn btn-small btn-danger" style="padding:2px 6px; font-size:11px;" onclick="supprimerSousTacheIndex(${idx})">🗑️</button>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#5f6368; display:flex; gap:15px; flex-wrap:wrap;">
+                        <span>🏢 <strong>${t.entreprise || 'Non assignée'}</strong></span>
+                        <span>📅 Créée le : ${t.dateCreation}</span>
+                        <span>⏳ Échéance : <strong>${formatEcheance}</strong></span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function ajouterTachePuceActive() {
+        const desc = document.getElementById('nouvelleTacheDescInput').value.trim();
+        const ent = document.getElementById('nouvelleTacheEntrepriseSelect').value;
+        const ech = document.getElementById('nouvelleTacheEcheanceInput').value;
+
+        if (!desc) return alert("Veuillez saisir une description pour cette action.");
+
+        tachesPuceTemporairesTableau.push({
+            id: Date.now(),
+            description: desc,
+            entreprise: ent,
+            dateCreation: new Date().toLocaleDateString('fr-FR'),
+            echeance: ech,
+            faite: false
+        });
+
+        document.getElementById('nouvelleTacheDescInput').value = "";
+        document.getElementById('nouvelleTacheEcheanceInput').value = "";
+        
+        rafraichirListeSousTachesSaisie();
+    }
+
+    function basculerEtatSousTache(indexTache, estCochee) {
+        if (tachesPuceTemporairesTableau[indexTache]) {
+            tachesPuceTemporairesTableau[indexTache].faite = estCochee;
+            rafraichirListeSousTachesSaisie();
+        }
+    }
+
+    function supprimerSousTacheIndex(indexTache) {
+        tachesPuceTemporairesTableau.splice(indexTache, 1);
+        rafraichirListeSousTachesSaisie();
     }
 
     function changerStatutPuceTerrain(nouveauStatut) {
@@ -2248,6 +2399,7 @@
             p.commentaire = document.getElementById('commentairePuce').value; 
             p.zonePrecis = document.getElementById('zonePuceInput').value.trim(); 
             p.photos = [...photosPuceTemporairesTableau]; 
+            p.taches = [...tachesPuceTemporairesTableau];
             p.entreprises = Array.from(document.querySelectorAll('#zoneEntreprisesPuceCheckboxes input:checked')).map(i => i.value);
             p.statut = statutPuceTemporaire;
             p.resolue = (statutPuceTemporaire === "resolue");
@@ -2305,7 +2457,22 @@
                 styleLigne = 'style="background: #fcfcfc; opacity: 0.85;"';
             }
 
-            html += `<tr ${styleLigne}><td><b>${p.numero}</b></td><td>${p.niveauNom}${zoneAffichee}</td><td>${nbPics > 0 ? `📷 (${nbPics})` : 'Non'}</td><td>${labelStatut}</td><td>${p.commentaire || ''}</td><td>${p.dateCreation}</td></tr>`;
+            // Mise en forme de la liste des tâches
+            let tachesHtml = "";
+            if (p.taches && p.taches.length > 0) {
+                tachesHtml = `<div style="margin-bottom:6px;">` + p.taches.map(t => {
+                    const evalR = evaluerRetardTache(t);
+                    const bRetard = evalR.enRetard ? `<span class="status-badge late-task">🚨 RETARD (${evalR.joursRetard}j)</span>` : '';
+                    const echFmt = t.echeance ? t.echeance.split("-").reverse().join("/") : 'Sans date';
+                    const etatIcone = t.faite ? '✅' : '⏳';
+                    return `<div style="font-size:12px; margin-bottom:3px;">${etatIcone} <strong>${t.description}</strong> [${t.entreprise || 'Sans lot'}] — Échéance: ${echFmt} ${bRetard}</div>`;
+                }).join('') + `</div>`;
+            }
+
+            const entGlobale = p.entreprises && p.entreprises.length > 0 ? `<div style="font-size:12px; color:#1a73e8;">Lot(s) : ${p.entreprises.join(', ')}</div>` : '';
+            const obsText = p.commentaire ? `<div>${p.commentaire}</div>` : '';
+
+            html += `<tr ${styleLigne}><td><b>${p.numero}</b></td><td>${p.niveauNom}${zoneAffichee}</td><td>${nbPics > 0 ? `📷 (${nbPics})` : 'Non'}</td><td>${labelStatut}</td><td>${tachesHtml}${entGlobale}${obsText}</td><td>${p.dateCreation}</td></tr>`;
         });
         tbody.innerHTML = html || "<tr><td colspan='6'>Aucune réserve ne correspond aux filtres actifs</td></tr>";
     }
@@ -2324,13 +2491,16 @@
             }
         }
     }
+
     function changerPage(pId) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(pId).classList.add('active');
         if(pId === 'pageAccueil') rafraichirVueAccueil();
     }
+
     function fermerChantierActuel() { chantierActuel = null; changerPage('pageAccueil'); }
 
+    /* IMPRESSION PDF */
     function declencherImpression() {
         fermerMenuActions();
         if (!chantierActuel) return;
@@ -2512,9 +2682,19 @@
                         tr.style.color = "#777";
                     }
 
-                    const entStr = p.entreprises && p.entreprises.length > 0 ? `[${p.entreprises.join(', ')}] ` : '';
+                    let pdfTachesHtml = "";
+                    if (p.taches && p.taches.length > 0) {
+                        pdfTachesHtml = `<div style="margin-bottom:4px;">` + p.taches.map(t => {
+                            const evalR = evaluerRetardTache(t);
+                            const bRetard = evalR.enRetard ? `<span class="status-badge late-task">🚨 RETARD (${evalR.joursRetard}j)</span>` : '';
+                            const echFmt = t.echeance ? t.echeance.split("-").reverse().join("/") : 'Sans date';
+                            const etatIcone = t.faite ? '✅' : '⏳';
+                            return `<div style="font-size:9pt; margin-bottom:2px;">${etatIcone} <strong>${t.description}</strong> [${t.entreprise || 'Sans lot'}] — Échéance: ${echFmt} ${bRetard}</div>`;
+                        }).join('') + `</div>`;
+                    }
+
                     const labelNiveauZoneAffiche = p.niveauNom + (p.zonePrecis ? ` / ${p.zonePrecis}` : '');
-                    tr.innerHTML = `<td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td><td style="text-align:center;">${labelNiveauZoneAffiche}</td><td style="text-align:center;">${badgeHtml}</td><td><strong>${entStr}</strong>${p.commentaire || 'Aucun commentaire.'}</td>`;
+                    tr.innerHTML = `<td style="text-align:center; font-weight:bold;">Puce ${p.numero}</td><td style="text-align:center;">${labelNiveauZoneAffiche}</td><td style="text-align:center;">${badgeHtml}</td><td>${pdfTachesHtml}<div>${p.commentaire || ''}</div></td>`;
                     pdfCorpsTableau.appendChild(tr);
                 });
             }
