@@ -163,12 +163,20 @@
         }
 
         @media print {
-            /* Suppression des en-têtes/pieds de page automatiques (URL GitHub, Date, etc.) */
+            /* Marge à 0 = Force Safari et Chrome à masquer les en-têtes/URL */
             @page { 
                 size: auto; 
-                margin: 0mm; /* Marges propres pour le document */
+                margin: 0 !important; 
             }
-            body { background: white; color: black; font-size: 11pt; padding: 0; }
+            
+            body { 
+                background: white; 
+                color: black; 
+                font-size: 11pt; 
+                /* Les marges du document sont reportées ici pour ne pas coller au papier */
+                padding: 12mm !important; 
+            }
+
             .app-container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; border: none; }
             .section, .nav-bar, .no-print, form, button, input, textarea, select, .config-box, .tabs-container, .map-filters-box, .print-options-box, .gantt-pilotage-control { display: none !important; }
             #printTemplate { display: block !important; }
@@ -202,7 +210,7 @@
             .status-badge.late-task { background-color: #ffcccc !important; color: #d93025 !important; border: 1px solid #d93025 !important; }
 
             .first-page-only { page-break-inside: avoid; }
-        }
+                }
         #printTemplate { display: none; }
     </style>
 </head>
