@@ -61,7 +61,1241 @@
     "AD2S",
     "Art Protect'"
   ],
-  "puces": [],
+  "puces": [
+    {
+      "id": 1784878100577,
+      "numero": 1,
+      "niveauNom": "RDC Haut Mezzanine",
+      "zonePrecis": "",
+      "x": 25.059101654846334,
+      "y": 87.26147902581639,
+      "commentaire": "Nettoyer suite intervention",
+      "photos": [
+        "photos/puce_1_photo_1.avif",
+        "photos/puce_1_photo_2.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784878172631,
+      "numero": 2,
+      "niveauNom": "RDC Haut Mezzanine",
+      "zonePrecis": "",
+      "x": 9.692671394799055,
+      "y": 86.76029131535671,
+      "commentaire": "Nettoyage après intervention",
+      "photos": [
+        "photos/puce_2_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784878318238,
+      "numero": 3,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 15.602836879432624,
+      "y": 69.71990915972748,
+      "commentaire": "Déposer échafaudage pour installation corniche",
+      "photos": [],
+      "entreprises": [
+        "Bonvoisin",
+        "Ligne Finition"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784878372987,
+      "numero": 4,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 18.67612293144208,
+      "y": 70.72228458064684,
+      "commentaire": "Procéder au nettoyage a la fin des interventions",
+      "photos": [
+        "photos/puce_4_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784878421441,
+      "numero": 5,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 18.203309692671397,
+      "y": 84.50494661828813,
+      "commentaire": "Revoir mise en place Bastin pour facilité accèssibilité pour reprise de ferme",
+      "photos": [
+        "photos/puce_5_photo_1.avif",
+        "photos/puce_5_photo_2.avif",
+        "photos/puce_5_photo_3.avif",
+        "photos/puce_5_photo_4.avif"
+      ],
+      "entreprises": [
+        "Bonvoisin"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784878524782,
+      "numero": 6,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 11.583924349881796,
+      "y": 86.50969746012687,
+      "commentaire": "Réaliser étaiement et poursuivre reprise de ferme",
+      "photos": [
+        "photos/puce_6_photo_1.avif",
+        "photos/puce_6_photo_2.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "SNM"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784879111564,
+      "numero": 7,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 34.988179669030735,
+      "y": 83.92022762275182,
+      "commentaire": "Réaliser escalier accès technique\nCôté prises",
+      "photos": [
+        "photos/puce_7_photo_1.avif"
+      ],
+      "entreprises": [
+        "UTB"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784879186237,
+      "numero": 8,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 74.23167848699764,
+      "y": 84.17082147798168,
+      "commentaire": "Sondage realises",
+      "photos": [
+        "photos/puce_8_photo_1.avif",
+        "photos/puce_8_photo_2.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784879444270,
+      "numero": 9,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 28.01418439716312,
+      "y": 68.21634602834843,
+      "commentaire": "Tracé réalisé, empêchement a venir",
+      "photos": [
+        "photos/puce_9_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784879484228,
+      "numero": 10,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 29.78723404255319,
+      "y": 62.703281213291916,
+      "commentaire": "Mur en aglos blancheur en cours de montage",
+      "photos": [
+        "photos/puce_10_photo_1.avif",
+        "photos/puce_10_photo_2.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784879597027,
+      "numero": 11,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 37.70685579196218,
+      "y": 78.82481923307839,
+      "commentaire": "Opération de dépose de Zinc OK\nBardage Bois en cours de refection\nPente de toit en cours de réfection\nAttention, Réaliser bâchage en cas de pluie",
+      "photos": [
+        "photos/puce_11_photo_1.avif",
+        "photos/puce_11_photo_2.avif",
+        "photos/puce_11_photo_3.avif"
+      ],
+      "entreprises": [
+        "UTB"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784879674093,
+      "numero": 12,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 32.38770685579196,
+      "y": 75.8176929703203,
+      "commentaire": "Reprise de l’imposte réalisé",
+      "photos": [
+        "photos/puce_12_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784725832712,
+      "numero": 13,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "Plafond",
+      "x": 30.969267139479907,
+      "y": 76.98713096139288,
+      "commentaire": "Passage Joret pour chiffrage plafond bois, préciser besoin technique",
+      "photos": [
+        "photos/puce_13_photo_1.avif"
+      ],
+      "entreprises": [
+        "Joret"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784725954567,
+      "numero": 14,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "Sol theatre",
+      "x": 25.177304964539005,
+      "y": 77.65538124200579,
+      "commentaire": "Trêve réalisé pour implantation plancher technique..",
+      "photos": [
+        "photos/puce_14_photo_1.avif"
+      ],
+      "entreprises": [
+        "Gamma Industrie"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784726070477,
+      "numero": 15,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 29.78723404255319,
+      "y": 66.54572032681615,
+      "commentaire": "Curage à terminer.\n",
+      "photos": [
+        "photos/puce_15_photo_1.avif"
+      ],
+      "entreprises": [
+        "Greenway"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784726126501,
+      "numero": 16,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 32.860520094562645,
+      "y": 66.04453261635646,
+      "commentaire": "Évacuer matériel exploitation",
+      "photos": [
+        "photos/puce_16_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784726188693,
+      "numero": 17,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 31.087470449172578,
+      "y": 60.44793651622334,
+      "commentaire": "Poursuivre interervention dans sanitaires",
+      "photos": [],
+      "entreprises": [
+        "Celfy"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784726798669,
+      "numero": 18,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 31.560283687943265,
+      "y": 85.08966561382442,
+      "commentaire": "Ouverture réalisée, \nProcéder étaiement et\nReprendre ferme escalier 4 URGENT",
+      "photos": [
+        "photos/puce_18_photo_1.avif",
+        "photos/puce_18_photo_2.avif",
+        "photos/puce_18_photo_3.avif",
+        "photos/puce_18_photo_4.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "SNM"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784726887351,
+      "numero": 19,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 32.74231678486997,
+      "y": 85.75791589443735,
+      "commentaire": "Attention stockage , évacuer les elements",
+      "photos": [
+        "photos/puce_19_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784726981723,
+      "numero": 20,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "Linteau supérieur escalier 4",
+      "x": 30.37825059101655,
+      "y": 87.76266673627607,
+      "commentaire": "ADM déposer fenêtre\n\nLhullier reprendre linteau",
+      "photos": [
+        "photos/puce_20_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "Menuiserie ADM"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784727156882,
+      "numero": 21,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 31.44208037825059,
+      "y": 87.4285415959696,
+      "commentaire": "Chêneau déposer escalier 4",
+      "photos": [
+        "photos/puce_21_photo_1.avif"
+      ],
+      "entreprises": [
+        "UTB"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784727419230,
+      "numero": 22,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 29.196217494089833,
+      "y": 84.75554047351798,
+      "commentaire": "Réparation escalier à réaliser\nTransmettre besoins Bonvoisin",
+      "photos": [
+        "photos/puce_22_photo_1.avif"
+      ],
+      "entreprises": [
+        "SNM"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784727499538,
+      "numero": 23,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 33.687943262411345,
+      "y": 84.67200918844135,
+      "commentaire": "Démonter échafaudage pour réalisation escalier",
+      "photos": [
+        "photos/puce_23_photo_1.avif"
+      ],
+      "entreprises": [
+        "Bonvoisin",
+        "UTB"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784727615589,
+      "numero": 24,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 55.673758865248224,
+      "y": 79.99425722415097,
+      "commentaire": "Étaiement et études de reprise des fermes menée.",
+      "photos": [
+        "photos/puce_24_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784727699832,
+      "numero": 25,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 30.73286052009456,
+      "y": 87.17794774073977,
+      "commentaire": "Nettoyer après intervention et évacuer gravas",
+      "photos": [
+        "photos/puce_25_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784727831256,
+      "numero": 26,
+      "niveauNom": "RDC-Bas",
+      "zonePrecis": "",
+      "x": 8.628841607565011,
+      "y": 86.00850974966718,
+      "commentaire": "Est-ce qu’elle a coulé en place des coffrets et reprise de poteaux et coulage du corbeau réalisé",
+      "photos": [
+        "photos/puce_26_photo_1.avif",
+        "photos/puce_26_photo_2.avif",
+        "photos/puce_26_photo_3.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784728164536,
+      "numero": 27,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 6.619385342789598,
+      "y": 78.32363152261871,
+      "commentaire": "Quid reprise de la tenture",
+      "photos": [
+        "photos/puce_27_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784728352709,
+      "numero": 28,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 11.229314420803782,
+      "y": 87.4285415959696,
+      "commentaire": "Ouverture OK, réaliser étaiement pour\nsuite intervention SNM\nTest arrachement mercredi30",
+      "photos": [
+        "photos/puce_28_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "SNM"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784728757558,
+      "numero": 29,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "Façade",
+      "x": 36.17021276595745,
+      "y": 89.26622986765513,
+      "commentaire": "Opération de reprise sur façade a réalisé",
+      "photos": [
+        "photos/puce_29_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729418176,
+      "numero": 30,
+      "niveauNom": "RDC Haut Mezzanine",
+      "zonePrecis": "",
+      "x": 15.24822695035461,
+      "y": 69.46931530449764,
+      "commentaire": "Traitement mérule a poursuivre sur balcon",
+      "photos": [],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729482361,
+      "numero": 31,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 22.458628841607563,
+      "y": 69.88697172988071,
+      "commentaire": "Merule traitement à finir",
+      "photos": [
+        "photos/puce_31_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729503100,
+      "numero": 32,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 14.420803782505912,
+      "y": 70.22109687018715,
+      "commentaire": "Merule traitement à finir",
+      "photos": [
+        "photos/puce_32_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729557467,
+      "numero": 33,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 26.004728132387704,
+      "y": 86.25910360489702,
+      "commentaire": "Merule traitement à finir",
+      "photos": [
+        "photos/puce_33_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729620219,
+      "numero": 34,
+      "niveauNom": "RDC-Bas",
+      "zonePrecis": "",
+      "x": 27.06855791962175,
+      "y": 75.23297397478399,
+      "commentaire": "FTM N° 1à réaliser",
+      "photos": [
+        "photos/puce_34_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729815986,
+      "numero": 35,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "Façade",
+      "x": 76.71394799054374,
+      "y": 88.93210472734866,
+      "commentaire": "Opération de reprise de façade a réalisé",
+      "photos": [
+        "photos/puce_35_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729893402,
+      "numero": 36,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "Façade",
+      "x": 77.6595744680851,
+      "y": 84.00375890782846,
+      "commentaire": "Préparation support a réaliser",
+      "photos": [
+        "photos/puce_36_photo_1.avif"
+      ],
+      "entreprises": [
+        "HUE"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784729945237,
+      "numero": 37,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "Façade",
+      "x": 67.37588652482269,
+      "y": 88.34738573181237,
+      "commentaire": "Passage EP a réalisé ",
+      "photos": [
+        "photos/puce_37_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "UTB"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730008060,
+      "numero": 38,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "Façade",
+      "x": 43.02600472813239,
+      "y": 88.09679187658253,
+      "commentaire": "Passage EP a réalisé",
+      "photos": [
+        "photos/puce_38_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "UTB"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730068418,
+      "numero": 39,
+      "niveauNom": "RDC Haut Mezzanine",
+      "zonePrecis": "Façade",
+      "x": 33.33333333333333,
+      "y": 87.9297293064293,
+      "commentaire": "Reprendre passage EP",
+      "photos": [
+        "photos/puce_39_photo_1.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "UTB"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730238168,
+      "numero": 40,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 10.520094562647754,
+      "y": 87.76266673627607,
+      "commentaire": "L’Ouverture reprise ferme a traversé la façade",
+      "photos": [
+        "photos/puce_40_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730269152,
+      "numero": 41,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 15.957446808510639,
+      "y": 87.84619802135268,
+      "commentaire": "L’Ouverture de reprise de ferme a traversé la façade",
+      "photos": [
+        "photos/puce_41_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730423084,
+      "numero": 42,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 32.74231678486997,
+      "y": 72.64350413740897,
+      "commentaire": "Dalle support désenfumage OK",
+      "photos": [
+        "photos/puce_42_photo_1.avif",
+        "photos/puce_42_photo_2.avif"
+      ],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730892169,
+      "numero": 43,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 43.498817966903076,
+      "y": 80.74603878984051,
+      "commentaire": "Depose zinc a venir faire lien paratonner\n",
+      "photos": [
+        "photos/puce_43_photo_1.avif"
+      ],
+      "entreprises": [
+        "UTB",
+        "Art Protect'"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784730928903,
+      "numero": 44,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 37.825059101654844,
+      "y": 87.84619802135268,
+      "commentaire": "Échafaudage première travée ok suite fin de semaine\n",
+      "photos": [
+        "photos/puce_44_photo_1.avif"
+      ],
+      "entreprises": [
+        "Bonvoisin"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784731169950,
+      "numero": 45,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 39.952718676122934,
+      "y": 70.72228458064684,
+      "commentaire": "Dépose zinc \nChevron âge ok\nBardage ok",
+      "photos": [
+        "photos/puce_45_photo_1.avif"
+      ],
+      "entreprises": [],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784731777951,
+      "numero": 46,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 54.96453900709219,
+      "y": 66.2115951865097,
+      "commentaire": "Conserver? Voir inter celfy ",
+      "photos": [
+        "photos/puce_46_photo_1.avif"
+      ],
+      "entreprises": [
+        "Celfy"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784731860709,
+      "numero": 47,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 13.356973995271867,
+      "y": 60.949124226683026,
+      "commentaire": "Paratonnerre hors périmètre chantier intervention à definir",
+      "photos": [
+        "photos/puce_47_photo_1.avif"
+      ],
+      "entreprises": [
+        "Art Protect'"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784732292401,
+      "numero": 48,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 22.93144208037825,
+      "y": 79.57660079876791,
+      "commentaire": "Ouverture chevron pour grutage  réalisé\nBonvoisin, prévoir intervention 20 et 21 aout",
+      "photos": [
+        "photos/puce_48_photo_1.avif"
+      ],
+      "entreprises": [
+        "Bonvoisin",
+        "UTB"
+      ],
+      "dateCreation": "22/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1784896520042,
+      "numero": 49,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 29.66903073286052,
+      "y": 61.86796836252578,
+      "commentaire": "Installer système d’éclairage dans sanitaires",
+      "photos": [],
+      "entreprises": [
+        "Masselin"
+      ],
+      "dateCreation": "24/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785142279476,
+      "numero": 50,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 10.520094562647754,
+      "y": 86.59322874520348,
+      "commentaire": "Test d’arrachement mercredi",
+      "photos": [
+        "photos/puce_50_photo_1.avif"
+      ],
+      "entreprises": [
+        "SNM"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785142385209,
+      "numero": 51,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 19.976359338061467,
+      "y": 70.05403430003393,
+      "commentaire": "Revoir fixation corniche",
+      "photos": [
+        "photos/puce_51_photo_1.avif"
+      ],
+      "entreprises": [
+        "Ligne Finition"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785142512125,
+      "numero": 52,
+      "niveauNom": "R+1 intermédiaire",
+      "zonePrecis": "",
+      "x": 17.73049645390071,
+      "y": 68.55047116865488,
+      "commentaire": "Revoir fixation tiges filtre pour support polochon",
+      "photos": [
+        "photos/puce_52_photo_1.avif"
+      ],
+      "entreprises": [
+        "Ligne Finition"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785142856425,
+      "numero": 53,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 10.520094562647754,
+      "y": 86.84382260043331,
+      "commentaire": "Reprise panne métallique ",
+      "photos": [
+        "photos/puce_53_photo_1.avif"
+      ],
+      "entreprises": [
+        "SNM"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785143015349,
+      "numero": 54,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 18.439716312056735,
+      "y": 79.82719465399775,
+      "commentaire": "Reprise charpente en cours",
+      "photos": [
+        "photos/puce_54_photo_1.avif"
+      ],
+      "entreprises": [
+        "UTB"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785143192408,
+      "numero": 55,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 29.078014184397162,
+      "y": 86.25910360489702,
+      "commentaire": "Panne métallique changee",
+      "photos": [
+        "photos/puce_55_photo_1.avif"
+      ],
+      "entreprises": [
+        "SNM"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785143726125,
+      "numero": 56,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 12.293144208037825,
+      "y": 69.3022527343444,
+      "commentaire": "Découverte ferme corrodée,poursuivre investigations",
+      "photos": [
+        "photos/puce_56_photo_1.avif",
+        "photos/puce_56_photo_2.avif"
+      ],
+      "entreprises": [
+        "Lhullier",
+        "UTB",
+        "SNM"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785143957214,
+      "numero": 57,
+      "niveauNom": "Toiture",
+      "zonePrecis": "",
+      "x": 27.659574468085108,
+      "y": 72.8940979926388,
+      "commentaire": "Réparation charpente realise",
+      "photos": [
+        "photos/puce_57_photo_1.avif"
+      ],
+      "entreprises": [
+        "UTB"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": true,
+      "statut": "resolue",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785144149881,
+      "numero": 58,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 38.88888888888889,
+      "y": 70.97287843587668,
+      "commentaire": "Correction pente réalisé bardage en cours",
+      "photos": [
+        "photos/puce_58_photo_1.avif"
+      ],
+      "entreprises": [
+        "UTB"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "en_cours",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785146180702,
+      "numero": 59,
+      "niveauNom": "RDC-Bas",
+      "zonePrecis": "",
+      "x": 10.16548463356974,
+      "y": 84.67200918844135,
+      "commentaire": "Finition maçonnerie ",
+      "photos": [],
+      "entreprises": [
+        "Lhullier"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785146881502,
+      "numero": 60,
+      "niveauNom": "RDC-Haut",
+      "zonePrecis": "",
+      "x": 68.43971631205675,
+      "y": 47.918243754731265,
+      "commentaire": "Cloisonnement ok, hue faire peinture de propretee",
+      "photos": [],
+      "entreprises": [
+        "Lhullier",
+        "HUE"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785146985466,
+      "numero": 61,
+      "niveauNom": "Combles",
+      "zonePrecis": "",
+      "x": 26.47754137115839,
+      "y": 66.04453261635646,
+      "commentaire": "Statuer sur maintien ferme en bois extérieur sans couverture",
+      "photos": [],
+      "entreprises": [],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    },
+    {
+      "id": 1785147163763,
+      "numero": 62,
+      "niveauNom": "R+1",
+      "zonePrecis": "",
+      "x": 42.78959810874704,
+      "y": 87.84619802135268,
+      "commentaire": "Réaliser témoin peinture facade finition 1passe enduit",
+      "photos": [],
+      "entreprises": [
+        "HUE"
+      ],
+      "dateCreation": "27/07/2026",
+      "resolue": false,
+      "statut": "active",
+      "taches": [],
+      "updatedAt": 1785226628412
+    }
+  ],
   "planning": [],
-  "notes": []
+  "notes": [
+    {
+      "id": 1785145904433,
+      "texte": "Redéposer dossier demande grutage pour le 20 août avec ensemble des éléments mis à jours et FT matériel en FR",
+      "croquis": null,
+      "puceLieeId": null,
+      "inclurePdf": true,
+      "dateCreation": "27/07/2026 11:51"
+    }
+  ]
 }
